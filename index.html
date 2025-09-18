@@ -289,7 +289,7 @@
 
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
          <!-- Project 1 -->
-        <div class="project-card glass-card p-6 rounded-2xl">
+        <div class="project-card glass-card p-6 rounded-2xl cursor-pointer" data-link="creator-control-room.html" tabindex="0">
           <div class="relative h-48 mb-6 rounded-xl overflow-hidden">
             <img
               src="Creator_Control_Room.png"
@@ -329,7 +329,7 @@
         </div>
 
         <!-- Project 1 -->
-        <div class="project-card glass-card p-6 rounded-2xl">
+        <div class="project-card glass-card p-6 rounded-2xl cursor-pointer" data-link="wardrobe-organizer.html" tabindex="0">
           <div class="relative h-48 mb-6 rounded-xl overflow-hidden">
             <img
               src="almaari-pic.png"
@@ -370,7 +370,7 @@
         </div>
 
         <!-- Project 2 -->
-        <div class="project-card glass-card p-6 rounded-2xl">
+        <div class="project-card glass-card p-6 rounded-2xl cursor-pointer" data-link="nba-shooting-dashboard.html" tabindex="0">
           <div class="relative h-48 mb-6 rounded-xl overflow-hidden">
             <img
               src="NBA_Dashboardv3.png"
@@ -417,7 +417,7 @@
         </div>
 
         <!-- Project 3 -->
-        <div class="project-card glass-card p-6 rounded-2xl">
+        <div class="project-card glass-card p-6 rounded-2xl cursor-pointer" data-link="moodify.html" tabindex="0">
           <div class="relative h-48 mb-6 rounded-xl overflow-hidden">
             <img
               src="moodify.png"
@@ -456,7 +456,7 @@
         </div>
 
         <!-- Project 4 -->
-        <div class="project-card glass-card p-6 rounded-2xl relative">
+        <div class="project-card glass-card p-6 rounded-2xl relative cursor-pointer" data-link="dao-treasury-dashboard.html" tabindex="0">
           
           <div class="relative h-48 mb-6 rounded-xl overflow-hidden">
             <img
@@ -496,7 +496,7 @@
 
 
         <!-- Project 5 -->
-        <div class="project-card glass-card p-6 rounded-2xl relative">
+        <div class="project-card glass-card p-6 rounded-2xl relative cursor-pointer" data-link="studysync.html" tabindex="0">
           <div class="hackathon-badge">
             <i class="fas fa-trophy mr-1"></i> Best Data-Hack
           </div>
@@ -703,6 +703,29 @@
           opacity: 0,
           duration: 0.8,
           ease: "power2.out",
+        });
+      });
+
+      // Make project cards clickable (with keyboard support)
+      document.querySelectorAll('.project-card[data-link]').forEach((card) => {
+        const anchors = card.querySelectorAll('a');
+        anchors.forEach((a) => {
+          a.addEventListener('click', (e) => {
+            e.stopPropagation();
+          });
+        });
+
+        card.addEventListener('click', () => {
+          const url = card.getAttribute('data-link');
+          if (url) window.location.href = url;
+        });
+
+        card.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            const url = card.getAttribute('data-link');
+            if (url) window.location.href = url;
+          }
         });
       });
 

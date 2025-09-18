@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>StudySync | Project</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap");
+
+      :root {
+        --primary: #6366f1;
+        --secondary: #8b5cf6;
+        --dark: #1e293b;
+        --light: #f8fafc;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Poppins", sans-serif;
+      }
+
+      body {
+        background: linear-gradient(135deg, #0f172a, #1e293b);
+        color: var(--light);
+        min-height: 100vh;
+      }
+
+      .glass-card {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border-radius: 20px;
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+        transition: all 0.3s ease;
+      }
+
+      .skill-bubble {
+        background: rgba(99, 102, 241, 0.2);
+        border: 1px solid rgba(99, 102, 241, 0.5);
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="container mx-auto px-6 py-6 flex justify-between items-center">
+      <a href="index.html#projects" class="text-2xl font-bold">
+        <span class="text-indigo-400">Manveer </span>Sohal
+      </a>
+      <a href="index.html#projects">Back to Projects</a>
+    </nav>
+
+    <main class="container mx-auto px-6 pb-24">
+      <header class="py-10">
+        <h1 class="text-3xl md:text-5xl font-bold mb-4">StudySync</h1>
+        <p class="opacity-80 max-w-3xl">
+          A study site that lets users transcribe from speech to text and video
+          to text to get a summarized description as well as quiz generation.
+        </p>
+      </header>
+
+      <div class="grid md:grid-cols-2 gap-8 items-start">
+        <div class="glass-card rounded-2xl overflow-hidden">
+          <img
+            src="StudySync.png"
+            alt="StudySync"
+            class="w-full h-full object-cover"
+          />
+        </div>
+        <div class="glass-card p-6 rounded-2xl">
+          <h2 class="text-xl font-semibold mb-4">Tech Stack</h2>
+          <div class="flex flex-wrap gap-2 mb-6">
+            <span class="skill-bubble px-3 py-1 rounded-full text-xs"
+              >OpenAI</span
+            >
+            <span class="skill-bubble px-3 py-1 rounded-full text-xs"
+              >Auth0</span
+            >
+          </div>
+          <div class="flex gap-4">
+            <a
+              href="https://devpost.com/software/studying-with-hack-the-north"
+              target="_blank"
+              rel="noopener"
+              class="px-4 py-2 bg-indigo-600 rounded-lg hover:bg-indigo-700"
+              >Devpost</a
+            >
+          </div>
+        </div>
+      </div>
+    </main>
+  </body>
+</html>
