@@ -75,10 +75,41 @@
         transform-style: preserve-3d;
         transform: perspective(1000px);
         transition: transform 0.5s ease;
+        position: relative;
       }
 
       .project-card:hover {
         transform: perspective(1000px) rotateY(10deg) rotateX(5deg) scale(1.05);
+      }
+
+      /* Hover/focus CTA indicator */
+      .project-card::after {
+        content: "View project →";
+        position: absolute;
+        bottom: 16px;
+        right: 16px;
+        background: rgba(99, 102, 241, 0.9);
+        color: #fff;
+        padding: 6px 12px;
+        border-radius: 9999px;
+        font-size: 12px;
+        letter-spacing: 0.02em;
+        box-shadow: 0 8px 24px rgba(99, 102, 241, 0.45);
+        opacity: 0;
+        transform: translateY(6px);
+        transition: opacity 0.25s ease, transform 0.25s ease;
+        pointer-events: none;
+      }
+
+      .project-card:hover::after,
+      .project-card:focus-visible::after {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .project-card:focus-visible {
+        outline: 2px solid var(--primary);
+        outline-offset: 3px;
       }
 
       .skill-bubble {
@@ -332,7 +363,7 @@
         <div class="project-card glass-card p-6 rounded-2xl cursor-pointer" data-link="wardrobe-organizer.html" tabindex="0">
           <div class="relative h-48 mb-6 rounded-xl overflow-hidden">
             <img
-              src="almaari-pic.png"
+              src="Almaari/dashboard.png"
               alt="Project 1"
               class="w-full h-full object-cover"
             />
