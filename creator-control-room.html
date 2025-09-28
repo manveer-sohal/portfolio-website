@@ -9,6 +9,15 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
+     <!-- Mermaid (ESM) -->
+    <script type="module">
+      import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs";
+      mermaid.initialize({
+        startOnLoad: true,
+        theme: "default"        // or "dark"
+      });
+    </script>
+
     <style>
       @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap");
 
@@ -106,6 +115,129 @@
               >Live Demo</a
             >
           </div>
+        </div>
+      </div>
+      <div class="w-full my-6">
+        <h2 class="text-center text-4xl font-semibold mb-4">Features</h2>
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-8 items-start">
+        <div class="glass-card rounded-2xl overflow-hidden">
+          <img
+            src="creator-control-room/dashboard.png"
+            alt="Dashboard"
+            class="w-full h-full object-cover"
+          />
+        </div>
+        <div class="glass-card p-6 rounded-2xl">
+          <h2 class="text-xl font-semibold mb-4">Dashboard</h2>
+          <div class="flex flex-wrap gap-2 mb-6">
+            <p>
+              The dashboard is a real time dashboard that shows the events
+              happening on the stream such as new gifts, followers and
+              subsribes.
+            </p>
+            <br />
+
+            <p>
+              This is also a interactive dashboard where users can filter by
+              creator.
+            </p>
+            <br />
+            <p>Also shows the stream in real time.</p>
+          </div>
+          <div class="flex gap-4"></div>
+        </div>
+      </div>
+      <br />
+      <br />
+      <br />
+
+      <div class="grid md:grid-cols-2 gap-8 items-start">
+        <div class="glass-card rounded-2xl overflow-hidden">
+          <img
+            src="creator-control-room/sign-on.png"
+            alt="Dashboard"
+            class="w-full h-full object-cover"
+          />
+        </div>
+        <div class="glass-card p-6 rounded-2xl">
+          <h2 class="text-xl font-semibold mb-4">Easy Sign On</h2>
+          <div class="flex flex-wrap gap-2 mb-6">
+            <p>
+              Users can sign on to the dashboard by using their Twitch
+              credentials scanned through QR code.
+            </p>
+          </div>
+          <div class="flex gap-4"></div>
+        </div>
+      </div>
+
+      <br />
+      <br />
+      <br />
+
+      <div class="grid md:grid-cols-1 gap-8 items-start">
+        <div class="glass-card p-6 rounded-2xl">
+          <h2 class="text-2xl font-semibold mb-4 text-center">How it works</h2>
+          <div class="gird grid-cols-2 gap-2 mb-6">
+            <h2 class="text-lg font-semibold">Frontend:</h2>
+            <p class="mb-4">
+              Next.js (React/TypeScript) SPA/SSR hybrid, with a Socket.IO client
+              for realtime updates. ￼
+            </p>
+            <h2 class="text-lg font-semibold">Backend (Cloud Run):</h2>
+            <p class="mb-4">
+              Node.js + Express for REST endpoints, plus a Socket.IO server that
+              fans out events to tenant/creator “rooms” so each company only
+              sees its own traffic. Cloud Run gives you managed HTTPS,
+              autoscaling, and zero-infrastructure fuss in one containerized
+              service. ￼
+              <h2 class="text-lg font-semibold">Realtime scale-out: </h2> <p class="mb-4">Socket.IO’s Redis adapter (e.g., Memorystore/Upstash) lets multiple Cloud Run instances broadcast consistently.  ￼</p>
+	<h2 class="text-lg font-semibold">Data: </h2> <p class="mb-4">PostgreSQL as the operational “hot” store (companies, creators, events) with Row-Level Security (RLS) enforcing tenant isolation; JSONB fields hold raw event payloads.￼</p>
+	<h2 class="text-lg font-semibold">Assets/archives:</h2> <p class="mb-4">Object storage (e.g., brand logos) with pre-signed uploads; long-term event history can be archived cheaply for analytics.  ￼</p>  
+          
+            </p>
+          </div>
+          <h2 class="text-2xl font-semibold mb-4 text-center">Database ER Diagram</h2>
+          <div class="w-full align-center">
+            <div class="align-center mx-auto rounded-2xl p-4 shadow-lg h-full border border-gray-200 m-4 my-8 ">
+    <div class="mermaid">
+%%{init: {
+  "theme":"dark",
+  "er": { "layoutDirection":"LR", "entityPadding":16, "spacing":60,
+          "minEntityWidth":140, "minEntityHeight":40 },
+  "themeVariables": {
+    "fontSize":"14px",
+    "primaryColor":"#111827",
+    "primaryTextColor":"#e5e7eb",
+    "primaryBorderColor":"#374151",
+    "lineColor":"#64748b",
+    "tertiaryColor":"#0f172a"
+  }
+}}%%
+erDiagram
+    COMPANY ||--o{ CREATOR : has
+    COMPANY ||--o{ MEMBERS : has
+    COMPANY ||--o{ EVENTS  : owns
+    USERS   ||--o{ MEMBERS : joins
+    CREATOR ||--o{ EVENTS  : generates
+
+    COMPANY { uuid id PK }
+    USERS   { uuid id PK }
+    CREATOR { uuid id PK
+              text broadcaster_id UK
+              uuid company_id FK }
+    MEMBERS { uuid company_id FK
+              uuid user_id FK
+              text role }
+    EVENTS  { uuid id PK
+              uuid creator_id FK
+              uuid company_id FK
+              timestamptz created_at }
+       </div>
+       </div>
+        </div>
         </div>
       </div>
     </main>
