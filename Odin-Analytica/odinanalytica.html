@@ -3,61 +3,55 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>OdinAnalytica | Project</title>
+    <title>OdinAnalytica | Manveer Sohal</title>
+    <meta
+      name="description"
+      content="OdinAnalytica — YOLO crash detection and traffic analytics with Mapbox visualization."
+    />
+    <meta property="og:title" content="OdinAnalytica | Manveer Sohal" />
+    <meta
+      property="og:description"
+      content="YOLO crash detection and traffic analytics with Mapbox."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="OdinAnalytica.png" />
     <script src="https://cdn.tailwindcss.com"></script>
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
-    <style>
-      @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap");
-
-      :root {
-        --primary: #6366f1;
-        --secondary: #8b5cf6;
-        --dark: #1e293b;
-        --light: #f8fafc;
-      }
-
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-        font-family: "Poppins", sans-serif;
-      }
-
-      body {
-        background: linear-gradient(135deg, #0f172a, #1e293b);
-        color: var(--light);
-        min-height: 100vh;
-      }
-
-      .glass-card {
-        background: rgba(255, 255, 255, 0.1);
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
-        border-radius: 20px;
-        border: 1px solid rgba(255, 255, 255, 0.18);
-        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-        transition: all 0.3s ease;
-      }
-
-      .skill-bubble {
-        background: rgba(99, 102, 241, 0.2);
-        border: 1px solid rgba(99, 102, 241, 0.5);
-      }
-    </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../style.css" />
   </head>
   <body>
+    <!-- Floating Liquid Shapes -->
+    <div
+      class="liquid-shape bg-purple-500 top-1/4 left-1/4"
+      style="animation-delay: 0s"
+    ></div>
+    <div
+      class="liquid-shape bg-indigo-500 bottom-1/4 right-1/4"
+      style="animation-delay: 2s"
+    ></div>
+    <div
+      class="liquid-shape bg-blue-500 top-1/3 right-1/3"
+      style="animation-delay: 4s"
+    ></div>
+
     <nav class="container mx-auto px-6 py-6 flex justify-between items-center">
       <a href="../index.html#projects" class="text-2xl font-bold">
         <span class="text-indigo-400">Manveer </span>Sohal
       </a>
-      <a href="../index.html#projects">Back to Projects</a>
+      <a href="../index.html#projects" class="nav-link">Back to Projects</a>
     </nav>
 
     <main class="container mx-auto px-6 pb-24">
-      <header class="py-10">
+      <header class="py-10 reveal-on-scroll">
         <h1 class="text-3xl md:text-5xl font-bold mb-4">OdinAnalytica</h1>
         <p class="opacity-80 max-w-3xl">
           Hackathon winner, turned startup, that performs YOLO crash detection
@@ -66,8 +60,8 @@
         </p>
       </header>
 
-      <div class="grid md:grid-cols-2 gap-8 items-start">
-        <div class="glass-card rounded-2xl overflow-hidden">
+      <div class="grid md:grid-cols-2 gap-8 items-start reveal-on-scroll">
+        <div class="glass-card rounded-2xl overflow-hidden project-media">
           <img
             src="OdinAnalytica.png"
             alt="OdinAnalytica"
@@ -103,5 +97,6 @@
         </div>
       </div>
     </main>
+    <script src="../main.js"></script>
   </body>
 </html>
