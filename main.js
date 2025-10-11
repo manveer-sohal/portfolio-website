@@ -95,3 +95,29 @@ if (themeToggle) {
     updateThemeButton();
   });
 }
+
+// Tab toggle for project pages (Overview vs README)
+const overviewSection = document.getElementById("overview-section");
+const readmeSection = document.getElementById("readme-section");
+const tabOverview = document.getElementById("tab-overview");
+const tabReadme = document.getElementById("tab-readme");
+
+function setActiveTab(which) {
+  if (!overviewSection || !readmeSection || !tabOverview || !tabReadme) return;
+  const showReadme = which === "readme";
+  readmeSection.classList.toggle("hidden", !showReadme);
+  overviewSection.classList.toggle("hidden", showReadme);
+  tabOverview.classList.toggle("bg-indigo-600", !showReadme);
+  tabOverview.classList.toggle("text-white", !showReadme);
+  tabOverview.classList.toggle("text-indigo-200", showReadme);
+  tabReadme.classList.toggle("bg-indigo-600", showReadme);
+  tabReadme.classList.toggle("text-white", showReadme);
+  tabReadme.classList.toggle("text-indigo-200", !showReadme);
+  tabOverview.setAttribute("aria-selected", String(!showReadme));
+  tabReadme.setAttribute("aria-selected", String(showReadme));
+}
+
+if (tabOverview && tabReadme) {
+  tabOverview.addEventListener("click", () => setActiveTab("overview"));
+  tabReadme.addEventListener("click", () => setActiveTab("readme"));
+}
