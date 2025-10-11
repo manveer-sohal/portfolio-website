@@ -51,152 +51,335 @@
     </nav>
 
     <main class="container mx-auto px-6 pb-24">
-      <header class="py-10 reveal-on-scroll">
-        <div class="flex items-center gap-2">
-          <img
-            src="almaari-mascot-waving.png"
-            alt="Almaari"
-            class="w-20 h-20"
-          />
-          <h1 class="text-3xl md:text-5xl font-bold mb-4">
-            Wardrobe Organizer
-          </h1>
+      <!-- Toggle: Quick Overview vs README Highlights -->
+      <div class="flex justify-center py-4 reveal-on-scroll">
+        <div class="glass-card p-1 rounded-full inline-flex">
+          <button
+            id="tab-overview"
+            aria-controls="overview-section"
+            class="px-4 py-2 rounded-full text-sm font-medium bg-indigo-600 text-white"
+          >
+            Quick Overview
+          </button>
+          <button
+            id="tab-readme"
+            aria-controls="readme-section"
+            class="px-4 py-2 rounded-full text-sm font-medium text-indigo-200 hover:text-white"
+          >
+            Technical Highlights
+          </button>
         </div>
-        <p class="opacity-80 max-w-3xl">
-          An interactive Wardrobe organizing dashboard where users can upload
-          pictures of clothing items with filtering, create outfits and get tips
-          from Almaari! an AI assistant.
-        </p>
+      </div>
+
+      <section id="overview-section">
+        <header class="py-10 reveal-on-scroll">
+          <div class="flex items-center gap-2">
+            <img
+              src="almaari-mascot-waving.png"
+              alt="Almaari"
+              class="w-20 h-20"
+            />
+            <h1 class="text-3xl md:text-5xl font-bold mb-4">
+              Wardrobe Organizer
+            </h1>
+          </div>
+          <p class="opacity-80 max-w-3xl">
+            An interactive Wardrobe organizing dashboard where users can upload
+            pictures of clothing items with filtering, create outfits and get
+            tips from Almaari! an AI assistant.
+          </p>
+          <br />
+          <p class="opacity-80 max-w-3xl">
+            No longer have to worry about finding your clothes in your messy
+            wardrobe. Or spend hours sorting through your clothes to find the
+            perfect outfit. All you have to do is upload your clothes, and the
+            dashboard will do the rest.
+          </p>
+        </header>
+
+        <div class="grid md:grid-cols-2 gap-8 items-start reveal-on-scroll">
+          <div class="glass-card rounded-2xl overflow-hidden project-media">
+            <img
+              src="dashboard.png"
+              alt="Wardrobe Organizer"
+              class="w-full h-full object-cover"
+            />
+          </div>
+          <div class="glass-card p-6 rounded-2xl">
+            <h2 class="text-xl font-semibold mb-4">Tech Stack</h2>
+            <div class="flex flex-wrap gap-2 mb-6">
+              <span class="skill-bubble px-3 py-1 rounded-full text-xs"
+                >TypeScript</span
+              >
+              <span class="skill-bubble px-3 py-1 rounded-full text-xs"
+                >Node.js</span
+              >
+              <span class="skill-bubble px-3 py-1 rounded-full text-xs"
+                >React</span
+              >
+              <span class="skill-bubble px-3 py-1 rounded-full text-xs"
+                >OpenCV</span
+              >
+              <span class="skill-bubble px-3 py-1 rounded-full text-xs"
+                >Docker</span
+              >
+            </div>
+            <div class="flex gap-4">
+              <a
+                href="https://almaari-organized.vercel.app/"
+                target="_blank"
+                rel="noopener"
+                class="px-4 py-2 bg-indigo-600 rounded-lg hover:bg-indigo-700"
+                >Live Demo</a
+              >
+            </div>
+          </div>
+        </div>
+
+        <div class="w-full my-6 reveal-on-scroll">
+          <h2 class="text-center text-4xl font-semibold mb-4">Features</h2>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-8 items-start reveal-on-scroll">
+          <div class="glass-card rounded-2xl overflow-hidden project-media">
+            <img
+              src="addClothes.png"
+              alt="Wardrobe Organizer"
+              class="w-full h-full object-cover"
+            />
+          </div>
+          <div class="glass-card p-6 rounded-2xl">
+            <h2 class="text-xl font-semibold mb-4">Clothes Upload</h2>
+            <div class="flex flex-wrap gap-2 mb-6">
+              <p>
+                Users can add clothes to their wardrobe by uploading pictures of
+                their clothes.
+              </p>
+              <p>- Label the type of clothing, color, and style.</p>
+              <p>- Image background are removed and saved to AWS S3.</p>
+            </div>
+            <div class="flex gap-4"></div>
+          </div>
+        </div>
         <br />
-        <p class="opacity-80 max-w-3xl">
-          No longer have to worry about finding your clothes in your messy
-          wardrobe. Or spend hours sorting through your clothes to find the
-          perfect outfit. All you have to do is upload your clothes, and the
-          dashboard will do the rest.
-        </p>
-      </header>
+        <br />
+        <br />
 
-      <div class="grid md:grid-cols-2 gap-8 items-start reveal-on-scroll">
-        <div class="glass-card rounded-2xl overflow-hidden project-media">
+        <div class="grid md:grid-cols-2 gap-8 items-start reveal-on-scroll">
+          <div class="glass-card rounded-2xl overflow-hidden project-media">
+            <img
+              src="Sweater-added.png"
+              alt="Wardrobe Organizer"
+              class="w-full h-full object-cover"
+            />
+          </div>
+          <div class="glass-card p-6 rounded-2xl">
+            <h2 class="text-xl font-semibold mb-4">Dashboard</h2>
+            <div class="flex flex-wrap gap-2 mb-6">
+              <p>
+                Users can see all their clothes in a dashboard, and filter them
+                by type, color, and style.
+              </p>
+              <p>- Filter by searchbar or sidebar.</p>
+            </div>
+            <div class="flex gap-4"></div>
+          </div>
+        </div>
+        <br />
+        <br />
+        <br />
+
+        <div class="grid md:grid-cols-2 gap-8 items-start reveal-on-scroll">
+          <div class="glass-card rounded-2xl overflow-hidden project-media">
+            <img
+              src="Clothes-picked.png"
+              alt="Wardrobe Organizer"
+              class="w-full h-full object-cover"
+            />
+          </div>
+          <div class="glass-card p-6 rounded-2xl">
+            <h2 class="text-xl font-semibold mb-4">Create Outfits</h2>
+            <div class="flex flex-wrap gap-2 mb-6">
+              <p>
+                Users can create outfits by picking clothes and saving them to
+                their wardrobe.
+              </p>
+              <br />
+              <p>
+                Users can also get tips on how to style their clothes from an AI
+                assistant named Almaari!
+                <img
+                  src="almaari-mascot-waving.png"
+                  alt="Almaari"
+                  class="w-20 h-20"
+                />
+              </p>
+            </div>
+            <div class="flex gap-4"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- README Highlights -->
+      <section id="readme-section" class="mt-12 space-y-8 hidden">
+        <div class="glass-card p-6 rounded-2xl reveal-on-scroll mb-4">
+          <h2 class="text-2xl font-semibold mb-3">
+            Key Features & Contributions
+          </h2>
+          <div class="grid grid-cols-2 gap-2">
+            <ul class="list-disc pl-6 space-y-2 opacity-90 text-sm">
+              <li>
+                Full-stack, Dockerized architecture built for modularity and
+                scalability.
+              </li>
+              <li>
+                Cloud deployment on Google Cloud Run with zero-downtime
+                rollouts.
+              </li>
+              <li>
+                Secure image storage integrated with AWS S3 using presigned
+                URLs.
+              </li>
+              <li>
+                Redis caching to improve data reload speed after refreshes.
+              </li>
+            </ul>
+            <ul class="list-disc pl-6 space-y-2 opacity-90 text-sm">
+              <li>Secure authentication and authorization using Auth0.</li>
+              <li>Responsive UI built with React and Tailwind CSS.</li>
+              <li>
+                Automated CI/CD pipelines for continuous testing and deployment.
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="glass-card p-6 rounded-2xl reveal-on-scroll">
+          <h2 class="text-2xl font-semibold mb-3">
+            AWS S3 Image Storage Pipeline
+          </h2>
+          <p class="opacity-80 mb-3">
+            Implemented a secure, scalable upload flow using presigned URLs to
+            avoid routing large files through the backend.
+          </p>
+          <ol class="list-decimal pl-6 space-y-1 opacity-90 text-sm mb-4">
+            <li>Frontend requests a presigned URL from the backend.</li>
+            <li>Backend generates the signed URL using the AWS SDK.</li>
+            <li>Frontend uploads the image directly to S3.</li>
+            <li>Backend saves an image reference in the database.</li>
+          </ol>
+          <pre
+            class="bg-black/40 border border-white/10 rounded-lg p-4 text-xs overflow-auto"
+          ><code>{
+  "user_id": "123",
+  "s3_key": "user_123/shirt_blue.png",
+  "category": null,
+  "cropped": false
+}</code></pre>
           <img
-            src="dashboard.png"
-            alt="Wardrobe Organizer"
-            class="w-full h-full object-cover"
+            src="S3.png"
+            alt="S3 pipeline"
+            class="w-full h-full object-cover my-4 rounded-lg"
           />
         </div>
-        <div class="glass-card p-6 rounded-2xl">
-          <h2 class="text-xl font-semibold mb-4">Tech Stack</h2>
-          <div class="flex flex-wrap gap-2 mb-6">
-            <span class="skill-bubble px-3 py-1 rounded-full text-xs"
-              >TypeScript</span
-            >
-            <span class="skill-bubble px-3 py-1 rounded-full text-xs"
-              >Node.js</span
-            >
-            <span class="skill-bubble px-3 py-1 rounded-full text-xs"
-              >React</span
-            >
-            <span class="skill-bubble px-3 py-1 rounded-full text-xs"
-              >OpenCV</span
-            >
-            <span class="skill-bubble px-3 py-1 rounded-full text-xs"
-              >Docker</span
-            >
-          </div>
-          <div class="flex gap-4">
-            <a
-              href="https://almaari-organized.vercel.app/"
-              target="_blank"
-              rel="noopener"
-              class="px-4 py-2 bg-indigo-600 rounded-lg hover:bg-indigo-700"
-              >Live Demo</a
-            >
-          </div>
+
+        <div class="glass-card p-6 rounded-2xl reveal-on-scroll">
+          <h2 class="text-2xl font-semibold mb-3">
+            Data Architecture & Design
+          </h2>
+          <p class="opacity-80 mb-3">MongoDB with three main collections:</p>
+          <ul class="list-disc pl-6 space-y-1 opacity-90 text-sm mb-4">
+            <li>User</li>
+            <li>Clothes</li>
+            <li>Outfits</li>
+          </ul>
+          <p class="opacity-80">
+            Each clothing item and outfit is stored as an independent document
+            linked to a user ID. This increases modularity and scalability as
+            the platform grows.
+          </p>
         </div>
-      </div>
 
-      <div class="w-full my-6 reveal-on-scroll">
-        <h2 class="text-center text-4xl font-semibold mb-4">Features</h2>
-      </div>
+        <div class="glass-card p-6 rounded-2xl reveal-on-scroll">
+          <h2 class="text-2xl font-semibold mb-3">
+            Schema Implementation (Mongoose)
+          </h2>
+          <pre
+            class="bg-black/40 border border-white/10 rounded-lg p-4 text-xs overflow-auto"
+          ><code>// Clothes Schema
+const ClothesSchema = new mongoose.Schema({
+  uniqueId: { type: String, required: true, unique: true },
+  type: { type: String, required: true, index: true },
+  imageSrc: { type: String, required: true },
+  favourite: { type: Boolean, default: false },
+  createdAt: { type: Date, default: Date.now },
+  colour: { type: [String], required: true },
+  season: { type: [String], default: [] },
+  waterproof: { type: Boolean, default: false },
+  slot: { type: String, required: true },
+});
 
-      <div class="grid md:grid-cols-2 gap-8 items-start reveal-on-scroll">
-        <div class="glass-card rounded-2xl overflow-hidden project-media">
+// Outfits Schema
+const OutfitsSchema = new mongoose.Schema({
+  uniqueId: { type: String, required: true, unique: true },
+  name: { type: String, default: "" },
+  favourite: { type: Boolean, default: false },
+  createdAt: { type: Date, default: Date.now },
+  colour: { type: [String], required: true },
+  season: { type: [String], default: [] },
+  waterproof: { type: Boolean, default: false },
+  outfit_items: [{ type: mongoose.Schema.Types.ObjectId, ref: "Clothes" }],
+});
+
+// User Schema
+const usersSchema = new mongoose.Schema({
+  auth0Id: { type: String, required: true, unique: true, index: true },
+  email: { type: String, required: true },
+  clothes: [{ type: mongoose.Schema.Types.ObjectId, ref: "Clothes" }],
+  outfits: [{ type: mongoose.Schema.Types.ObjectId, ref: "Outfits" }],
+});</code></pre>
+        </div>
+        <div class="glass-card p-6 rounded-2xl reveal-on-scroll">
+          <h2 class="text-2xl font-semibold mb-3">
+            Database Relationship Diagram
+          </h2>
           <img
-            src="addClothes.png"
-            alt="Wardrobe Organizer"
-            class="w-full h-full object-cover"
+            src="Database-Design.png"
+            alt="Database Relationship Diagram"
+            class="w-full h-full object-cover my-4 rounded-lg"
           />
         </div>
-        <div class="glass-card p-6 rounded-2xl">
-          <h2 class="text-xl font-semibold mb-4">Clothes Upload</h2>
-          <div class="flex flex-wrap gap-2 mb-6">
-            <p>
-              Users can add clothes to their wardrobe by uploading pictures of
-              the clothes.
-            </p>
-            <p>- Label the type of clothing, color, and style.</p>
-          </div>
-          <div class="flex gap-4"></div>
-        </div>
-      </div>
-      <br />
-      <br />
-      <br />
 
-      <div class="grid md:grid-cols-2 gap-8 items-start reveal-on-scroll">
-        <div class="glass-card rounded-2xl overflow-hidden project-media">
-          <img
-            src="Sweater-added.png"
-            alt="Wardrobe Organizer"
-            class="w-full h-full object-cover"
-          />
+        <div class="glass-card p-6 rounded-2xl reveal-on-scroll">
+          <h2 class="text-2xl font-semibold mb-3">Trade-offs & Future Work</h2>
+          <ul class="list-disc pl-6 space-y-2 opacity-90 text-sm">
+            <li>
+              MongoDB excels for operational workloads (frequent writes,
+              flexible schema), but complex analytics require heavier
+              aggregation.
+            </li>
+            <li>
+              Future enhancement: hybrid system using PostgreSQL for analytics
+              while keeping MongoDB for operations.
+            </li>
+          </ul>
         </div>
-        <div class="glass-card p-6 rounded-2xl">
-          <h2 class="text-xl font-semibold mb-4">Dashboard</h2>
-          <div class="flex flex-wrap gap-2 mb-6">
-            <p>
-              Users can see all their clothes in a dashboard, and filter them by
-              type, color, and style.
-            </p>
-            <p>- Filter by searchbar or sidebar.</p>
-          </div>
-          <div class="flex gap-4"></div>
-        </div>
-      </div>
 
-      <br />
-      <br />
-      <br />
-
-      <div class="grid md:grid-cols-2 gap-8 items-start reveal-on-scroll">
-        <div class="glass-card rounded-2xl overflow-hidden project-media">
-          <img
-            src="Clothes-picked.png"
-            alt="Wardrobe Organizer"
-            class="w-full h-full object-cover"
-          />
+        <div class="glass-card p-6 rounded-2xl reveal-on-scroll">
+          <h2 class="text-2xl font-semibold mb-3">Impact & Outcomes</h2>
+          <ul class="list-disc pl-6 space-y-2 opacity-90 text-sm">
+            <li>
+              Reduced API response times by 25% through query optimization and
+              indexing.
+            </li>
+            <li>Improved data reload speeds using Redis caching.</li>
+            <li>
+              Designed scalable cloud architecture supporting seamless
+              deployment and growth.
+            </li>
+          </ul>
         </div>
-        <div class="glass-card p-6 rounded-2xl">
-          <h2 class="text-xl font-semibold mb-4">Create Outfits</h2>
-          <div class="flex flex-wrap gap-2 mb-6">
-            <p>
-              Users can create outfits by picking clothes from their wardrobe
-              and save them to their wardrobe.
-            </p>
-            <br />
-            <p>
-              Users can also get tips on how to style their clothes from an AI
-              assistant named Almaari!
-              <img
-                src="almaari-mascot-waving.png"
-                alt="Almaari"
-                class="w-20 h-20"
-              />
-            </p>
-          </div>
-          <div class="flex gap-4"></div>
-        </div>
-      </div>
+      </section>
     </main>
     <script src="../main.js"></script>
   </body>
