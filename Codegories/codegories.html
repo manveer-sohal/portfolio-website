@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Codegories | Manveer Sohal</title>
+    <meta
+      name="description"
+      content="Codegories — project overview, screenshots, and tech details."
+    />
+    <meta property="og:title" content="Codegories | Manveer Sohal" />
+    <meta
+      property="og:description"
+      content="Explore Codegories with visuals and highlights."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="../Codegories.png" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../style.css" />
+  </head>
+  <body>
+    <!-- Floating Liquid Shapes -->
+    <div
+      class="liquid-shape bg-purple-500 top-1/4 left-1/4"
+      style="animation-delay: 0s"
+    ></div>
+    <div
+      class="liquid-shape bg-indigo-500 bottom-1/4 right-1/4"
+      style="animation-delay: 2s"
+    ></div>
+    <div
+      class="liquid-shape bg-blue-500 top-1/3 right-1/3"
+      style="animation-delay: 4s"
+    ></div>
+
+    <nav class="container mx-auto px-6 py-6 flex justify-between items-center">
+      <a href="../index.html#projects" class="text-2xl font-bold">
+        <span class="text-indigo-400">Manveer </span>Sohal
+      </a>
+      <a href="../index.html#projects" class="nav-link">Back to Projects</a>
+    </nav>
+
+    <main class="container mx-auto px-6 pb-24">
+      <header class="py-10 reveal-on-scroll">
+        <h1 class="text-3xl md:text-5xl font-bold mb-4">Codegories</h1>
+        <p class="opacity-80 max-w-3xl">
+          Real-time Multiplayer Server-Side Interactive Scattergories-style
+          game. Users can join a room and play with other users in real time.
+          Events are Server-Side Rendered and Socket.io is used to handle
+          real-time updates.
+        </p>
+      </header>
+
+      <div class="grid md:grid-cols-2 gap-8 items-start reveal-on-scroll">
+        <div class="glass-card rounded-2xl overflow-hidden project-media">
+          <img
+            src="../Codegories.png"
+            alt="Codegories screenshot"
+            class="w-full h-full object-cover"
+          />
+        </div>
+        <div class="glass-card p-6 rounded-2xl">
+          <h2 class="text-xl font-semibold mb-4">Tech Stack</h2>
+          <div class="flex flex-wrap gap-2 mb-6">
+            <span class="skill-bubble px-3 py-1 rounded-full text-xs"
+              >TypeScript</span
+            >
+            <span class="skill-bubble px-3 py-1 rounded-full text-xs"
+              >React</span
+            >
+            <span class="skill-bubble px-3 py-1 rounded-full text-xs"
+              >Tailwind CSS</span
+            >
+          </div>
+          <p class="opacity-80 text-sm"></p>
+          <div class="flex gap-4 py-4">
+            <a
+              href="https://codegories.vercel.app/"
+              target="_blank"
+              rel="noopener"
+              class="px-4 py-2 bg-indigo-600 rounded-lg hover:bg-indigo-700"
+              >Play Now</a
+            >
+          </div>
+        </div>
+      </div>
+    </main>
+    <script src="../main.js"></script>
+  </body>
+</html>

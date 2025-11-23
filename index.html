@@ -46,7 +46,6 @@
         <a href="#about" class="nav-link">About</a>
         <a href="#skills" class="nav-link">Skills</a>
         <a href="#projects" class="nav-link">Projects</a>
-        <a href="#contact" class="nav-link">Contact</a>
       </div>
       <!-- <div class="flex items-center gap-3">
         <button id="theme-toggle" class="text-xl focus:outline-none" aria-label="Toggle color theme" aria-pressed="false">
@@ -348,6 +347,51 @@
           </div>
         </div>
 
+        <!-- Project 7 -->
+        <div class="project-card glass-card p-6 rounded-2xl cursor-pointer" data-link="Codegories/codegories.html" tabindex="0">
+          <div class="relative h-48 mb-6 rounded-xl overflow-hidden project-media">
+            <img
+              src="Codegories.png"
+              alt="Multiplayer Server-Side Interactive Game"
+              class="w-full h-full object-cover"
+            />
+            <div
+              class="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-70"
+            ></div>
+            <div class="absolute bottom-4 left-4">
+              <h3 class="text-xl font-bold">Codegories</h3>
+              <p class="text-sm opacity-80">
+                TypeScript, Next.js, Node.js, Socket.io
+              </p>
+            </div>
+          </div>
+          <p class="mb-4 opacity-90">
+            Real-time Multiplayer Server-Side Interactive Scattergories-style game. Users can join a room and play with other users in real time. Events are Server-Side Rendered and Socket.io is used to handle real-time updates.
+          </p>
+          <div class="flex flex-wrap gap-2">
+            <div class="flex gap-2 items-center">
+              <span class="skill-bubble px-3 py-1 rounded-full text-xs"
+                >TypeScript</span
+              >
+              <span class="skill-bubble px-3 py-1 rounded-full text-xs"
+                >Next.js</span
+              >
+              <span class="skill-bubble px-3 py-1 rounded-full text-xs"
+                >Node.js</span
+              >
+
+              <span class="skill-bubble px-3 py-1 rounded-full text-xs"
+                >Socket.io</span
+              >
+              <a
+                href="https://codegories.vercel.app/"
+                class="text-indigo-400 hover:text-indigo-300"
+              >
+                <i class="fas fa-external-link-alt"></i>
+              </a>
+            </div>
+          </div>
+        </div>
 
 
 
@@ -431,65 +475,7 @@
       </div>
     </section>
 
-    <!-- Contact Section -->
-    <section id="contact" class="container mx-auto px-6 py-20 reveal-on-scroll">
-      <h2 class="text-3xl md:text-4xl font-bold mb-16 text-center">
-        Get In <span class="text-indigo-400">Touch</span>
-      </h2>
-
-      <div class="glass-card p-8 md:p-12 rounded-2xl max-w-3xl mx-auto">
-        <form id="contact-form" class="space-y-6" aria-label="Contact form">
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <label for="name" class="block mb-2">Name</label>
-              <input
-                type="text"
-                id="name"
-                name="name"
-                autocomplete="name"
-                class="w-full bg-slate-800 bg-opacity-50 border border-slate-700 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                aria-required="true"
-              />
-            </div>
-            <div>
-              <label for="email" class="block mb-2">Email</label>
-              <input
-                type="email"
-                id="email"
-                name="email"
-                autocomplete="email"
-                class="w-full bg-slate-800 bg-opacity-50 border border-slate-700 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                aria-required="true"
-              />
-            </div>
-          </div>
-          <div>
-            <label for="subject" class="block mb-2">Subject</label>
-            <input
-              type="text"
-              id="subject"
-              name="subject"
-              class="w-full bg-slate-800 bg-opacity-50 border border-slate-700 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            />
-          </div>
-          <div>
-            <label for="message" class="block mb-2">Message</label>
-            <textarea
-              id="message"
-              name="message"
-              rows="5"
-              class="w-full bg-slate-800 bg-opacity-50 border border-slate-700 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            ></textarea>
-          </div>
-          <button
-            type="submit"
-            class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-3 px-6 rounded-lg transition"
-          >
-            Send Message
-          </button>
-        </form>
-      </div>
-    </section>
+   
 
     <!-- Footer -->
     <footer class="container mx-auto px-6 py-10 text-center opacity-80">
