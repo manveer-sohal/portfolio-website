@@ -365,6 +365,8 @@ const usersSchema = new mongoose.Schema({
   email: { type: String, required: true },
   clothes: [{ type: mongoose.Schema.Types.ObjectId, ref: "Clothes" }],
   outfits: [{ type: mongoose.Schema.Types.ObjectId, ref: "Outfits" }],
+  hasCompletedOnboardingForClothes: { type: Boolean, default: false },
+  hasCompletedOnboardingForOutfits: { type: Boolean, default: false },
 });</code></pre>
         </div>
         <div class="glass-card p-6 rounded-2xl reveal-on-scroll">
