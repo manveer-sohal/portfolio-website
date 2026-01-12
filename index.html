@@ -8,7 +8,7 @@
     <meta property="og:title" content="Manveer Sohal | Portfolio" />
     <meta property="og:description" content="Explore projects, skills, and ways to connect with Manveer." />
     <meta property="og:type" content="website" />
-    <meta property="og:image" content="meta-image.png" />
+    <meta property="og:image" content="images/meta-image.png" />
     <script src="https://cdn.tailwindcss.com"></script>
     <link
       rel="stylesheet"
@@ -103,7 +103,7 @@
             class="absolute inset-0 glass-card rounded-full overflow-hidden flex items-center justify-center"
           >
             <img
-              src="profile.png"
+              src="images/profile.png"
               alt="Portrait of Manveer Sohal"
               class="w-full h-full object-cover"
             />
@@ -197,6 +197,46 @@
             </div>
             <a
               href="https://almaari-organized.vercel.app/"
+              class="text-indigo-400 hover:text-indigo-300"
+            >
+              <i class="fas fa-external-link-alt"></i>
+            </a>
+          </div>
+        </div>
+
+        <!-- Project 1 -->
+        <div class="project-card glass-card p-6 rounded-2xl cursor-pointer" data-link="clash-royal-hub/clash-royal-hub.html" tabindex="0">
+          <div class="relative h-48 mb-6 rounded-xl overflow-hidden project-media">
+            <img
+              src="clash-royal-hub/clash-royal-hub.png"
+              alt="Clash Royal Hub screenshot"
+              class="w-full h-full object-cover"
+            />
+            <div
+              class="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-70"
+            ></div>
+            <div class="absolute bottom-4 left-4">
+              <h3 class="text-xl font-bold">Clash Royal Stats Tracker</h3>
+              <p class="text-sm opacity-80">React, Node.js, Redis</p>
+            </div>
+          </div>
+          <p class="mb-4 opacity-90">
+            A Clash Royal Stats Tracker that allows users to track their own stats and compare them to their friends.
+          </p>
+          <div class="flex justify-between items-center">
+            <div class="flex space-x-2">
+              <span class="skill-bubble px-3 py-1 rounded-full text-xs"
+                >React</span
+              >
+              <span class="skill-bubble px-3 py-1 rounded-full text-xs">
+                Node.js</span
+              >
+              <span class="skill-bubble px-3 py-1 rounded-full text-xs">
+                Redis</span
+              >
+            </div>
+            <a
+              href="https://clash-royal-hub.vercel.app/"
               class="text-indigo-400 hover:text-indigo-300"
             >
               <i class="fas fa-external-link-alt"></i>
@@ -345,7 +385,7 @@
         <div class="project-card glass-card p-6 rounded-2xl cursor-pointer" data-link="Codegories/codegories.html" tabindex="0">
           <div class="relative h-48 mb-6 rounded-xl overflow-hidden project-media">
             <img
-              src="Codegories.png"
+              src="Codegories/Codegories.png"
               alt="Multiplayer Server-Side Interactive Game"
               class="w-full h-full object-cover"
             />

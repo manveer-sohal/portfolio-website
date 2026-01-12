@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Clash Royale Hub | Manveer Sohal</title>
+    <meta
+      name="description"
+      content="Clash Royale Hub — player stats, battle logs, clan views, and card browser in a polished dashboard."
+    />
+    <meta property="og:title" content="Clash Royale Hub | Manveer Sohal" />
+    <meta
+      property="og:description"
+      content="Explore player profiles, battle logs, clan views, war logs, and cards with a smooth UI."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="player-screen.png" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../style.css" />
+  </head>
+  <body>
+    <!-- Floating Liquid Shapes -->
+    <div
+      class="liquid-shape bg-purple-500 top-1/4 left-1/4"
+      style="animation-delay: 0s"
+    ></div>
+    <div
+      class="liquid-shape bg-indigo-500 bottom-1/4 right-1/4"
+      style="animation-delay: 2s"
+    ></div>
+    <div
+      class="liquid-shape bg-blue-500 top-1/3 right-1/3"
+      style="animation-delay: 4s"
+    ></div>
+
+    <nav class="container mx-auto px-6 py-6 flex justify-between items-center">
+      <a href="../index.html#projects" class="text-2xl font-bold">
+        <span class="text-indigo-400">Manveer </span>Sohal
+      </a>
+      <a href="../index.html#projects" class="nav-link">Back to Projects</a>
+    </nav>
+
+    <main class="container mx-auto px-6 pb-24">
+      <header class="py-10 reveal-on-scroll">
+        <h1 class="text-3xl md:text-5xl font-bold mb-4">Clash Royale Hub</h1>
+        <p class="opacity-80 max-w-3xl">
+          A hub for exploring Clash Royale player stats, battle histories,
+          balance changes, and clan insights with a clean, responsive interface.
+          Includes views for player profiles, recent battles, clan rosters, war
+          logs, and a searchable card browser. The project uses the Clash Royale
+          API to fetch data and the Clash Royale API is used to fetch data and
+          the Clash Royale API is used to fetch data.
+        </p>
+      </header>
+
+      <div class="grid md:grid-cols-2 gap-8 items-start reveal-on-scroll">
+        <div class="glass-card rounded-2xl overflow-hidden project-media">
+          <img
+            src="clash-royal-hub.png"
+            alt="Clash Royale Hub — Player screen"
+            class="w-full h-full object-cover"
+          />
+        </div>
+        <div class="glass-card p-6 rounded-2xl">
+          <h2 class="text-xl font-semibold mb-4">Tech Stack</h2>
+          <div class="flex flex-wrap gap-2 mb-6">
+            <span class="skill-bubble px-3 py-1 rounded-full text-xs"
+              >TypeScript</span
+            >
+            <span class="skill-bubble px-3 py-1 rounded-full text-xs"
+              >React</span
+            >
+            <span class="skill-bubble px-3 py-1 rounded-full text-xs"
+              >Tailwind CSS</span
+            >
+            <span class="skill-bubble px-3 py-1 rounded-full text-xs"
+              >Clash Royale API</span
+            >
+          </div>
+          <div class="flex gap-4">
+            <a
+              href="https://clash-royal-hub.vercel.app/"
+              class="px-4 py-2 bg-indigo-600 rounded-lg hover:bg-indigo-700"
+              >Live Demo</a
+            >
+            <a
+              href="https://github.com/manveer-sohal/clash-royal-hub.git"
+              class="px-4 py-2 bg-indigo-600 rounded-lg hover:bg-indigo-700"
+              >Github</a
+            >
+          </div>
+        </div>
+      </div>
+
+      <div class="w-full my-6 reveal-on-scroll">
+        <h2 class="text-center text-4xl font-semibold mb-4">Features</h2>
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-8 items-start reveal-on-scroll">
+        <div class="glass-card rounded-2xl overflow-hidden project-media">
+          <img
+            src="player-screen.png"
+            alt="Clash Royale Hub — Player battle log view"
+            class="w-full h-full object-cover"
+          />
+        </div>
+        <div class="glass-card p-6 rounded-2xl">
+          <h2 class="text-xl font-semibold mb-4">Player Profile</h2>
+          <div class="flex flex-wrap gap-2 mb-6">
+            <p>View player profile with stats, trophies, and recent battles.</p>
+            <p>Compare with friends and track progress over time.</p>
+          </div>
+          <div class="flex gap-4"></div>
+        </div>
+      </div>
+
+      <br />
+      <br />
+      <br />
+
+      <div class="grid md:grid-cols-2 gap-8 items-start reveal-on-scroll">
+        <div class="glass-card rounded-2xl overflow-hidden project-media">
+          <img
+            src="player-battle-log.png"
+            alt="Clash Royale Hub — Player battle log view"
+            class="w-full h-full object-cover"
+          />
+        </div>
+        <div class="glass-card p-6 rounded-2xl">
+          <h2 class="text-xl font-semibold mb-4">Battle Log</h2>
+          <div class="flex flex-wrap gap-2 mb-6">
+            <p>
+              Inspect recent matches with outcomes, trophies, and opponent
+              details.
+            </p>
+          </div>
+          <div class="flex gap-4"></div>
+        </div>
+      </div>
+
+      <br />
+      <br />
+      <br />
+
+      <div class="grid md:grid-cols-2 gap-8 items-start reveal-on-scroll">
+        <div class="glass-card rounded-2xl overflow-hidden project-media">
+          <img
+            src="clan-view.png"
+            alt="Clash Royale Hub — Clan roster view"
+            class="w-full h-full object-cover"
+          />
+        </div>
+        <div class="glass-card p-6 rounded-2xl">
+          <h2 class="text-xl font-semibold mb-4">Clan View</h2>
+          <div class="flex flex-wrap gap-2 mb-6">
+            <p>See clan roster with member roles, trophies, and activity.</p>
+            <p>Navigate to any member profiles and compare stats.</p>
+          </div>
+          <div class="flex gap-4"></div>
+        </div>
+      </div>
+
+      <br />
+      <br />
+      <br />
+
+      <div class="grid md:grid-cols-2 gap-8 items-start reveal-on-scroll">
+        <div class="glass-card rounded-2xl overflow-hidden project-media">
+          <img
+            src="clan-war-log.png"
+            alt="Clash Royale Hub — Clan war log view"
+            class="w-full h-full object-cover"
+          />
+        </div>
+        <div class="glass-card p-6 rounded-2xl">
+          <h2 class="text-xl font-semibold mb-4">Clan War Log</h2>
+          <div class="flex flex-wrap gap-2 mb-6">
+            <p>Track recent war performance, standings, and contributions.</p>
+            <p>Highlight streaks and identify top performers.</p>
+            <p>Navigate to partipcating clans and see their stats.</p>
+          </div>
+          <div class="flex gap-4"></div>
+        </div>
+      </div>
+
+      <br />
+      <br />
+      <br />
+
+      <div class="grid md:grid-cols-2 gap-8 items-start reveal-on-scroll">
+        <div class="glass-card rounded-2xl overflow-hidden project-media">
+          <img
+            src="cards.png"
+            alt="Clash Royale Hub — Cards browser"
+            class="w-full h-full object-cover"
+          />
+        </div>
+        <div class="glass-card p-6 rounded-2xl">
+          <h2 class="text-xl font-semibold mb-4">Cards Browser</h2>
+          <div class="flex flex-wrap gap-2 mb-6">
+            <p>Browse all cards with rarity, elixir cost, and quick search.</p>
+            <p>Great for building decks and studying the meta.</p>
+          </div>
+          <div class="flex gap-4"></div>
+        </div>
+      </div>
+    </main>
+    <script src="../main.js"></script>
+  </body>
+</html>
