@@ -44,7 +44,7 @@ const io = new IntersectionObserver(
       }
     });
   },
-  { threshold: 0.15 }
+  { threshold: 0.15 },
 );
 revealEls.forEach((el) => io.observe(el));
 
@@ -101,12 +101,82 @@ const overviewSection = document.getElementById("overview-section");
 const readmeSection = document.getElementById("readme-section");
 const tabOverview = document.getElementById("tab-overview");
 const tabReadme = document.getElementById("tab-readme");
+const tabToggle = document.getElementById("tab-toggle");
+const tabGeneralOverview = document.getElementById("tab-general-overview");
+const tabFrontendOverview = document.getElementById("tab-frontend-overview");
+const tabBackendOverview = document.getElementById("tab-backend-overview");
+const generalOverviewSection = document.getElementById(
+  "general-overview-section",
+);
+const frontendOverviewSection = document.getElementById(
+  "frontend-overview-section",
+);
+const backendOverviewSection = document.getElementById(
+  "backend-overview-section",
+);
 
+function toggleTabToggle(showReadme) {
+  // Show sub-tabs when NOT viewing readme
+  tabToggle.classList.toggle("hidden", showReadme);
+}
+
+function resetTabButtons() {
+  if (tabGeneralOverview) {
+    tabGeneralOverview.classList.remove("bg-indigo-600", "text-white");
+    tabGeneralOverview.classList.add("text-indigo-200");
+  }
+  if (tabFrontendOverview) {
+    tabFrontendOverview.classList.remove("bg-indigo-600", "text-white");
+    tabFrontendOverview.classList.add("text-indigo-200");
+  }
+  if (tabBackendOverview) {
+    tabBackendOverview.classList.remove("bg-indigo-600", "text-white");
+    tabBackendOverview.classList.add("text-indigo-200");
+  }
+}
+
+function setActiveTabButton(which) {
+  resetTabButtons();
+  // Ensure overview wrapper visible and readme hidden
+  if (overviewSection) overviewSection.classList.remove("hidden");
+  if (readmeSection) readmeSection.classList.add("hidden");
+  // Hide all sub sections first
+  if (generalOverviewSection) generalOverviewSection.classList.add("hidden");
+  if (frontendOverviewSection) frontendOverviewSection.classList.add("hidden");
+  if (backendOverviewSection) backendOverviewSection.classList.add("hidden");
+  // Activate the selected tab and section
+  if (which === "general" && tabGeneralOverview) {
+    tabGeneralOverview.classList.add("bg-indigo-600", "text-white");
+    tabGeneralOverview.classList.remove("text-indigo-200");
+    if (generalOverviewSection)
+      generalOverviewSection.classList.remove("hidden");
+  } else if (which === "frontend" && tabFrontendOverview) {
+    tabFrontendOverview.classList.add("bg-indigo-600", "text-white");
+    tabFrontendOverview.classList.remove("text-indigo-200");
+    if (frontendOverviewSection)
+      frontendOverviewSection.classList.remove("hidden");
+  } else if (which === "backend" && tabBackendOverview) {
+    tabBackendOverview.classList.add("bg-indigo-600", "text-white");
+    tabBackendOverview.classList.remove("text-indigo-200");
+    if (backendOverviewSection)
+      backendOverviewSection.classList.remove("hidden");
+  }
+  // Top-level readme/overview buttons state
+  if (tabOverview) {
+    tabOverview.classList.add("bg-indigo-600", "text-white");
+    tabOverview.classList.remove("text-indigo-200");
+  }
+  if (tabReadme) {
+    tabReadme.classList.remove("bg-indigo-600", "text-white");
+    tabReadme.classList.add("text-indigo-200");
+  }
+}
 function setActiveTab(which) {
   if (!overviewSection || !readmeSection || !tabOverview || !tabReadme) return;
   const showReadme = which === "readme";
   readmeSection.classList.toggle("hidden", !showReadme);
   overviewSection.classList.toggle("hidden", showReadme);
+  toggleTabToggle(showReadme);
   tabOverview.classList.toggle("bg-indigo-600", !showReadme);
   tabOverview.classList.toggle("text-white", !showReadme);
   tabOverview.classList.toggle("text-indigo-200", showReadme);
@@ -120,4 +190,20 @@ function setActiveTab(which) {
 if (tabOverview && tabReadme) {
   tabOverview.addEventListener("click", () => setActiveTab("overview"));
   tabReadme.addEventListener("click", () => setActiveTab("readme"));
+}
+
+if (tabGeneralOverview) {
+  tabGeneralOverview.addEventListener("click", () =>
+    setActiveTabButton("general"),
+  );
+}
+if (tabFrontendOverview) {
+  tabFrontendOverview.addEventListener("click", () =>
+    setActiveTabButton("frontend"),
+  );
+}
+if (tabBackendOverview) {
+  tabBackendOverview.addEventListener("click", () =>
+    setActiveTabButton("backend"),
+  );
 }

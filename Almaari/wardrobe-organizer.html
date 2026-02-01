@@ -51,27 +51,59 @@
     </nav>
 
     <main class="container mx-auto px-6 pb-24">
-      <!-- Toggle: Quick Overview vs README Highlights -->
-      <div class="flex justify-center py-4 reveal-on-scroll">
-        <div class="glass-card p-1 rounded-full inline-flex">
-          <button
-            id="tab-overview"
-            aria-controls="overview-section"
-            class="px-4 py-2 rounded-full text-sm font-medium bg-indigo-600 text-white"
-          >
-            Quick Overview
-          </button>
-          <button
-            id="tab-readme"
-            aria-controls="readme-section"
-            class="px-4 py-2 rounded-full text-sm font-medium text-indigo-200 hover:text-white"
-          >
-            Technical Highlights
-          </button>
+      <div class="flex flex-col justify-center py-4 reveal-on-scroll">
+        <!-- Toggle: Quick Overview vs README Highlights -->
+        <div class="flex justify-center reveal-on-scroll">
+          <div class="glass-card p-1 rounded-full inline-flex justify-center">
+            <button
+              id="tab-overview"
+              aria-controls="overview-section"
+              class="px-4 py-2 rounded-full text-sm font-medium bg-indigo-600 text-white"
+            >
+              Quick Overview
+            </button>
+            <button
+              id="tab-readme"
+              aria-controls="readme-section"
+              class="px-4 py-2 rounded-full text-sm font-medium text-indigo-200 hover:text-white"
+            >
+              Technical Highlights
+            </button>
+          </div>
+        </div>
+        <!-- Tab toggle for general, frontend, and backend overview -->
+        <div
+          class="flex justify-center reveal-on-scroll"
+          id="tab-toggle"
+        >
+          <div class="glass-card p-1 rounded-full inline-flex">
+            <button
+              id="tab-general-overview"
+              aria-controls="general-overview-section"
+              class="px-4 py-2 rounded-full text-sm font-medium bg-indigo-600 text-white"
+            >
+              General Overview
+            </button>
+            <button
+              id="tab-frontend-overview"
+              aria-controls="frontend-overview-section"
+              class="px-4 py-2 rounded-full text-sm font-medium text-indigo-200 hover:text-white"
+            >
+              Frontend Overview
+            </button>
+            <button
+              id="tab-backend-overview"
+              aria-controls="backend-overview-section"
+              class="px-4 py-2 rounded-full text-sm font-medium text-indigo-200 hover:text-white"
+            >
+              Backend Overview
+            </button>
+          </div>
         </div>
       </div>
 
-      <section id="overview-section">
+      <section id="overview-section" >
+        <section id="general-overview-section">
         <header class="py-10 reveal-on-scroll">
           <div class="flex items-center gap-2">
             <img
@@ -253,11 +285,265 @@
             <div class="flex gap-4"></div>
           </div>
         </div>
-      </section>
+        </section>
+        <!-- Backend Overview (hidden by default) -->
+        <section id="backend-overview-section" class="hidden text-black text-l">
+          <div class="glass-card bg-white p-6 rounded-2xl reveal-on-scroll mb-6">
+            <h2 class="text-2xl font-semibold mb-2 text-black">Backend Architecture Overview</h2>
+            <p class="opacity-80">
+              A concise tour of the service architecture powering Almaari’s wardrobe experience.
+            </p>
+          </div>
+          <div class="glass-card bg-white p-6 rounded-2xl reveal-on-scroll">
+            <div class="p-6 gap-6 reveal-on-scroll mb-6">
+            <h3 class="text-xl font-semibold mb-3 border-b border-black w-1/4 ">Core Architecture</h3>
 
-      <!-- README Highlights -->
-      <section id="readme-section" class="mt-12 space-y-8 hidden">
-        <div class="glass-card p-6 rounded-2xl reveal-on-scroll">
+              <div class="p-6 rounded-2xl gap-2 mb-6">
+                <ul class="list-disc pl-6 opacity-90 space-y-1 ">
+                  <li>Node.js + Express REST API</li>
+                  <li>Modular route → controller → model structure</li>
+                  <li>Stateless API design</li>
+                </ul>
+              </div>
+              <div class=" bg-black/40 p-6  gap-2 mb-6 grid md:grid-cols-2 ">
+                <ul class="list-disc pl-6 opacity-90 space-y-1 ">
+                   <p class="text-xs text-black">controllers/<br>
+├── clothesController.js<br>
+├── outfitController.js<br>
+└── userController.js</p>
+<p class="text-xs text-black">models/<br>
+├── clothesModel.js<br>
+├── outfitModel.js<br>
+└── userModel.js</p>
+<p class="text-xs text-black">routes/<br>
+├── clothesRoutes.js<br>
+├── outfitRoutes.js<br>
+└── userRoutes.js</p>
+                </ul>
+              </div>
+
+            <div class="gap-6 reveal-on-scroll mb-6">
+              <h3 class="text-xl font-semibold mb-3 border-b border-black w-1/4 ">Caching & Performance</h3>
+              <ul class="p-6 list-disc pl-12 opacity-90 space-y-1 ">
+                <li>Upstash Redis for caching </li>
+                <li>Redis used as a read-through cache for frequently accessed endpoints</li>
+                <li>Graceful fallback behavior if Redis is unavailable</li>
+              </ul>
+            </div>
+            <div class=" gap-6 reveal-on-scroll mt-6 reveal-on-scroll">
+              <h3 class="text-xl font-semibold mb-3 border-b border-black w-1/4 ">Image Processing & Microservices</h3>
+                <ul class="p-6 list-disc pl-12 opacity-90 space-y-1 ">
+                  <li>Image uploads handled in the Node backend</li>
+                  <li>CPU-intensive background removal delegated to a separate Python microservice</li>
+                  <li>Python service deployed independently on Railway</li>
+                  <li>Communication between services via HTTP</li>
+                </ul>
+              <div class="bg-white p-2 rounded-2xl flex justify-center reveal-on-scroll">
+                <img src="/Almaari/assets/diagrams/ImageProccessingDiagram.png" alt="Image Processing" class="w-2/3 h-2/3 object-cover">
+              
+              </div>
+            </div>
+         
+            <div class=" border border-white/10 rounded-lg p-4 overflow-auto grid md:grid-cols-2 gap-6 rounded-2xl reveal-on-scroll">
+              <div class="p-6 reveal-on-scroll">
+              <h3 class="text-xl font-semibold mb-3 border-b border-black w-1/4 ">Authentication & Security</h3>
+              <ul class="p-6 list-disc pl-12 opacity-90 space-y-1 ">
+                <li>Auth0-based authentication using <code>auth0Id</code></li>
+                <li>User-scoped data access enforced at the API layer</li>
+              </ul>
+              </div>
+              <div class="p-6  reveal-on-scroll">
+              <h3 class="text-xl font-semibold mb-3 border-b border-black w-1/4 ">Testing</h3>
+              <ul class="p-6 list-disc pl-12 opacity-90 space-y-1 ">
+                <li>Mocha + Chai for assertions</li>
+                <li>Supertest for API-level route testing</li>
+                <li>App exported without binding to a port to enable isolated testing</li>
+              </ul>
+              </div>
+            </div>
+          </div>
+          <div class="p-6 rounded-2xl reveal-on-scroll mt-6">
+            <h3 class="text-xl font-semibold mb-3 border-b border-black w-1/4 ">Deployment & Infrastructure</h3>
+              <ul class="p-6 list-disc pl-12 opacity-90 space-y-1 ">
+              <li>Primary Node.js backend deployed on Google Cloud Run</li>
+              <li>Containerized builds with automatic scaling</li>
+              <li>Image processing service deployed separately for fault isolation and scalability</li>
+            </ul>
+          
+        </section>
+        <!-- Frontend Overview (hidden by default) -->
+        <section id="frontend-overview-section" class="rounded-2xl hidden text-black text-l">
+          <!-- Header Card -->
+          <div class=" bg-white p-6 rounded-2xl reveal-on-scroll mb-6">
+            <h2 class="text-2xl font-semibold mb-2 text-black">Frontend Architecture Overview</h2>
+            <p class="opacity-80">
+              A UX-focused, real-user dashboard frontend designed for clarity, speed, and an app-like experience.
+            </p>
+          </div>
+
+          <!-- Section 1 — Frontend Architecture & Routing Strategy -->
+           <div class="bg-white rounded-2xl">
+          <div class=" bg-white p-12 rounded-2xl reveal-on-scroll mb-6">
+            <h3 class="text-xl font-semibold mb-3 border-b border-black w-1/2">Frontend Architecture & Routing Strategy</h3>
+            <p class="opacity-80 mb-3">
+              Built with Next.js (App Router) and React, intentionally designed as a single-page dashboard.
+              Dashboard views switch via internal view state rather than route navigation.
+            </p>
+            <ul class="list-disc pl-12 opacity-90 space-y-1">
+              <li>Supports overlay-based flows</li>
+              <li>Preserves layout state</li>
+              <li>Avoids unnecessary remounts</li>
+              <li>Delivers an app-like experience</li>
+            </ul>
+            <p class="opacity-80 mt-3">
+              Overlays include the <em>Add Clothes</em> flow and the <em>Outfit creation</em> UI.
+            </p>
+          </div>
+
+          <!-- Section 2 — State Management Strategy -->
+          <div class="grid md:grid-cols-2 gap-6">
+            <div class=" bg-white p-12 rounded-2xl reveal-on-scroll">
+              <h3 class="text-xl font-semibold mb-3 border-b border-black w-3/4">State Management — Global UI & Domain State</h3>
+              <p class="opacity-80 mb-3">Managed with Zustand for minimal overhead and ergonomic APIs.</p>
+              <ul class="list-disc pl-12 opacity-90 space-y-1">
+                <li>Sidebar/menu visibility</li>
+                <li>Clothing filters (color, type, search)</li>
+                <li>Lightweight domain state shared across views</li>
+              </ul>
+            </div>
+            <div class=" bg-white p-12 rounded-2xl reveal-on-scroll">
+              <h3 class="text-xl font-semibold mb-3 border-b border-black w-1/2">State Management - Server State</h3>
+              <p class="opacity-80 mb-3">
+                Managed with React Query for fetching, caching, pagination, and background revalidation.
+              </p>
+              <ul class="list-disc pl-12 opacity-90 space-y-1">
+                <li>Dedicated to server state (data from the API)</li>
+                <li>Decoupled from UI state held in Zustand</li>
+                <li>Predictable cache lifecycles and invalidation</li>
+              </ul>
+              <p class="opacity-80 mt-3">Explicit separation between UI state and server state improves maintainability.</p>
+            </div>
+          </div>
+
+          <!-- Section 3 — Data Fetching, Performance & Caching -->
+          <div class=" bg-white p-12 rounded-2xl reveal-on-scroll mt-6">
+            <h3 class="text-xl font-semibold mb-3 border-b border-black w-3/4">Data Fetching, Performance & Caching</h3>
+            <ul class="list-disc pl-12 opacity-90 space-y-1">
+              <li>REST API integration via custom hooks</li>
+              <li>useInfiniteQuery enables infinite scrolling of paginated clothing data</li>
+              <li>Auth-aware fetching (queries enabled only when an Auth0 user exists)</li>
+            </ul>
+            <div class="mt-4">
+              <p class="opacity-80">
+                Before React Query: data was refetched on every view switch. After React Query:
+                re-fetches reduced by approximately <strong>60–70%</strong>.
+                Cached pages render instantly when returning to a view, a real, user-perceived improvement.
+              </p>
+            </div>
+          </div>
+
+          <!-- Section 4 — Authentication & Protected UI -->
+          <div class="grid gap-6 mt-6">
+            <div class=" bg-white p-12 rounded-2xl reveal-on-scroll">
+              <h3 class="text-xl font-semibold mb-3 border-b border-black w-2/3">Authentication & Protected UI</h3>
+              <ul class="list-disc pl-12 opacity-90 space-y-1">
+                <li>Auth0 integration using <code>@auth0/nextjs-auth0</code></li>
+                <li>Conditional rendering based on authentication state</li>
+                <li>User-scoped API calls and prevention of premature fetches</li>
+                <li>Graceful unauthenticated fallback UI</li>
+              </ul>
+            </div>
+            <!-- Section 5 — UX Patterns & Interaction Design -->
+            <div class=" bg-white p-12 rounded-2xl reveal-on-scroll">
+              <h3 class="text-xl font-semibold mb-3 border-b border-black w-3/4">UX Patterns & Interaction Design</h3>
+              <p class="opacity-80 mb-2">Designed for real users, not demos.</p>
+              <div class="grid md:grid-cols-2 gap-4">
+                <div>
+                  <h4 class="font-semibold mb-2">Dashboard Layout</h4>
+                  <ul class="list-disc pl-6 opacity-90 space-y-1">
+                    <li>Persistent sidebar + navbar on desktop</li>
+                    <li>Mobile navbar and mobile sidebar components</li>
+                    <li>Responsive via Tailwind breakpoints</li>
+                  </ul>
+                </div>
+                <div>
+                  <h4 class="font-semibold mb-2">Progressive Disclosure</h4>
+                  <ul class="list-disc pl-6 opacity-90 space-y-1">
+                    <li>Overlay-based flows instead of page transitions</li>
+                    <li>Contextual UI changes without navigation jumps</li>
+                  </ul>
+                </div>
+                <div>
+                  <h4 class="font-semibold mb-2">Empty & Feedback States</h4>
+                  <ul class="list-disc pl-6 opacity-90 space-y-1">
+                    <li>Clear messaging when the user has no clothes yet</li>
+                    <li>Loading indicators during fetches</li>
+                    <li>Prevents blank or confusing screens for new users</li>
+                  </ul>
+                </div>
+                <div>
+                  <h4 class="font-semibold mb-2">Guided Experience</h4>
+                  <ul class="list-disc pl-6 opacity-90 space-y-1">
+                    <li>Onboarding tours and checklist-driven guidance</li>
+                    <li>Mascot-based UI elements humanize the experience</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section 6 — Domain-Aware UI Logic -->
+          <div class=" bg-white p-12 rounded-2xl reveal-on-scroll mt-6">
+            <h3 class="text-xl font-semibold mb-3 border-b border-black w-1/2">Domain-Aware UI Logic</h3>
+            <ul class="list-disc pl-12 opacity-90 space-y-1">
+              <li>Clothing type and color validation</li>
+              <li>Slot-based outfit composition (head, body, legs, feet)</li>
+              <li>AI-assisted outfit creation workflows</li>
+              <li>User-specific clothing selection and constraints</li>
+            </ul>
+            <p class="opacity-80 mt-3">This frontend encodes business rules, not just presentation.</p>
+          </div>
+
+          <!-- Section 7 — Styling & Responsiveness -->
+          <div class="grid md:grid-cols-2 gap-6 mt-6">
+            <div class=" bg-white p-12 rounded-2xl reveal-on-scroll">
+              <h3 class="text-xl font-semibold mb-3 border-b border-black w-1/2">Styling & Responsiveness</h3>
+              <ul class="list-disc pl-12 opacity-90 space-y-1">
+                <li>Tailwind CSS for consistent spacing and typography</li>
+                <li>Responsive across desktop and mobile</li>
+                <li>Shared global styles via <code>globals.css</code></li>
+                <li>Component-level styling via utility classes</li>
+              </ul>
+            </div>
+            <!-- Section 8 — Type Safety & Code Quality -->
+            <div class=" bg-white p-12 rounded-2xl reveal-on-scroll">
+              <h3 class="text-xl font-semibold mb-3 border-b border-black w-2/3">Type Safety & Code Quality</h3>
+              <ul class="list-disc pl-12 opacity-90 space-y-1">
+                <li>Written in TypeScript</li>
+                <li>Typed domain models (clothes, outfits, slots)</li>
+                <li>Progress toward end-to-end type safety</li>
+                <li>Frontend types aligned with backend API responses</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Section 9 — Transparency & Future Improvements -->
+          <div class=" bg-white p-12 rounded-2xl reveal-on-scroll mt-6">
+            <h3 class="text-xl font-semibold mb-3 border-b border-black w-2/3">Transparency & Future Improvements</h3>
+            <ul class="list-disc pl-12 opacity-90 space-y-1">
+              <li>Planned frontend testing (Jest / React Testing Library)</li>
+              <li>Potential API abstraction layer for clearer data access</li>
+              <li>Accessibility improvements as a priority</li>
+              <li>Performance optimizations (e.g., virtualization) as datasets grow</li>
+            </ul>
+            <p class="opacity-80 mt-3">Actively evolving, these are roadmap items, not limitations.</p>
+          </div>
+          </div>
+        </section>
+      </section>
+      <!-- README Highlights (hidden by default) -->
+      <section id="readme-section" class="mt-12 space-y-8 hidden  text-black">
+        <div class="bg-white glass-card p-6 rounded-2xl reveal-on-scroll">
           <h2 class="text-2xl font-semibold mb-2">
             Technical Highlights (PDF)
           </h2>
@@ -282,7 +568,7 @@
             >
           </div>
         </div>
-        <div class="glass-card p-6 rounded-2xl reveal-on-scroll mb-4">
+        <div class="bg-white glass-card p-6 rounded-2xl reveal-on-scroll mb-4">
           <h2 class="text-2xl font-semibold mb-3">
             Key Features & Contributions
           </h2>
@@ -314,7 +600,7 @@
           </div>
         </div>
 
-        <div class="glass-card p-6 rounded-2xl reveal-on-scroll">
+        <div class="bg-white glass-card p-6 rounded-2xl reveal-on-scroll">
           <h2 class="text-2xl font-semibold mb-3">
             AWS S3 Image Storage Pipeline
           </h2>
@@ -343,7 +629,7 @@
           />
         </div>
 
-        <div class="glass-card p-6 rounded-2xl reveal-on-scroll">
+        <div class="bg-white glass-card p-6 rounded-2xl reveal-on-scroll">
           <h2 class="text-2xl font-semibold mb-3">
             Data Architecture & Design
           </h2>
@@ -357,17 +643,21 @@
             Each clothing item and outfit is stored as an independent document
             linked to a user ID. This increases modularity and scalability as
             the platform grows.
+
+            Indexes are created on the userId, type, and colour fields to improve query performance.
           </p>
         </div>
 
-        <div class="glass-card p-6 rounded-2xl reveal-on-scroll">
+        <div class="bg-white glass-card p-6 rounded-2xl reveal-on-scroll">
           <h2 class="text-2xl font-semibold mb-3">
             Schema Implementation (Mongoose)
           </h2>
           <pre
             class="bg-black/40 border border-white/10 rounded-lg p-4 text-xs overflow-auto"
-          ><code>// Clothes Schema
+          ><code>
+            // Clothes Schema
 const ClothesSchema = new mongoose.Schema({
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
   uniqueId: { type: String, required: true, unique: true },
   type: { type: String, required: true, index: true },
   imageSrc: { type: String, required: true },
@@ -376,8 +666,15 @@ const ClothesSchema = new mongoose.Schema({
   colour: { type: [String], required: true },
   season: { type: [String], default: [] },
   waterproof: { type: Boolean, default: false },
-  slot: { type: String, required: true },
+  slot: { type: String, required: true }, //head, body, legs, feet
 });
+
+ClothesSchema.index({ userId: 1, createdAt: -1 });
+ClothesSchema.index({ userId: 1, type: 1, createdAt: -1 });
+ClothesSchema.index({ userId: 1, colour: 1, createdAt: -1 });
+
+const Clothes =
+  mongoose.models.Clothes || mongoose.model("Clothes", ClothesSchema);
 
 // Outfits Schema
 const OutfitsSchema = new mongoose.Schema({
@@ -391,6 +688,9 @@ const OutfitsSchema = new mongoose.Schema({
   outfit_items: [{ type: mongoose.Schema.Types.ObjectId, ref: "Clothes" }],
 });
 
+const Outfits =
+  mongoose.models.Outfits || mongoose.model("Outfits", OutfitsSchema);
+
 // User Schema
 const usersSchema = new mongoose.Schema({
   auth0Id: { type: String, required: true, unique: true, index: true },
@@ -401,7 +701,7 @@ const usersSchema = new mongoose.Schema({
   hasCompletedOnboardingForOutfits: { type: Boolean, default: false },
 });</code></pre>
         </div>
-        <div class="glass-card p-6 rounded-2xl reveal-on-scroll">
+        <div class="bg-white glass-card p-6 rounded-2xl reveal-on-scroll">
           <h2 class="text-2xl font-semibold mb-3">
             Database Relationship Diagram
           </h2>
@@ -412,7 +712,7 @@ const usersSchema = new mongoose.Schema({
           />
         </div>
 
-        <div class="glass-card p-6 rounded-2xl reveal-on-scroll">
+        <div class="bg-white glass-card p-6 rounded-2xl reveal-on-scroll">
           <h2 class="text-2xl font-semibold mb-3">Trade-offs & Future Work</h2>
           <ul class="list-disc pl-6 space-y-2 opacity-90 text-sm">
             <li>
@@ -427,7 +727,7 @@ const usersSchema = new mongoose.Schema({
           </ul>
         </div>
 
-        <div class="glass-card p-6 rounded-2xl reveal-on-scroll">
+        <div class="bg-white glass-card p-6 rounded-2xl reveal-on-scroll">
           <h2 class="text-2xl font-semibold mb-3">Impact & Outcomes</h2>
           <ul class="list-disc pl-6 space-y-2 opacity-90 text-sm">
             <li>
