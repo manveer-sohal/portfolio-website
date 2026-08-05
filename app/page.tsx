@@ -5,6 +5,7 @@ import { ContactRevealShell } from "@/components/home/ContactRevealShell";
 import { ExperiencePreview } from "@/components/home/ExperiencePreview";
 import { FeaturedProjects } from "@/components/home/FeaturedProjects";
 import { Hero } from "@/components/home/Hero";
+import { HeroFeaturedArrow } from "@/components/home/HeroFeaturedArrow";
 import { OtherProjects } from "@/components/home/OtherProjects";
 import { ProjectsExperienceBridge } from "@/components/home/ProjectsExperienceBridge";
 import { SkillsSection } from "@/components/home/SkillsSection";
@@ -26,11 +27,13 @@ export default function HomePage() {
         </>
       }
     >
-      <Hero />
-      <ProjectsExperienceBridge>
-        <FeaturedProjects projects={featured} />
-        <ExperiencePreview items={experience} />
-      </ProjectsExperienceBridge>
+      <HeroFeaturedArrow>
+        <Hero />
+        <ProjectsExperienceBridge>
+          <FeaturedProjects projects={featured} />
+          <ExperiencePreview items={experience} />
+        </ProjectsExperienceBridge>
+      </HeroFeaturedArrow>
       <SkillsSection categories={skillCategories} />
       <OtherProjects projects={other} />
       <AwardsBanner />

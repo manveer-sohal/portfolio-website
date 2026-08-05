@@ -5,7 +5,7 @@ import { siteConfig } from "@/data/site";
 
 export function Hero() {
   return (
-    <section className="flex min-h-[calc(100svh-var(--header-height))] items-center justify-center border-b border-border-subtle py-14 md:py-20">
+    <section className="relative flex min-h-[calc(100svh-var(--header-height))] items-center justify-center border-b border-border-subtle py-14 md:py-20">
       <div className="container-page flex w-full justify-center">
         <div className="grid w-full max-w-5xl items-center gap-8 sm:gap-10 md:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] md:gap-12 lg:gap-14">
           <div className="min-w-0 text-center md:text-left">
@@ -56,6 +56,8 @@ export function Hero() {
           </div>
         </div>
       </div>
+      {/* Bottom cue — top half waves, then turns down into the featured rail */}
+      <span className="hero-scroll-cue" aria-hidden="true" />
     </section>
   );
 }

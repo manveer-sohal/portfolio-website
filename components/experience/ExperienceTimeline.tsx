@@ -71,6 +71,7 @@ export function ExperienceTimeline({
   const [railTop, setRailTop] = useState(0);
   const [rowStarts, setRowStarts] = useState<number[]>([]);
   const [activeIndex, setActiveIndex] = useState(-1);
+  const [bridgeReady, setBridgeReady] = useState(true);
 
   useEffect(() => {
     const node = contentRef.current;
@@ -112,6 +113,24 @@ export function ExperienceTimeline({
     };
   }, [items]);
 
+  useEffect(() => {
+    let raf = 0;
+    const syncBridge = () => {
+      const bridge = document.querySelector(
+        ".projects-experience-bridge",
+      ) as HTMLElement | null;
+      if (!bridge) {
+        setBridgeReady(true);
+      } else {
+        const p = Number(bridge.dataset.bridgeProgress ?? "0");
+        setBridgeReady(p >= 0.92);
+      }
+      raf = requestAnimationFrame(syncBridge);
+    };
+    raf = requestAnimationFrame(syncBridge);
+    return () => cancelAnimationFrame(raf);
+  }, []);
+
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start 80%", "end 45%"],
@@ -124,8 +143,10 @@ export function ExperienceTimeline({
     [0, railHeight],
   );
   const tipTransform = useTransform(heightTransform, (h) => h + railTop);
-  const opacityTransform = useTransform(scrollYProgress, [0, 0.05], [0, 1]);
-  const tipOpacity = useTransform(heightTransform, (h) => (h > 10 ? 1 : 0));
+  const tipOpacity = useTransform(heightTransform, (h) => {
+    if (h <= 8 || railHeight <= 0) return 0;
+    return h >= railHeight - 2 ? 0 : 1;
+  });
 
   useMotionValueEvent(tipTransform, "change", (latest) => {
     if (!rowStarts.length) {
@@ -203,10 +224,12 @@ export function ExperienceTimeline({
             className="experience-timeline__rail-fill"
             style={{
               height: heightTransform,
-              opacity: opacityTransform,
             }}
           >
-            <motion.span style={{ opacity: tipOpacity }}>
+            <motion.span
+              className="experience-timeline__rail-tip"
+              style={{ opacity: bridgeReady ? tipOpacity : 0 }}
+            >
               <TealLineArrow direction="down" />
             </motion.span>
           </motion.div>

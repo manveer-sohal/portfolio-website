@@ -132,8 +132,11 @@ export function FeaturedProjects({ projects }: FeaturedProjectsProps) {
     [0, 0.5, 0.8, 1],
     [0, height * 0.45, height * 0.8, height],
   );
-  const opacityTransform = useTransform(scrollYProgress, [0, 0.04], [0, 1]);
-  const tipOpacity = useTransform(heightTransform, (h) => (h > 12 ? 1 : 0));
+  const tipOpacity = useTransform(heightTransform, (h) => {
+    // Stay solid through the rail; hard-cut only once the bridge takes over
+    if (h <= 32 || height <= 0) return 0;
+    return h >= height - 2 ? 0 : 1;
+  });
 
   useMotionValueEvent(heightTransform, "change", (latest) => {
     if (!itemBottoms.length) {
@@ -210,7 +213,6 @@ export function FeaturedProjects({ projects }: FeaturedProjectsProps) {
                 className="featured-rail__fill"
                 style={{
                   height: heightTransform,
-                  opacity: opacityTransform,
                 }}
               >
                 <motion.span style={{ opacity: tipOpacity }}>

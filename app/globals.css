@@ -842,15 +842,9 @@ a {
   background: linear-gradient(
     to bottom,
     var(--border) 0%,
-    var(--border) 88%,
-    transparent 100%
+    var(--border) 100%
   );
-  mask-image: linear-gradient(
-    to bottom,
-    black 0%,
-    black 90%,
-    transparent 100%
-  );
+  mask-image: none;
 }
 
 .experience-timeline__rail-fill {
@@ -868,6 +862,13 @@ a {
     var(--accent) 100%
   );
   box-shadow: 0 0 10px color-mix(in srgb, var(--accent) 35%, transparent);
+}
+
+.experience-timeline__rail-tip {
+  display: block;
+  position: absolute;
+  inset: 0;
+  overflow: visible;
 }
 
 @media (min-width: 768px) {
@@ -1487,16 +1488,10 @@ a {
     transform: translateX(-50%);
     background: linear-gradient(
       to bottom,
-      transparent 0%,
-      var(--border) 10%,
+      var(--border) 0%,
       var(--border) 100%
     );
-    mask-image: linear-gradient(
-      to bottom,
-      transparent 0%,
-      black 8%,
-      black 100%
-    );
+    mask-image: none;
   }
 
   .featured-rail__fill {
@@ -1505,13 +1500,13 @@ a {
     top: 0;
     width: 2px;
     overflow: visible;
-    border-radius: 999px 999px 0 0;
+    border-radius: 0 0 999px 999px;
     background: linear-gradient(
-      to top,
+      to bottom,
       var(--accent) 0%,
-      var(--accent) 18%,
-      color-mix(in srgb, var(--accent) 55%, #6eb8a8) 55%,
-      transparent 100%
+      var(--accent) 28%,
+      color-mix(in srgb, var(--accent) 55%, #6eb8a8) 70%,
+      var(--accent) 100%
     );
     box-shadow: 0 0 10px color-mix(in srgb, var(--accent) 35%, transparent);
   }
@@ -1981,6 +1976,62 @@ a {
 
 .project-theme__cta-ghost:hover {
   color: var(--project-text);
+}
+
+/* Hero → Featured teal scroll cue */
+.hero-featured-arrow {
+  position: relative;
+  isolation: isolate;
+}
+
+.hero-featured-arrow__svg {
+  pointer-events: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 3;
+  display: none;
+  overflow: visible;
+}
+
+@media (min-width: 900px) {
+  .hero-featured-arrow__svg {
+    display: block;
+  }
+}
+
+.hero-featured-arrow__idle-path,
+.hero-featured-arrow__travel-path {
+  filter: drop-shadow(0 0 8px color-mix(in srgb, var(--accent) 40%, transparent));
+}
+
+.hero-featured-arrow__idle-tip,
+.hero-featured-arrow__travel-tip {
+  filter: drop-shadow(0 0 6px color-mix(in srgb, var(--accent) 45%, transparent));
+}
+
+.hero-scroll-cue {
+  display: none;
+}
+
+@media (min-width: 900px) {
+  .hero-scroll-cue {
+    pointer-events: none;
+    position: absolute;
+    /* Sit on the bottom of the hero viewport, toward the right of center */
+    bottom: max(1rem, env(safe-area-inset-bottom, 0px));
+    left: 58%;
+    display: block;
+    width: 1.25rem;
+    height: 1.25rem;
+    transform: translateX(-50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-featured-arrow__svg {
+    display: none;
+  }
 }
 
 .project-case-hero {
