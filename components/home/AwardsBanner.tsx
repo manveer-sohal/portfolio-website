@@ -1,10 +1,20 @@
 import Image from "next/image";
 import Link from "next/link";
-import { AwardsWaveLine } from "@/components/home/AwardsWaveLine";
+import dynamic from "next/dynamic";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Reveal } from "@/components/ui/Reveal";
 import { awards, type Award } from "@/data/awards";
 import { cn } from "@/lib/utils";
+
+const AwardsWaveLine = dynamic(
+  () =>
+    import("@/components/home/AwardsWaveLine").then((mod) => mod.AwardsWaveLine),
+  {
+    loading: () => (
+      <div className="awards-wave" style={{ minHeight: 48 }} aria-hidden="true" />
+    ),
+  },
+);
 
 function AwardCard({ award }: { award: Award }) {
   const inner = (

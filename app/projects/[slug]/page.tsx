@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ProjectDetails } from "@/components/projects/ProjectDetails";
+import { ProjectBrandFonts } from "@/components/theme/ProjectBrandFonts";
 import { JsonLd } from "@/components/seo/JsonLd";
 import {
   getAllProjectSlugs,
@@ -80,11 +81,13 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
   };
 
   return (
-    <div className="section-space">
-      <div className="container-page">
-        <JsonLd data={projectJsonLd} />
-        <ProjectDetails project={project} />
+    <ProjectBrandFonts>
+      <div className="section-space">
+        <div className="container-page">
+          <JsonLd data={projectJsonLd} />
+          <ProjectDetails project={project} />
+        </div>
       </div>
-    </div>
+    </ProjectBrandFonts>
   );
 }

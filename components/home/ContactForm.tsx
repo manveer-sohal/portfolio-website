@@ -1,8 +1,18 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
-import { ContactFormPointer } from "@/components/home/ContactFormPointer";
+import dynamic from "next/dynamic";
 import { mailtoHref, siteConfig } from "@/data/site";
+
+const ContactFormPointer = dynamic(
+  () =>
+    import("@/components/home/ContactFormPointer").then(
+      (mod) => mod.ContactFormPointer,
+    ),
+  {
+    loading: () => null,
+  },
+);
 
 export function ContactForm() {
   const [name, setName] = useState("");

@@ -10,6 +10,7 @@ import { OtherProjects } from "@/components/home/OtherProjects";
 import { ProjectsExperienceBridge } from "@/components/home/ProjectsExperienceBridge";
 import { SkillsSection } from "@/components/home/SkillsSection";
 import { Footer } from "@/components/layout/Footer";
+import { ProjectBrandFonts } from "@/components/theme/ProjectBrandFonts";
 import { experience } from "@/data/experience";
 import { getFeaturedProjects, getOtherProjects } from "@/data/projects";
 import { skillCategories } from "@/data/skills";
@@ -19,26 +20,28 @@ export default function HomePage() {
   const other = getOtherProjects();
 
   return (
-    <ContactRevealShell
-      reveal={
-        <>
-          <ContactForm />
-          <Footer />
-        </>
-      }
-    >
-      <HeroFeaturedArrow>
-        <Hero />
-        <ProjectsExperienceBridge>
-          <FeaturedProjects projects={featured} />
-          <ExperiencePreview items={experience} />
-        </ProjectsExperienceBridge>
-      </HeroFeaturedArrow>
-      <SkillsSection categories={skillCategories} />
-      <OtherProjects projects={other} />
-      <AwardsBanner />
-      {/* Teal Contact Me banner forms the rounded bottom of the sliding cover */}
-      <ContactCTA />
-    </ContactRevealShell>
+    <ProjectBrandFonts>
+      <ContactRevealShell
+        reveal={
+          <>
+            <ContactForm />
+            <Footer />
+          </>
+        }
+      >
+        <HeroFeaturedArrow>
+          <Hero />
+          <ProjectsExperienceBridge>
+            <FeaturedProjects projects={featured} />
+            <ExperiencePreview items={experience} />
+          </ProjectsExperienceBridge>
+        </HeroFeaturedArrow>
+        <SkillsSection categories={skillCategories} />
+        <OtherProjects projects={other} />
+        <AwardsBanner />
+        {/* Teal Contact Me banner forms the rounded bottom of the sliding cover */}
+        <ContactCTA />
+      </ContactRevealShell>
+    </ProjectBrandFonts>
   );
 }

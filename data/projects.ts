@@ -69,57 +69,57 @@ export const projects: Project[] = [
         type: "case-study",
       },
     ],
-    coverImage: "/projects/almaari/dashboard.png",
+    coverImage: "/projects/almaari/dashboard.webp",
     featurePreviews: [
       {
-        src: "/projects/almaari/dashboard.png",
+        src: "/projects/almaari/dashboard.webp",
         alt: "Almaari wardrobe grid with clothing cards and filters",
         label: "Wardrobe",
       },
       {
-        src: "/projects/almaari/add-clothes.png",
+        src: "/projects/almaari/add-clothes.webp",
         alt: "Almaari clothing upload and AI metadata flow",
         label: "AI Stylist",
       },
       {
-        src: "/projects/almaari/clothes-picked.png",
+        src: "/projects/almaari/clothes-picked.webp",
         alt: "Almaari outfit builder with selected garments",
         label: "Outfit Builder",
       },
     ],
     gallery: [
       {
-        src: "/projects/almaari/dashboard.png",
+        src: "/projects/almaari/dashboard.webp",
         alt: "Almaari wardrobe dashboard with clothing grid and filters",
         caption: "Wardrobe dashboard with filtering and search",
       },
       {
-        src: "/projects/almaari/add-clothes.png",
+        src: "/projects/almaari/add-clothes.webp",
         alt: "Almaari clothing upload flow",
         caption: "Clothing upload with metadata and background removal",
       },
       {
-        src: "/projects/almaari/clothes-picked.png",
+        src: "/projects/almaari/clothes-picked.webp",
         alt: "Almaari outfit builder with selected garments",
         caption: "Outfit composition with layered clothing slots",
       },
       {
-        src: "/projects/almaari/view-outfits.png",
+        src: "/projects/almaari/view-outfits.webp",
         alt: "Saved outfits gallery in Almaari",
         caption: "Saved outfits view",
       },
       {
-        src: "/projects/almaari/s3-pipeline.png",
+        src: "/projects/almaari/s3-pipeline.webp",
         alt: "Diagram of Almaari AWS S3 upload pipeline",
         caption: "Presigned S3 upload pipeline",
       },
       {
-        src: "/projects/almaari/database-design.png",
+        src: "/projects/almaari/database-design.webp",
         alt: "Almaari MongoDB relationship diagram",
         caption: "Data model for users, clothes, and outfits",
       },
       {
-        src: "/projects/almaari/image-processing.png",
+        src: "/projects/almaari/image-processing.webp",
         alt: "Almaari asynchronous image processing architecture diagram",
         caption: "Async image processing and background removal",
       },
@@ -250,25 +250,25 @@ export const projects: Project[] = [
         type: "case-study",
       },
     ],
-    coverImage: "/projects/joblinx/detail.png",
+    coverImage: "/projects/joblinx/detail.webp",
     gallery: [
       {
-        src: "/projects/joblinx/dashboard.png",
+        src: "/projects/joblinx/dashboard.webp",
         alt: "JobLinx dashboard with application pipeline and recent roles",
         caption: "Job-search command centre with pipeline stages",
       },
       {
-        src: "/projects/joblinx/applications.png",
+        src: "/projects/joblinx/applications.webp",
         alt: "JobLinx Kanban board of applications by stage",
         caption: "Board view for tracking applications from saved to closed",
       },
       {
-        src: "/projects/joblinx/companies.png",
+        src: "/projects/joblinx/companies.webp",
         alt: "JobLinx companies page with discovered contacts",
         caption: "Company and contact research workspace",
       },
       {
-        src: "/projects/joblinx/detail.png",
+        src: "/projects/joblinx/detail.webp",
         alt: "JobLinx landing page with product headline and get-started actions",
         caption: "Product landing page",
       },
@@ -403,27 +403,27 @@ export const projects: Project[] = [
     coverImage: "/projects/supportpilot/featured/cover-postersp.webp",
     gallery: [
       {
-        src: "/projects/supportpilot/workspace.png",
+        src: "/projects/supportpilot/workspace.webp",
         alt: "SupportPilot workspace creation screen",
         caption: "Multi-tenant workspace setup",
       },
       {
-        src: "/projects/supportpilot/documents.png",
+        src: "/projects/supportpilot/documents.webp",
         alt: "SupportPilot documents table with upload and RAG status",
         caption: "Document upload, chunking, and embedding status",
       },
       {
-        src: "/projects/supportpilot/tickets.png",
+        src: "/projects/supportpilot/tickets.webp",
         alt: "SupportPilot tickets interface",
         caption: "Support tickets and drafting workflow",
       },
       {
-        src: "/projects/supportpilot/playground.png",
+        src: "/projects/supportpilot/playground.webp",
         alt: "SupportPilot retrieval and response playground",
         caption: "Retrieval and drafting playground",
       },
       {
-        src: "/projects/supportpilot/overview.png",
+        src: "/projects/supportpilot/overview.webp",
         alt: "SupportPilot overview dashboard",
         caption: "Workspace overview",
       },
@@ -543,15 +543,15 @@ export const projects: Project[] = [
         type: "case-study",
       },
     ],
-    coverImage: "/projects/creator-control-room/cover.png",
+    coverImage: "/projects/creator-control-room/cover.webp",
     gallery: [
       {
-        src: "/projects/creator-control-room/dashboard.png",
+        src: "/projects/creator-control-room/dashboard.webp",
         alt: "Creator Control Room live events dashboard",
         caption: "Realtime creator events dashboard",
       },
       {
-        src: "/projects/creator-control-room/sign-on.png",
+        src: "/projects/creator-control-room/sign-on.webp",
         alt: "Twitch QR sign-on flow for Creator Control Room",
         caption: "Twitch sign-on via QR flow",
       },
@@ -629,25 +629,25 @@ export const projects: Project[] = [
         type: "case-study",
       },
     ],
-    coverImage: "/projects/clash-royale-hub/cover.png",
+    coverImage: "/projects/clash-royale-hub/cover.webp",
     gallery: [
       {
-        src: "/projects/clash-royale-hub/player-screen.png",
+        src: "/projects/clash-royale-hub/player-screen.webp",
         alt: "Clash Royale Hub player profile screen",
         caption: "Player profile view",
       },
       {
-        src: "/projects/clash-royale-hub/battle-log.png",
+        src: "/projects/clash-royale-hub/battle-log.webp",
         alt: "Clash Royale Hub battle log",
         caption: "Recent battle history",
       },
       {
-        src: "/projects/clash-royale-hub/clan-view.png",
+        src: "/projects/clash-royale-hub/clan-view.webp",
         alt: "Clash Royale Hub clan roster view",
         caption: "Clan roster",
       },
       {
-        src: "/projects/clash-royale-hub/cards.png",
+        src: "/projects/clash-royale-hub/cards.webp",
         alt: "Clash Royale Hub card browser",
         caption: "Searchable card browser",
       },
@@ -738,10 +738,10 @@ export const projects: Project[] = [
         type: "case-study",
       },
     ],
-    coverImage: "/projects/nba-dashboard/cover.png",
+    coverImage: "/projects/nba-dashboard/cover.webp",
     gallery: [
       {
-        src: "/projects/nba-dashboard/cover.png",
+        src: "/projects/nba-dashboard/cover.webp",
         alt: "NBA shooting dashboard with statistical visualizations",
       },
     ],
@@ -777,10 +777,10 @@ export const projects: Project[] = [
         type: "case-study",
       },
     ],
-    coverImage: "/projects/codegories/cover.png",
+    coverImage: "/projects/codegories/cover.webp",
     gallery: [
       {
-        src: "/projects/codegories/cover.png",
+        src: "/projects/codegories/cover.webp",
         alt: "Codegories multiplayer game interface",
       },
     ],
@@ -823,10 +823,10 @@ export const projects: Project[] = [
         type: "case-study",
       },
     ],
-    coverImage: "/projects/studysync/cover.png",
+    coverImage: "/projects/studysync/cover.webp",
     gallery: [
       {
-        src: "/projects/studysync/cover.png",
+        src: "/projects/studysync/cover.webp",
         alt: "StudySync study companion interface",
       },
     ],
@@ -858,10 +858,10 @@ export const projects: Project[] = [
         type: "case-study",
       },
     ],
-    coverImage: "/projects/moodify/cover.png",
+    coverImage: "/projects/moodify/cover.webp",
     gallery: [
       {
-        src: "/projects/moodify/cover.png",
+        src: "/projects/moodify/cover.webp",
         alt: "Moodify Spotify emotion model visualization",
       },
     ],

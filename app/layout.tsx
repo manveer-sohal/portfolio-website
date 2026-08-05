@@ -1,11 +1,5 @@
 import type { Metadata } from "next";
-import {
-  Fraunces,
-  Geist,
-  Geist_Mono,
-  Plus_Jakarta_Sans,
-  Source_Sans_3,
-} from "next/font/google";
+import { Geist, Geist_Mono } from "next/font/google";
 import { ConditionalFooter } from "@/components/layout/ConditionalFooter";
 import { Navbar } from "@/components/layout/Navbar";
 import { JsonLd } from "@/components/seo/JsonLd";
@@ -20,24 +14,6 @@ const geistSans = Geist({
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
-});
-
-const fraunces = Fraunces({
-  variable: "--font-fraunces",
-  subsets: ["latin"],
-  weight: ["500", "600", "700"],
-});
-
-const sourceSans = Source_Sans_3({
-  variable: "--font-source-sans",
-  subsets: ["latin"],
-  weight: ["400", "500", "600"],
-});
-
-const plusJakarta = Plus_Jakarta_Sans({
-  variable: "--font-plus-jakarta",
-  subsets: ["latin"],
-  weight: ["400", "500", "600"],
 });
 
 export const metadata: Metadata = {
@@ -114,7 +90,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${fraunces.variable} ${sourceSans.variable} ${plusJakarta.variable} min-h-screen bg-background font-sans text-muted-strong antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} min-h-screen bg-background font-sans text-muted-strong antialiased`}
       >
         <JsonLd data={[personJsonLd, websiteJsonLd]} />
         <a href="#main-content" className="skip-link">

@@ -43,7 +43,7 @@ export function Hero() {
             <div className="overflow-hidden rounded-[12px] border border-border bg-surface-elevated p-1.5 shadow-[0_1px_0_rgba(255,255,255,0.04)]">
               <div className="overflow-hidden rounded-[10px]">
                 <Image
-                  src="/images/profile.png"
+                  src="/images/profile.webp"
                   alt={`Portrait of ${siteConfig.name}`}
                   width={640}
                   height={800}

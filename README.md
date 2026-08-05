@@ -21,8 +21,7 @@ npm run dev
 - `app/` — routes and metadata
 - `components/` — UI and section components
 - `data/` — editable project, experience, skills, and site content
-- `public/` — images and documents
-- `legacy/` — previous static HTML site (reference only)
+- `public/` — images, awards, and featured video assets
 - `docs/portfolio-redesign/` — migration, design system, content review, deployment
 
 ## Scripts

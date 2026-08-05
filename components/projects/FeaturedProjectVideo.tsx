@@ -148,13 +148,13 @@ export function FeaturedProjectVideo({
           muted
           loop
           playsInline
-          preload="metadata"
+          preload="none"
           poster={poster}
           aria-label={label}
         >
-          {/* MP4 first for broad Safari/iOS support; WebM as progressive enhancement */}
-          <source src={mp4} type="video/mp4" />
+          {/* Safari/iOS may pick MP4 when listed first; prefer WebM when smaller/supported */}
           <source src={webm} type="video/webm" />
+          <source src={mp4} type="video/mp4" />
         </video>
       ) : null}
 

@@ -87,9 +87,9 @@ export const projectThemes: Record<FeaturedThemeId, ProjectVisualTheme> = {
     },
     media: {
       treatment: "cream-editorial",
-      logoSrc: "/projects/almaari/brand/logo.png",
+      logoSrc: "/projects/almaari/brand/logo.webp",
       logoAlt: "Almaari wardrobe logo",
-      preferredCover: "/projects/almaari/dashboard.png",
+      preferredCover: "/projects/almaari/dashboard.webp",
       windowUrl: "almaari.app",
       featuredVideo: {
         webm: "/projects/almaari/featured/cover.webm",
@@ -132,9 +132,9 @@ export const projectThemes: Record<FeaturedThemeId, ProjectVisualTheme> = {
     },
     media: {
       treatment: "cool-app-window",
-      logoSrc: "/projects/joblinx/brand/logo-256.png",
+      logoSrc: "/projects/joblinx/brand/logo-256.webp",
       logoAlt: "JobLinx lynx logo",
-      preferredCover: "/projects/joblinx/detail.png",
+      preferredCover: "/projects/joblinx/detail.webp",
       windowUrl: "joblinx.app",
       featuredVideo: {
         webm: "/projects/joblinx/featured/cover-jl.webm",
