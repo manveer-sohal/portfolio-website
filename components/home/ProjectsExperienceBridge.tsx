@@ -1,9 +1,22 @@
 "use client";
 
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
+import { setBridgeProgress } from "@/lib/animation/bridgeProgress";
+import { useActiveAnimationFrame } from "@/lib/animation/useActiveAnimationFrame";
+import {
+  useDesktopTealRails,
+  usePrefersReducedMotion,
+} from "@/lib/animation/useMatchMedia";
+import { useNearViewport } from "@/lib/animation/useNearViewport";
 
 type ProjectsExperienceBridgeProps = {
   children: ReactNode;
+};
+
+type CachedEls = {
+  fill: HTMLElement;
+  track: HTMLElement;
+  endEl: HTMLElement;
 };
 
 /**
@@ -17,23 +30,36 @@ export function ProjectsExperienceBridge({
   const pathRef = useRef<SVGPathElement>(null);
   const tipRef = useRef<SVGPolygonElement>(null);
   const progressRef = useRef(0);
+  const pathLengthRef = useRef(0);
+  const elsRef = useRef<CachedEls | null>(null);
+
   const [path, setPath] = useState("");
   const [size, setSize] = useState({ w: 0, h: 0 });
   const [ready, setReady] = useState(false);
 
-  const paint = (progress: number) => {
+  const desktop = useDesktopTealRails();
+  const reduceMotion = usePrefersReducedMotion();
+  const near = useNearViewport(wrapRef, "30% 0px 30% 0px");
+  const loopActive = ready && desktop && !reduceMotion && near;
+
+  const paint = useCallback((progress: number) => {
     progressRef.current = progress;
+    setBridgeProgress(progress);
+
     const pathEl = pathRef.current;
     const tipEl = tipRef.current;
     if (!pathEl || !tipEl) return;
 
-    const len = pathEl.getTotalLength();
+    let len = pathLengthRef.current;
+    if (len <= 0) {
+      len = pathEl.getTotalLength();
+      pathLengthRef.current = len;
+    }
     if (len <= 0) {
       tipEl.style.opacity = "0";
       return;
     }
 
-    // Stroke + tip share the same length sample — no motion lag between them
     pathEl.style.strokeDasharray = `${len}`;
     pathEl.style.strokeDashoffset = `${len * (1 - progress)}`;
 
@@ -53,21 +79,30 @@ export function ProjectsExperienceBridge({
       "points",
       `${point.x},${point.y - 5} ${point.x + 7},${point.y} ${point.x},${point.y + 5}`,
     );
-    tipEl.setAttribute("transform", `rotate(${angle} ${point.x} ${point.y})`);
+    tipEl.setAttribute(
+      "transform",
+      `rotate(${angle} ${point.x} ${point.y})`,
+    );
     tipEl.style.opacity = "1";
-  };
+  }, []);
 
   useEffect(() => {
     const wrap = wrapRef.current;
     if (!wrap) return;
 
     const measure = () => {
-      if (window.matchMedia("(max-width: 899px)").matches) {
+      if (!desktop) {
         setReady(false);
         setPath("");
         progressRef.current = 0;
-        wrap.dataset.bridgeProgress = "0";
+        pathLengthRef.current = 0;
+        elsRef.current = null;
+        setBridgeProgress(0);
         return;
+      }
+
+      if (reduceMotion) {
+        // Stable full connector for reduced motion once geometry exists
       }
 
       const trackEl = wrap.querySelector(
@@ -79,12 +114,18 @@ export function ProjectsExperienceBridge({
       const railEl = wrap.querySelector(
         ".experience-timeline__rail",
       ) as HTMLElement | null;
+      const fillEl = wrap.querySelector(
+        ".featured-rail__fill",
+      ) as HTMLElement | null;
       const experience = wrap.querySelector("#experience");
 
-      if (!trackEl || !endEl) {
+      if (!trackEl || !endEl || !fillEl) {
         setReady(false);
+        elsRef.current = null;
         return;
       }
+
+      elsRef.current = { fill: fillEl, track: trackEl, endEl };
 
       const wrapRect = wrap.getBoundingClientRect();
       const trackRect = trackEl.getBoundingClientRect();
@@ -103,8 +144,9 @@ export function ProjectsExperienceBridge({
       );
       const endY = endRect.top + endRect.height / 2 - wrapRect.top;
 
-      const headingBlock = experience?.querySelector("[data-featured-title]")
-        ?.parentElement as HTMLElement | null;
+      const headingBlock = experience?.querySelector(
+        "[data-featured-title]",
+      )?.parentElement as HTMLElement | null;
       const headingBottom = headingBlock
         ? headingBlock.getBoundingClientRect().bottom - wrapRect.top
         : endY - 64;
@@ -124,13 +166,23 @@ export function ProjectsExperienceBridge({
         `L ${endX} ${endY}`,
       ].join(" ");
 
+      pathLengthRef.current = 0;
       setPath(d);
       setSize({
         w: Math.max(Math.round(wrapRect.width), 1),
         h: Math.max(Math.round(wrapRect.height), 1),
       });
       setReady(true);
-      requestAnimationFrame(() => paint(progressRef.current));
+
+      requestAnimationFrame(() => {
+        const pathEl = pathRef.current;
+        if (pathEl) pathLengthRef.current = pathEl.getTotalLength();
+        if (reduceMotion) {
+          paint(1);
+        } else {
+          paint(progressRef.current);
+        }
+      });
     };
 
     measure();
@@ -143,36 +195,18 @@ export function ProjectsExperienceBridge({
       window.removeEventListener("resize", measure);
       window.clearTimeout(t);
     };
-  }, []);
+  }, [desktop, reduceMotion, paint]);
 
-  useEffect(() => {
-    const wrap = wrapRef.current;
-    if (!wrap) return;
-
-    let raf = 0;
-    const sync = () => {
-      const fill = wrap.querySelector(
-        ".featured-rail__fill",
-      ) as HTMLElement | null;
-      const track = wrap.querySelector(
-        ".featured-rail__track",
-      ) as HTMLElement | null;
-      const endEl = wrap.querySelector(
-        ".experience-timeline__row .experience-timeline__dot",
-      ) as HTMLElement | null;
-
-      if (
-        !fill ||
-        !track ||
-        !endEl ||
-        window.matchMedia("(max-width: 899px)").matches
-      ) {
-        wrap.dataset.bridgeProgress = "0";
+  useActiveAnimationFrame({
+    active: loopActive,
+    callback: () => {
+      const els = elsRef.current;
+      if (!els) {
         paint(0);
-        raf = window.requestAnimationFrame(sync);
         return;
       }
 
+      const { fill, track, endEl } = els;
       const vh = window.innerHeight;
       const fillH = fill.getBoundingClientRect().height;
       const trackRect = track.getBoundingClientRect();
@@ -181,38 +215,33 @@ export function ProjectsExperienceBridge({
       const endMid = endRect.top + endRect.height / 2;
 
       if (endMid < vh * 0.5 || trackBottom < vh * 0.28) {
-        wrap.dataset.bridgeProgress = "1";
         paint(1);
-        raf = window.requestAnimationFrame(sync);
         return;
       }
 
-      // Start a touch earlier — fill nearly done
-      const fillReady = trackRect.height > 0 && fillH >= trackRect.height * 0.8;
+      const fillReady =
+        trackRect.height > 0 && fillH >= trackRect.height * 0.8;
       if (!fillReady) {
-        wrap.dataset.bridgeProgress = "0";
         paint(0);
-        raf = window.requestAnimationFrame(sync);
         return;
       }
 
-      // ~half a second earlier than the previous mid-viewport start
       const startLine = vh * 0.68;
       const endLine = vh * 0.4;
       const p = Math.min(
         1,
         Math.max(0, (startLine - trackBottom) / (startLine - endLine)),
       );
-
-      wrap.dataset.bridgeProgress = String(p);
       paint(p);
+    },
+  });
 
-      raf = window.requestAnimationFrame(sync);
-    };
-
-    raf = window.requestAnimationFrame(sync);
-    return () => window.cancelAnimationFrame(raf);
-  }, [ready, path]);
+  // When the loop stops (offscreen / mobile), leave last progress but stop frames
+  useEffect(() => {
+    if (!loopActive && !desktop) {
+      setBridgeProgress(0);
+    }
+  }, [loopActive, desktop]);
 
   return (
     <div ref={wrapRef} className="projects-experience-bridge">

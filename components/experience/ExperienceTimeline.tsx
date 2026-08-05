@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import {
   motion,
+  useMotionValue,
   useMotionValueEvent,
   useScroll,
   useTransform,
@@ -10,6 +11,7 @@ import {
 } from "motion/react";
 import { ExperienceCard } from "@/components/experience/ExperienceCard";
 import { TealLineArrow } from "@/components/ui/TealLineArrow";
+import { subscribeBridgeProgress } from "@/lib/animation/bridgeProgress";
 import { cn } from "@/lib/utils";
 import type { ExperienceItem } from "@/data/types";
 
@@ -18,6 +20,11 @@ type ExperienceTimelineProps = {
   highlightLimit?: number;
   headingLevel?: "h2" | "h3";
   previewLinks?: boolean;
+  /**
+   * When true (homepage only), the rail tip waits for the featured→experience
+   * bridge to finish. Standalone /experience must leave this unset/false.
+   */
+  enableHomepageBridge?: boolean;
 };
 
 function TimelineBranch({
@@ -33,7 +40,6 @@ function TimelineBranch({
     return Math.min(1, Math.max(0, (height - start) / drawWindow));
   });
 
-  // Stop the stroke short of the card so the arrow has a little breathing room
   const lineProgress = useTransform(progress, (p) => Math.max(0, p * 0.9));
   const arrowOpacity = useTransform(progress, (p) => (p > 0.08 ? 1 : 0));
   const tipLeft = useTransform(lineProgress, (p) => `${p * 100}%`);
@@ -63,15 +69,29 @@ export function ExperienceTimeline({
   highlightLimit,
   headingLevel = "h3",
   previewLinks = false,
+  enableHomepageBridge = false,
 }: ExperienceTimelineProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const rowRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const activeIndexRef = useRef(-1);
+
   const [height, setHeight] = useState(0);
   const [railTop, setRailTop] = useState(0);
   const [rowStarts, setRowStarts] = useState<number[]>([]);
   const [activeIndex, setActiveIndex] = useState(-1);
-  const [bridgeReady, setBridgeReady] = useState(true);
+
+  const bridgeProgress = useMotionValue(enableHomepageBridge ? 0 : 1);
+
+  useEffect(() => {
+    if (!enableHomepageBridge) {
+      bridgeProgress.set(1);
+      return;
+    }
+    return subscribeBridgeProgress((progress) => {
+      bridgeProgress.set(progress);
+    });
+  }, [enableHomepageBridge, bridgeProgress]);
 
   useEffect(() => {
     const node = contentRef.current;
@@ -113,24 +133,6 @@ export function ExperienceTimeline({
     };
   }, [items]);
 
-  useEffect(() => {
-    let raf = 0;
-    const syncBridge = () => {
-      const bridge = document.querySelector(
-        ".projects-experience-bridge",
-      ) as HTMLElement | null;
-      if (!bridge) {
-        setBridgeReady(true);
-      } else {
-        const p = Number(bridge.dataset.bridgeProgress ?? "0");
-        setBridgeReady(p >= 0.92);
-      }
-      raf = requestAnimationFrame(syncBridge);
-    };
-    raf = requestAnimationFrame(syncBridge);
-    return () => cancelAnimationFrame(raf);
-  }, []);
-
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start 80%", "end 45%"],
@@ -143,21 +145,33 @@ export function ExperienceTimeline({
     [0, railHeight],
   );
   const tipTransform = useTransform(heightTransform, (h) => h + railTop);
-  const tipOpacity = useTransform(heightTransform, (h) => {
-    if (h <= 8 || railHeight <= 0) return 0;
-    return h >= railHeight - 2 ? 0 : 1;
-  });
+  const tipOpacity = useTransform(
+    [heightTransform, bridgeProgress],
+    ([h, bp]) => {
+      const heightValue = h as number;
+      const bridgeValue = bp as number;
+      if (enableHomepageBridge && bridgeValue < 0.92) return 0;
+      if (heightValue <= 8 || railHeight <= 0) return 0;
+      return heightValue >= railHeight - 2 ? 0 : 1;
+    },
+  );
 
   useMotionValueEvent(tipTransform, "change", (latest) => {
     if (!rowStarts.length) {
-      setActiveIndex(-1);
+      if (activeIndexRef.current !== -1) {
+        activeIndexRef.current = -1;
+        setActiveIndex(-1);
+      }
       return;
     }
     let next = -1;
     for (let i = 0; i < rowStarts.length; i += 1) {
       if (latest >= rowStarts[i]) next = i;
     }
-    setActiveIndex(next);
+    if (next !== activeIndexRef.current) {
+      activeIndexRef.current = next;
+      setActiveIndex(next);
+    }
   });
 
   return (
@@ -228,7 +242,7 @@ export function ExperienceTimeline({
           >
             <motion.span
               className="experience-timeline__rail-tip"
-              style={{ opacity: bridgeReady ? tipOpacity : 0 }}
+              style={{ opacity: tipOpacity }}
             >
               <TealLineArrow direction="down" />
             </motion.span>

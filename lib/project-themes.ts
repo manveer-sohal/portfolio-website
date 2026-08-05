@@ -140,8 +140,7 @@ export const projectThemes: Record<FeaturedThemeId, ProjectVisualTheme> = {
         webm: "/projects/joblinx/featured/cover-jl.webm",
         mp4: "/projects/joblinx/featured/coverjl.mp4",
         poster: "/projects/joblinx/featured/cover-posterjl.webp",
-        ariaLabel:
-          "Animated preview of the JobLinx job application dashboard.",
+        ariaLabel: "Animated preview of the JobLinx job application dashboard.",
       },
       mediaPosition: "left",
     },
@@ -180,7 +179,7 @@ export const projectThemes: Record<FeaturedThemeId, ProjectVisualTheme> = {
     media: {
       treatment: "slate-technical",
       wordmark: "SUPPORTPILOT",
-      preferredCover: "/projects/supportpilot/overview.png",
+      preferredCover: "/projects/supportpilot/featured/cover-postersp.webp",
       windowUrl: "supportpilot.app",
       featuredVideo: {
         webm: "/projects/supportpilot/featured/cover-sp.webm",

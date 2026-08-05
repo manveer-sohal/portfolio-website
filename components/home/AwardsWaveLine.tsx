@@ -1,7 +1,12 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { motion } from "motion/react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { useActiveAnimationFrame } from "@/lib/animation/useActiveAnimationFrame";
+import {
+  useDesktopTealRails,
+  usePrefersReducedMotion,
+} from "@/lib/animation/useMatchMedia";
+import { useNearViewport } from "@/lib/animation/useNearViewport";
 
 const MID = 0.5;
 /** 1 = tip at right edge; >1 = whole line exits off the right */
@@ -66,17 +71,64 @@ function buildWavePath(
  */
 export function AwardsWaveLine() {
   const wrapRef = useRef<HTMLDivElement>(null);
+  const pathRef = useRef<SVGPathElement>(null);
+  const tipRef = useRef<SVGPolygonElement>(null);
+  const tipGroupRef = useRef<SVGGElement>(null);
   const lastScroll = useRef({ y: 0, t: 0 });
   const wavePhase = useRef(0);
   const progress = useRef(0);
   const target = useRef(0);
-  const rafRef = useRef(0);
+  const widthRef = useRef(0);
+  const heightRef = useRef(48);
 
   const [size, setSize] = useState({ w: 0, h: 48 });
-  const [path, setPath] = useState("");
-  const [tip, setTip] = useState({ x: 0, y: 24, angle: 0 });
-  const [visible, setVisible] = useState(false);
-  const [arrowActive, setArrowActive] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  const desktop = useDesktopTealRails();
+  const reduceMotion = usePrefersReducedMotion();
+  const near = useNearViewport(wrapRef, "20% 0px 20% 0px");
+  const loopActive = mounted && desktop && !reduceMotion && near;
+
+  const paintStaticMid = useCallback(() => {
+    const w = widthRef.current;
+    const h = heightRef.current;
+    const pathEl = pathRef.current;
+    const tipEl = tipRef.current;
+    const tipGroup = tipGroupRef.current;
+    if (!pathEl || !tipEl || w < 8) return;
+
+    const baseY = h / 2;
+    const midX = w * MID;
+    const built = buildWavePath(0, midX, baseY, WAVE_AMP * 0.35, 0);
+    pathEl.setAttribute("d", built.d);
+    pathEl.style.opacity = "1";
+    tipEl.setAttribute(
+      "points",
+      `${built.tip.x},${built.tip.y - 5} ${built.tip.x + 11},${built.tip.y} ${built.tip.x},${built.tip.y + 5}`,
+    );
+    tipEl.setAttribute(
+      "transform",
+      `rotate(${built.tip.angle} ${built.tip.x} ${built.tip.y})`,
+    );
+    if (tipGroup) {
+      tipGroup.style.opacity = "1";
+      tipGroup.style.transform = "scale(1)";
+      tipGroup.style.transformOrigin = `${built.tip.x}px ${built.tip.y}px`;
+    }
+  }, []);
+
+  const clearPaint = useCallback(() => {
+    const pathEl = pathRef.current;
+    const tipGroup = tipGroupRef.current;
+    if (pathEl) {
+      pathEl.setAttribute("d", "");
+      pathEl.style.opacity = "0";
+    }
+    if (tipGroup) {
+      tipGroup.style.opacity = "0";
+      tipGroup.style.transform = "scale(0)";
+    }
+  }, []);
 
   useEffect(() => {
     const wrap = wrapRef.current;
@@ -84,7 +136,13 @@ export function AwardsWaveLine() {
 
     const measure = () => {
       const w = Math.max(Math.round(wrap.getBoundingClientRect().width), 1);
+      widthRef.current = w;
+      heightRef.current = 48;
       setSize({ w, h: 48 });
+      setMounted(true);
+      if (reduceMotion && desktop) {
+        requestAnimationFrame(paintStaticMid);
+      }
     };
 
     measure();
@@ -95,49 +153,58 @@ export function AwardsWaveLine() {
       observer.disconnect();
       window.removeEventListener("resize", measure);
     };
-  }, []);
+  }, [desktop, reduceMotion, paintStaticMid]);
 
   useEffect(() => {
     lastScroll.current = { y: window.scrollY, t: performance.now() };
+  }, []);
 
-    const tick = (now: number) => {
-      const section = document.getElementById("awards");
-      const waveEl = wrapRef.current;
-      const w = size.w;
-
-      if (!section || !waveEl || w < 8) {
-        rafRef.current = requestAnimationFrame(tick);
-        return;
-      }
-
-      if (window.matchMedia("(max-width: 899px)").matches) {
+  useEffect(() => {
+    if (!loopActive) {
+      if (reduceMotion && desktop && mounted) {
+        paintStaticMid();
+      } else if (!near || !desktop) {
+        clearPaint();
         progress.current = 0;
         target.current = 0;
-        setVisible(false);
-        setArrowActive(false);
-        rafRef.current = requestAnimationFrame(tick);
-        return;
       }
+    }
+  }, [
+    loopActive,
+    reduceMotion,
+    desktop,
+    mounted,
+    near,
+    paintStaticMid,
+    clearPaint,
+  ]);
+
+  useActiveAnimationFrame({
+    active: loopActive,
+    callback: (now) => {
+      const w = widthRef.current;
+      const h = heightRef.current;
+      const pathEl = pathRef.current;
+      const tipEl = tipRef.current;
+      const tipGroup = tipGroupRef.current;
+      const waveEl = wrapRef.current;
+
+      if (!pathEl || !tipEl || !waveEl || w < 8) return;
 
       const waveRect = waveEl.getBoundingClientRect();
       const vh = window.innerHeight;
-      // Only run while the squiggly line itself is on screen
       const waveInView =
         waveRect.bottom > vh * 0.08 && waveRect.top < vh * 0.92;
 
       if (!waveInView) {
         progress.current = 0;
         target.current = 0;
-        setVisible(false);
-        setArrowActive(false);
-        setPath("");
+        clearPaint();
         lastScroll.current = { y: window.scrollY, t: now };
-        rafRef.current = requestAnimationFrame(tick);
         return;
       }
 
       const leavingDown = waveRect.bottom < vh * 0.28;
-
       const scrollY = window.scrollY;
       const dt = Math.max(now - lastScroll.current.t, 1);
       const vel = (scrollY - lastScroll.current.y) / dt;
@@ -154,15 +221,10 @@ export function AwardsWaveLine() {
         target.current = MID;
       }
 
-      // After a full exit, snap back so the next entrance grows from the left
-      if (
-        progress.current >= EXIT - 0.02 &&
-        target.current < 1
-      ) {
+      if (progress.current >= EXIT - 0.02 && target.current < 1) {
         progress.current = 0;
       }
 
-      // Entrance: crawl from the left, then surge toward mid; exit stays snappy
       const accelerating = target.current > progress.current;
       let lerp = 0.18;
       if (target.current >= EXIT) {
@@ -179,21 +241,16 @@ export function AwardsWaveLine() {
       }
 
       const p = progress.current;
-      const baseY = size.h / 2;
+      const baseY = h / 2;
       const midX = w * MID;
 
-      // Fully exited off the right
       if (p >= EXIT - 0.02 && target.current >= EXIT) {
-        setVisible(false);
-        setArrowActive(false);
-        setPath("");
-        rafRef.current = requestAnimationFrame(tick);
+        clearPaint();
         return;
       }
 
       const show = p > 0.02;
-      setVisible(show);
-      setArrowActive(p > 0.08 && p < EXIT - 0.05);
+      const arrowActive = p > 0.08 && p < EXIT - 0.05;
 
       let startX = 0;
       let drawEndX = 0;
@@ -201,10 +258,9 @@ export function AwardsWaveLine() {
       let nextTip = { x: 0, y: baseY, angle: 0 };
 
       if (p <= MID) {
-        // Grow from left → mid: slow start, then quickly fill to center
         wavePhase.current += 0.05;
         const linear = p / MID;
-        const grow = linear * linear * linear; // ease-in
+        const grow = linear * linear * linear;
         const wobble = Math.sin(wavePhase.current * 0.85) * (w * 0.05);
         drawEndX = Math.max(8, (midX + wobble) * Math.max(grow, 0.02));
         const built = buildWavePath(
@@ -217,7 +273,6 @@ export function AwardsWaveLine() {
         d = built.d;
         nextTip = built.tip;
       } else if (p <= 1) {
-        // Shoot tip from mid → right edge, straighten
         const t = (p - MID) / (1 - MID);
         drawEndX = midX + (w - midX) * t;
         const amp = WAVE_AMP * (1 - t);
@@ -225,12 +280,17 @@ export function AwardsWaveLine() {
           d = `M 0 ${baseY} L ${drawEndX} ${baseY}`;
           nextTip = { x: drawEndX, y: baseY, angle: 0 };
         } else {
-          const built = buildWavePath(0, drawEndX, baseY, amp, wavePhase.current);
+          const built = buildWavePath(
+            0,
+            drawEndX,
+            baseY,
+            amp,
+            wavePhase.current,
+          );
           d = built.d;
           nextTip = built.tip;
         }
       } else {
-        // Slide the whole line off the right edge
         const t = (p - 1) / (EXIT - 1);
         const tipX = w + 64 * t;
         startX = t * (w + 64);
@@ -239,21 +299,35 @@ export function AwardsWaveLine() {
         nextTip = { x: drawEndX, y: baseY, angle: 0 };
       }
 
-      setPath(d);
-      setTip(nextTip);
-      rafRef.current = requestAnimationFrame(tick);
-    };
+      pathEl.setAttribute("d", d);
+      pathEl.style.opacity = show ? "1" : "0";
+      tipEl.setAttribute(
+        "points",
+        `${nextTip.x},${nextTip.y - 5} ${nextTip.x + 11},${nextTip.y} ${nextTip.x},${nextTip.y + 5}`,
+      );
+      tipEl.setAttribute(
+        "transform",
+        `rotate(${nextTip.angle} ${nextTip.x} ${nextTip.y})`,
+      );
+      if (tipGroup) {
+        tipGroup.style.opacity = arrowActive ? "1" : "0";
+        tipGroup.style.transform = arrowActive ? "scale(1)" : "scale(0)";
+        tipGroup.style.transformOrigin = `${nextTip.x}px ${nextTip.y}px`;
+        tipGroup.style.transition =
+          "opacity 0.15s ease, transform 0.2s cubic-bezier(0.22, 1, 0.36, 1)";
+      }
+    },
+  });
 
-    rafRef.current = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(rafRef.current);
-  }, [size.w, size.h]);
-
-  // SVG must be wide enough to draw past the right edge while exiting
   const svgW = Math.max(size.w + 80, 1);
+
+  if (!desktop) {
+    return <div ref={wrapRef} className="awards-wave" aria-hidden="true" />;
+  }
 
   return (
     <div ref={wrapRef} className="awards-wave" aria-hidden="true">
-      {visible && size.w > 0 && path ? (
+      {mounted && size.w > 0 ? (
         <svg
           className="awards-wave__svg"
           width={svgW}
@@ -261,35 +335,27 @@ export function AwardsWaveLine() {
           viewBox={`0 0 ${svgW} ${size.h}`}
         >
           <path
-            d={path}
+            ref={pathRef}
+            d=""
             fill="none"
             stroke="var(--accent)"
             strokeWidth="2"
             strokeLinecap="round"
             strokeLinejoin="round"
             className="awards-wave__path"
+            style={{ opacity: 0 }}
           />
-          <motion.g
-            initial={false}
-            animate={{
-              scale: arrowActive ? 1 : 0,
-              opacity: arrowActive ? 1 : 0,
-            }}
-            transition={{
-              type: "spring",
-              stiffness: 420,
-              damping: 22,
-              mass: 0.7,
-            }}
-            style={{ transformOrigin: `${tip.x}px ${tip.y}px` }}
+          <g
+            ref={tipGroupRef}
+            style={{ opacity: 0, transform: "scale(0)" }}
           >
             <polygon
-              points={`${tip.x},${tip.y - 5} ${tip.x + 11},${tip.y} ${tip.x},${tip.y + 5}`}
+              ref={tipRef}
+              points="0,0 0,0 0,0"
               fill="var(--accent)"
-              transform={`rotate(${tip.angle} ${tip.x} ${tip.y})`}
               className="awards-wave__arrow"
             />
-          </motion.g>
+          </g>
         </svg>
       ) : null}
     </div>

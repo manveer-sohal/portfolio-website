@@ -400,7 +400,7 @@ export const projects: Project[] = [
         type: "case-study",
       },
     ],
-    coverImage: "/projects/supportpilot/overview.png",
+    coverImage: "/projects/supportpilot/featured/cover-postersp.webp",
     gallery: [
       {
         src: "/projects/supportpilot/workspace.png",

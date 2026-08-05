@@ -29,6 +29,7 @@ export function ExperiencePreview({ items }: ExperiencePreviewProps) {
           highlightLimit={4}
           headingLevel="h3"
           previewLinks
+          enableHomepageBridge
         />
       </div>
     </section>
