@@ -39,12 +39,16 @@ export type ProjectVisualTheme = {
     logoAlt?: string;
     wordmark?: string;
     preferredCover?: string;
+    /** Host shown in the featured media browser chrome. */
+    windowUrl: string;
     /** Looping demo video for the featured card (replaces static cover when set). */
     featuredVideo?: {
       webm: string;
       mp4: string;
       poster: string;
       ariaLabel?: string;
+      /** CSS object-position; defaults to top (crop from bottom). */
+      objectPosition?: string;
     };
     /** Desktop media column: content stays first in the DOM for accessibility. */
     mediaPosition: "left" | "right";
@@ -86,6 +90,7 @@ export const projectThemes: Record<FeaturedThemeId, ProjectVisualTheme> = {
       logoSrc: "/projects/almaari/brand/logo.png",
       logoAlt: "Almaari wardrobe logo",
       preferredCover: "/projects/almaari/dashboard.png",
+      windowUrl: "almaari.app",
       featuredVideo: {
         webm: "/projects/almaari/featured/cover.webm",
         mp4: "/projects/almaari/featured/cover.mp4",
@@ -130,6 +135,14 @@ export const projectThemes: Record<FeaturedThemeId, ProjectVisualTheme> = {
       logoSrc: "/projects/joblinx/brand/logo-256.png",
       logoAlt: "JobLinx lynx logo",
       preferredCover: "/projects/joblinx/detail.png",
+      windowUrl: "joblinx.app",
+      featuredVideo: {
+        webm: "/projects/joblinx/featured/cover-jl.webm",
+        mp4: "/projects/joblinx/featured/coverjl.mp4",
+        poster: "/projects/joblinx/featured/cover-posterjl.webp",
+        ariaLabel:
+          "Animated preview of the JobLinx job application dashboard.",
+      },
       mediaPosition: "left",
     },
   },
@@ -168,6 +181,15 @@ export const projectThemes: Record<FeaturedThemeId, ProjectVisualTheme> = {
       treatment: "slate-technical",
       wordmark: "SUPPORTPILOT",
       preferredCover: "/projects/supportpilot/overview.png",
+      windowUrl: "supportpilot.app",
+      featuredVideo: {
+        webm: "/projects/supportpilot/featured/cover-sp.webm",
+        mp4: "/projects/supportpilot/featured/coversp.mp4",
+        poster: "/projects/supportpilot/featured/cover-postersp.webp",
+        objectPosition: "center 28%",
+        ariaLabel:
+          "Animated preview of the SupportPilot support workspace interface.",
+      },
       mediaPosition: "right",
     },
   },

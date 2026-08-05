@@ -886,7 +886,9 @@ export function getFeaturedProjects(): Project[] {
 }
 
 export function getOtherProjects(): Project[] {
-  return projects.filter((project) => !project.featured);
+  return projects.filter(
+    (project) => !project.featured && project.slug !== "odin-analytica",
+  );
 }
 
 export function getProjectBySlug(slug: string): Project | undefined {

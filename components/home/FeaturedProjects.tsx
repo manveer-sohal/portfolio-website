@@ -1,13 +1,143 @@
+"use client";
+
+import { useEffect, useRef, useState, type CSSProperties } from "react";
+import {
+  motion,
+  useMotionValueEvent,
+  useScroll,
+  useTransform,
+  type MotionValue,
+} from "motion/react";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Reveal } from "@/components/ui/Reveal";
+import { TealLineArrow } from "@/components/ui/TealLineArrow";
 import { FeaturedProjectSection } from "@/components/projects/FeaturedProjectSection";
+import { cn } from "@/lib/utils";
 import type { Project } from "@/data/types";
 
 type FeaturedProjectsProps = {
   projects: Project[];
 };
 
+function FeaturedBranch({
+  fillHeight,
+  start,
+  side,
+}: {
+  fillHeight: MotionValue<number>;
+  start: number;
+  side: "left" | "right";
+}) {
+  const progress = useTransform(fillHeight, (height) => {
+    if (start <= 0) return height > 12 ? 1 : 0;
+    const drawWindow = 40;
+    return Math.min(1, Math.max(0, (height - start) / drawWindow));
+  });
+
+  // Counter-scale so the tip arrow isn't flattened by scaleX
+  const arrowScaleX = useTransform(progress, (p) => (p > 0.05 ? 1 / p : 0));
+  const arrowOpacity = useTransform(progress, (p) => (p > 0.08 ? 1 : 0));
+
+  return (
+    <motion.span
+      className={cn(
+        "featured-rail__branch",
+        side === "left"
+          ? "featured-rail__branch--left"
+          : "featured-rail__branch--right",
+      )}
+      style={{ scaleX: progress, y: "-50%" }}
+      aria-hidden="true"
+    >
+      <motion.span
+        style={{
+          scaleX: arrowScaleX,
+          opacity: arrowOpacity,
+          display: "block",
+          position: "absolute",
+          inset: 0,
+        }}
+      >
+        <TealLineArrow direction={side === "left" ? "left" : "right"} />
+      </motion.span>
+    </motion.span>
+  );
+}
+
 export function FeaturedProjects({ projects }: FeaturedProjectsProps) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const listRef = useRef<HTMLDivElement>(null);
+  const itemRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const [height, setHeight] = useState(0);
+  const [itemBottoms, setItemBottoms] = useState<number[]>([]);
+  const [branchTops, setBranchTops] = useState<number[]>([]);
+  const [activeIndex, setActiveIndex] = useState(-1);
+
+  useEffect(() => {
+    const list = listRef.current;
+    if (!list) return;
+
+    const measure = () => {
+      const listTop = list.getBoundingClientRect().top;
+      setHeight(list.getBoundingClientRect().height);
+      const bottoms: number[] = [];
+      const tops: number[] = [];
+      itemRefs.current.forEach((item) => {
+        if (!item) {
+          bottoms.push(0);
+          tops.push(0);
+          return;
+        }
+        const media = item.querySelector(
+          ".featured-editorial__media-shell",
+        ) as HTMLElement | null;
+        const target = media ?? item;
+        const rect = target.getBoundingClientRect();
+        const mid = rect.height / 2;
+        const listOffset = rect.top - listTop;
+        const itemOffset = rect.top - item.getBoundingClientRect().top;
+        bottoms.push(listOffset + mid);
+        tops.push(itemOffset + mid);
+      });
+      setItemBottoms(bottoms);
+      setBranchTops(tops);
+    };
+
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(list);
+    window.addEventListener("resize", measure);
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("resize", measure);
+    };
+  }, [projects]);
+
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start 88%", "end 68%"],
+  });
+
+  const heightTransform = useTransform(
+    scrollYProgress,
+    [0, 0.5, 0.8, 1],
+    [0, height * 0.45, height * 0.8, height],
+  );
+  const opacityTransform = useTransform(scrollYProgress, [0, 0.04], [0, 1]);
+  const tipOpacity = useTransform(heightTransform, (h) => (h > 12 ? 1 : 0));
+
+  useMotionValueEvent(heightTransform, "change", (latest) => {
+    if (!itemBottoms.length) {
+      setActiveIndex(-1);
+      return;
+    }
+    let next = -1;
+    for (let i = 0; i < itemBottoms.length; i += 1) {
+      if (latest >= itemBottoms[i]) next = i;
+    }
+    setActiveIndex(next);
+  });
+
   return (
     <section
       id="projects"
@@ -25,16 +155,61 @@ export function FeaturedProjects({ projects }: FeaturedProjectsProps) {
           />
         </Reveal>
 
-        <div className="  space-y-2   md:space-y-3 ">
-          {projects.map((project, index) => (
-            <Reveal key={project.slug} variant="feature">
-              <FeaturedProjectSection
-                project={project}
-                priority={index === 0}
-                mediaSide={index % 2 === 0 ? "left" : "right"}
-              />
-            </Reveal>
-          ))}
+        <div ref={containerRef} className="featured-rail">
+          <div ref={listRef} className="featured-rail__list">
+            {projects.map((project, index) => {
+              const mediaSide = index % 2 === 0 ? "left" : "right";
+              return (
+                <div
+                  key={project.slug}
+                  ref={(node) => {
+                    itemRefs.current[index] = node;
+                  }}
+                  className={cn(
+                    "featured-rail__item",
+                    activeIndex === index && "is-active",
+                    activeIndex > index && "is-passed",
+                  )}
+                  style={
+                    {
+                      "--featured-branch-top": `${branchTops[index] ?? 0}px`,
+                    } as CSSProperties
+                  }
+                >
+                  <FeaturedBranch
+                    fillHeight={heightTransform}
+                    start={itemBottoms[index] ?? 0}
+                    side={mediaSide}
+                  />
+                  <Reveal variant="feature">
+                    <FeaturedProjectSection
+                      project={project}
+                      priority={index === 0}
+                      mediaSide={mediaSide}
+                    />
+                  </Reveal>
+                </div>
+              );
+            })}
+
+            <div
+              className="featured-rail__track"
+              style={{ height: `${height}px` }}
+              aria-hidden="true"
+            >
+              <motion.div
+                className="featured-rail__fill"
+                style={{
+                  height: heightTransform,
+                  opacity: opacityTransform,
+                }}
+              >
+                <motion.span style={{ opacity: tipOpacity }}>
+                  <TealLineArrow direction="down" />
+                </motion.span>
+              </motion.div>
+            </div>
+          </div>
         </div>
       </div>
     </section>

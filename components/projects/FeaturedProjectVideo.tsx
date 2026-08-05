@@ -12,8 +12,8 @@ type FeaturedProjectVideoProps = {
   className?: string;
   /** Eager-load the poster image only (never the video file). */
   priority?: boolean;
-  /** Soft product-window chrome (Almaari showcase). */
-  framed?: boolean;
+  /** CSS object-position for poster + video. */
+  objectPosition?: string;
 };
 
 /**
@@ -30,7 +30,7 @@ export function FeaturedProjectVideo({
   label,
   className,
   priority = false,
-  framed = false,
+  objectPosition = "top center",
 }: FeaturedProjectVideoProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -91,12 +91,26 @@ export function FeaturedProjectVideo({
     const video = videoRef.current;
     if (!video || !shouldLoadVideo) return;
 
-    if (isInView || manualPlay) {
+    // Sources mount with the element; force the browser to resolve them
+    // before attempting autoplay (preload="none" otherwise stays empty).
+    video.load();
+
+    if (!(isInView || manualPlay)) {
+      video.pause();
+      return;
+    }
+
+    const tryPlay = () => {
       void video.play().catch(() => {
         /* autoplay blocked — poster remains visible underneath */
       });
+    };
+
+    if (video.readyState >= 2) {
+      tryPlay();
     } else {
-      video.pause();
+      video.addEventListener("canplay", tryPlay, { once: true });
+      return () => video.removeEventListener("canplay", tryPlay);
     }
   }, [isInView, shouldLoadVideo, manualPlay]);
 
@@ -106,12 +120,12 @@ export function FeaturedProjectVideo({
     setManualPlay(true);
   };
 
-  const media = (
+  return (
     <div
       ref={containerRef}
       className={cn(
         "relative h-full min-h-0 w-full overflow-hidden bg-[var(--project-surface-strong,#fff)]",
-        !framed && className,
+        className,
       )}
     >
       <Image
@@ -119,7 +133,8 @@ export function FeaturedProjectVideo({
         alt={posterOnly && !manualPlay ? label : ""}
         fill
         sizes="(max-width: 1024px) 100vw, 55vw"
-        className="object-cover object-top"
+        className="object-cover"
+        style={{ objectPosition }}
         priority={priority}
         loading={priority ? "eager" : "lazy"}
         quality={75}
@@ -128,43 +143,30 @@ export function FeaturedProjectVideo({
       {shouldLoadVideo && (!posterOnly || manualPlay) ? (
         <video
           ref={videoRef}
-          className="absolute inset-0 h-full w-full object-cover object-top"
+          className="absolute inset-0 h-full w-full object-cover"
+          style={{ objectPosition }}
           muted
           loop
           playsInline
-          preload="none"
+          preload="metadata"
+          poster={poster}
           aria-label={label}
         >
-          <source src={webm} type="video/webm" />
+          {/* MP4 first for broad Safari/iOS support; WebM as progressive enhancement */}
           <source src={mp4} type="video/mp4" />
+          <source src={webm} type="video/webm" />
         </video>
       ) : null}
 
       {posterOnly && !manualPlay ? (
         <button
           type="button"
-          className="absolute bottom-3 left-3 rounded-[12px] border border-[var(--project-border,#d8d4cc)] bg-[var(--project-surface-strong,#fff)] px-3 py-2 text-sm font-semibold text-[var(--project-text,#273157)] shadow-[0_2px_12px_rgba(39,49,87,0.08)] transition-colors hover:bg-[var(--project-primary-muted,#e8ebf5)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--project-primary,#4f5d9a)]"
+          className="absolute bottom-3 left-3 z-[2] rounded-[12px] border border-[var(--project-border,#d8d4cc)] bg-[var(--project-surface-strong,#fff)] px-3 py-2 text-sm font-semibold text-[var(--project-text,#273157)] shadow-[0_2px_12px_rgba(39,49,87,0.08)] transition-colors hover:bg-[var(--project-primary-muted,#e8ebf5)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--project-primary,#4f5d9a)]"
           onClick={startManualPreview}
         >
           Play Preview
         </button>
       ) : null}
-    </div>
-  );
-
-  if (!framed) {
-    return media;
-  }
-
-  return (
-    <div className={cn("almaari-window", className)}>
-      <div className="almaari-window__chrome" aria-hidden="true">
-        <span className="almaari-window__dot" />
-        <span className="almaari-window__dot" />
-        <span className="almaari-window__dot" />
-        <span className="almaari-window__url">almaari.app</span>
-      </div>
-      {media}
     </div>
   );
 }

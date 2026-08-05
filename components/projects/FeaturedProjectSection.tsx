@@ -3,6 +3,7 @@ import Link from "next/link";
 import type { Project } from "@/data/types";
 import { getProjectTheme, resolveProjectCover } from "@/lib/project-themes";
 import { cn } from "@/lib/utils";
+import { FeaturedMediaWindow } from "./FeaturedMediaWindow";
 import { FeaturedProjectCardGlow } from "./FeaturedProjectCardGlow";
 import { FeaturedProjectVideo } from "./FeaturedProjectVideo";
 
@@ -57,6 +58,9 @@ export function FeaturedProjectSection({
   const caseStudy = `/projects/${project.slug}`;
   const live = project.links.find((link) => link.type === "live");
   const github = project.links.find((link) => link.type === "github");
+  const mediaTarget = live ?? github;
+  const mediaHref = mediaTarget?.href ?? caseStudy;
+  const mediaExternal = Boolean(mediaTarget);
   const video = theme?.media.featuredVideo;
   const description = project.featuredSupport ?? project.shortDescription;
   const stack = project.technologies.slice(0, 6);
@@ -67,6 +71,28 @@ export function FeaturedProjectSection({
   if (!theme || (!cover && !video) || !glowColor) {
     return null;
   }
+
+  const media = video ? (
+    <FeaturedProjectVideo
+      webm={video.webm}
+      mp4={video.mp4}
+      poster={video.poster}
+      label={video.ariaLabel ?? `Animated preview of ${project.name}`}
+      objectPosition={video.objectPosition}
+      priority={priority}
+    />
+  ) : (
+    <div className="relative h-full min-h-0 w-full">
+      <Image
+        src={cover}
+        alt={`${project.name} product screenshot`}
+        fill
+        className="object-cover object-top"
+        sizes="(max-width: 900px) 100vw, 60vw"
+        priority={priority}
+      />
+    </div>
+  );
 
   return (
     <article
@@ -84,27 +110,30 @@ export function FeaturedProjectSection({
       <div className="featured-editorial__media-shell">
         <FeaturedProjectCardGlow color={glowColor} />
         <div className="featured-editorial__media" data-reveal-trigger="">
-          {video ? (
-            <FeaturedProjectVideo
-              webm={video.webm}
-              mp4={video.mp4}
-              poster={video.poster}
-              label={video.ariaLabel ?? `Animated preview of ${project.name}`}
-              framed={theme.id === "almaari"}
-              priority={priority}
-            />
-          ) : (
-            <div className="relative h-full min-h-0 w-full">
-              <Image
-                src={cover}
-                alt={`${project.name} product screenshot`}
-                fill
-                className="object-cover object-top"
-                sizes="(max-width: 900px) 100vw, 60vw"
-                priority={priority}
+          <FeaturedMediaWindow url={theme.media.windowUrl}>
+            {media}
+          </FeaturedMediaWindow>
+          {mediaHref ? (
+            mediaExternal ? (
+              <a
+                href={mediaHref}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="featured-editorial__media-hit"
+                aria-label={
+                  mediaTarget?.type === "live"
+                    ? `Open ${project.name} live product`
+                    : `Open ${project.name} on GitHub`
+                }
               />
-            </div>
-          )}
+            ) : (
+              <Link
+                href={mediaHref}
+                className="featured-editorial__media-hit"
+                aria-label={`View ${project.name} case study`}
+              />
+            )
+          ) : null}
         </div>
       </div>
 

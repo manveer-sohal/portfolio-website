@@ -2,10 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Tag } from "@/components/ui/Tag";
 import type { Project } from "@/data/types";
-import {
-  getProjectTheme,
-  resolveProjectCover,
-} from "@/lib/project-themes";
+import { getProjectTheme, resolveProjectCover } from "@/lib/project-themes";
 import { cn } from "@/lib/utils";
 
 type ProjectCardProps = {
@@ -32,10 +29,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
           theme.typography.bodyClassName,
         )}
       >
-        <Link
-          href={`/projects/${project.slug}`}
-          className="block p-3 pb-0"
-        >
+        <Link href={`/projects/${project.slug}`} className="block p-3 pb-0">
           <div className="project-theme__media">
             <Image
               src={cover}
@@ -79,7 +73,10 @@ export function ProjectCard({ project }: ProjectCardProps) {
             )}
             style={{ color: "var(--project-name)" }}
           >
-            <Link href={`/projects/${project.slug}`} className="hover:opacity-90">
+            <Link
+              href={`/projects/${project.slug}`}
+              className="hover:opacity-90"
+            >
               {project.name}
             </Link>
           </h3>
@@ -91,7 +88,10 @@ export function ProjectCard({ project }: ProjectCardProps) {
           </p>
           <div className="mt-4 flex flex-wrap gap-2">
             {project.technologies.slice(0, 4).map((tech) => (
-              <span key={tech} className="project-theme__tag px-2.5 py-1 text-sm">
+              <span
+                key={tech}
+                className="project-theme__tag px-2.5 py-1 text-sm"
+              >
                 {tech}
               </span>
             ))}
@@ -99,20 +99,26 @@ export function ProjectCard({ project }: ProjectCardProps) {
           <div className="mt-auto flex flex-wrap gap-4 pt-5 text-base">
             <Link
               href={`/projects/${project.slug}`}
-              className="font-medium"
+              className="other-project-card__cta font-medium"
               style={{ color: "var(--project-primary)" }}
             >
               View Case Study
+              <span className="other-project-card__cta-arrow" aria-hidden="true">
+                →
+              </span>
             </Link>
             {external ? (
               <a
                 href={external.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="font-medium"
-                style={{ color: "var(--project-text-secondary)" }}
+                className="other-project-card__cta font-medium"
+                style={{ color: "var(--project-primary)" }}
               >
                 {external.label}
+                <span className="other-project-card__cta-arrow" aria-hidden="true">
+                  →
+                </span>
               </a>
             ) : null}
           </div>
@@ -122,18 +128,18 @@ export function ProjectCard({ project }: ProjectCardProps) {
   }
 
   return (
-    <article className="flex h-full flex-col overflow-hidden rounded-[12px] border border-border bg-surface transition-colors hover:border-border-strong">
+    <article className="other-project-card group flex h-full flex-col overflow-hidden rounded-[12px] border border-border bg-surface">
       {project.coverImage ? (
         <Link
           href={`/projects/${project.slug}`}
-          className="block border-b border-border-subtle"
+          className="other-project-card__media block border-b border-border-subtle"
         >
           <Image
             src={project.coverImage}
             alt={`${project.name} screenshot`}
             width={800}
             height={500}
-            className="aspect-[16/10] w-full object-cover object-top"
+            className="other-project-card__image aspect-[16/10] w-full object-cover object-top"
             sizes="(max-width: 768px) 100vw, 33vw"
           />
         </Link>
@@ -145,28 +151,42 @@ export function ProjectCard({ project }: ProjectCardProps) {
           ) : null}
         </div>
         <h3 className="text-xl font-semibold tracking-tight">
-          <Link href={`/projects/${project.slug}`} className="hover:text-foreground">
+          <Link
+            href={`/projects/${project.slug}`}
+            className="other-project-card__title transition-colors hover:text-foreground"
+          >
             {project.name}
           </Link>
         </h3>
-        <p className="mt-2 text-base leading-relaxed text-muted-strong">{project.shortDescription}</p>
+        <p className="mt-2 text-base leading-relaxed text-muted-strong">
+          {project.shortDescription}
+        </p>
         <div className="mt-4 flex flex-wrap gap-2">
           {project.technologies.slice(0, 4).map((tech) => (
             <Tag key={tech}>{tech}</Tag>
           ))}
         </div>
         <div className="mt-auto flex flex-wrap gap-4 pt-5 text-base">
-          <Link href={`/projects/${project.slug}`} className="font-medium text-accent hover:text-accent-hover">
+          <Link
+            href={`/projects/${project.slug}`}
+            className="other-project-card__cta font-medium text-accent"
+          >
             View Case Study
+            <span className="other-project-card__cta-arrow" aria-hidden="true">
+              →
+            </span>
           </Link>
           {external ? (
             <a
               href={external.href}
               target="_blank"
               rel="noopener noreferrer"
-              className="font-medium text-muted-strong hover:text-foreground"
+              className="other-project-card__cta font-medium text-accent"
             >
               {external.label}
+              <span className="other-project-card__cta-arrow" aria-hidden="true">
+                →
+              </span>
             </a>
           ) : null}
         </div>

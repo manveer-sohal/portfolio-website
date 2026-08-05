@@ -22,10 +22,10 @@ export function SkillsSection({ categories }: SkillsSectionProps) {
             title="Tools I use to ship"
           />
         </Reveal>
-        <div className="grid gap-4 md:grid-cols-2">
+        <div className="grid gap-4 md:grid-cols-2 md:items-stretch">
           {categories.map((category) => (
-            <Reveal key={category.name}>
-              <div className="rounded-[14px] border border-border bg-surface p-5 md:p-6">
+            <Reveal key={category.name} className="h-full">
+              <div className="flex h-full flex-col rounded-[14px] border border-border bg-surface p-5 md:p-6">
                 <h3 className="text-lg font-semibold text-foreground">
                   {category.name}
                 </h3>

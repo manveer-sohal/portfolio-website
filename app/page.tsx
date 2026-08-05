@@ -6,6 +6,7 @@ import { ExperiencePreview } from "@/components/home/ExperiencePreview";
 import { FeaturedProjects } from "@/components/home/FeaturedProjects";
 import { Hero } from "@/components/home/Hero";
 import { OtherProjects } from "@/components/home/OtherProjects";
+import { ProjectsExperienceBridge } from "@/components/home/ProjectsExperienceBridge";
 import { SkillsSection } from "@/components/home/SkillsSection";
 import { Footer } from "@/components/layout/Footer";
 import { experience } from "@/data/experience";
@@ -14,9 +15,7 @@ import { skillCategories } from "@/data/skills";
 
 export default function HomePage() {
   const featured = getFeaturedProjects();
-  const other = getOtherProjects().filter(
-    (project) => project.slug !== "odin-analytica",
-  );
+  const other = getOtherProjects();
 
   return (
     <ContactRevealShell
@@ -28,8 +27,10 @@ export default function HomePage() {
       }
     >
       <Hero />
-      <FeaturedProjects projects={featured} />
-      <ExperiencePreview items={experience} />
+      <ProjectsExperienceBridge>
+        <FeaturedProjects projects={featured} />
+        <ExperiencePreview items={experience} />
+      </ProjectsExperienceBridge>
       <SkillsSection categories={skillCategories} />
       <OtherProjects projects={other} />
       <AwardsBanner />

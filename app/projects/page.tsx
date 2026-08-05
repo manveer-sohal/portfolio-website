@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
 import { ProjectGrid } from "@/components/projects/ProjectGrid";
 import { SectionHeading } from "@/components/ui/SectionHeading";
-import { projects } from "@/data/projects";
+import {
+  getFeaturedProjects,
+  getOtherProjects,
+} from "@/data/projects";
 
 export const metadata: Metadata = {
   title: "Projects",
@@ -13,8 +16,8 @@ export const metadata: Metadata = {
 };
 
 export default function ProjectsPage() {
-  const featured = projects.filter((project) => project.featured);
-  const other = projects.filter((project) => !project.featured);
+  const featured = getFeaturedProjects();
+  const other = getOtherProjects();
 
   return (
     <div className="section-space">

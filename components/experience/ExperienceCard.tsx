@@ -64,19 +64,16 @@ export function ExperienceCard({
       </ul>
 
       {previewLinks ? (
-        <div className="experience-card__links">
-          {item.projectSlug ? (
+        item.projectSlug ? (
+          <div className="experience-card__links">
             <Link
               href={`/projects/${item.projectSlug}`}
               className="experience-card__link experience-card__link--primary"
             >
               View Case Study
             </Link>
-          ) : null}
-          <Link href="/experience" className="experience-card__link">
-            Full experience
-          </Link>
-        </div>
+          </div>
+        ) : null
       ) : item.links && item.links.length > 0 ? (
         <div className="experience-card__links">
           {item.links.map((link) =>

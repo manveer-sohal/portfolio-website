@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
+import { ContactFormPointer } from "@/components/home/ContactFormPointer";
 import { mailtoHref, siteConfig } from "@/data/site";
 
 export function ContactForm() {
@@ -33,6 +34,7 @@ export function ContactForm() {
       className="contact-form-section"
       aria-labelledby="contact-form-heading"
     >
+      <ContactFormPointer />
       <div className="contact-form-section__inner">
         <div className="contact-form-section__intro">
           <p className="contact-form-section__eyebrow">Get in touch</p>

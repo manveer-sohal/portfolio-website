@@ -3,10 +3,14 @@
 import { useEffect, useRef, useState } from "react";
 import {
   motion,
+  useMotionValueEvent,
   useScroll,
   useTransform,
+  type MotionValue,
 } from "motion/react";
 import { ExperienceCard } from "@/components/experience/ExperienceCard";
+import { TealLineArrow } from "@/components/ui/TealLineArrow";
+import { cn } from "@/lib/utils";
 import type { ExperienceItem } from "@/data/types";
 
 type ExperienceTimelineProps = {
@@ -16,9 +20,46 @@ type ExperienceTimelineProps = {
   previewLinks?: boolean;
 };
 
+function TimelineBranch({
+  fillHeight,
+  start,
+}: {
+  fillHeight: MotionValue<number>;
+  start: number;
+}) {
+  const progress = useTransform(fillHeight, (height) => {
+    if (start <= 0) return height > 8 ? 1 : 0;
+    const drawWindow = 40;
+    return Math.min(1, Math.max(0, (height - start) / drawWindow));
+  });
+
+  const arrowScaleX = useTransform(progress, (p) => (p > 0.05 ? 1 / p : 0));
+  const arrowOpacity = useTransform(progress, (p) => (p > 0.08 ? 1 : 0));
+
+  return (
+    <motion.span
+      className="experience-timeline__branch"
+      style={{ scaleX: progress, y: "-50%" }}
+      aria-hidden="true"
+    >
+      <motion.span
+        style={{
+          scaleX: arrowScaleX,
+          opacity: arrowOpacity,
+          display: "block",
+          position: "absolute",
+          inset: 0,
+        }}
+      >
+        <TealLineArrow direction="right" />
+      </motion.span>
+    </motion.span>
+  );
+}
+
 /**
- * Left-rail date timeline with a scroll-linked fill line
- * (pattern adapted from https://aurorashi.com).
+ * Left-rail date timeline with a scroll-linked fill line that
+ * branches into each project as you scroll beside it.
  */
 export function ExperienceTimeline({
   items,
@@ -28,35 +69,94 @@ export function ExperienceTimeline({
 }: ExperienceTimelineProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
+  const rowRefs = useRef<(HTMLDivElement | null)[]>([]);
   const [height, setHeight] = useState(0);
+  const [railTop, setRailTop] = useState(0);
+  const [rowStarts, setRowStarts] = useState<number[]>([]);
+  const [activeIndex, setActiveIndex] = useState(-1);
 
   useEffect(() => {
     const node = contentRef.current;
     if (!node) return;
 
     const measure = () => {
-      setHeight(node.getBoundingClientRect().height);
+      const listTop = node.getBoundingClientRect().top;
+      const listHeight = node.getBoundingClientRect().height;
+      setHeight(listHeight);
+
+      const firstDot = rowRefs.current[0]?.querySelector(
+        ".experience-timeline__dot",
+      ) as HTMLElement | null;
+      if (firstDot) {
+        const dotRect = firstDot.getBoundingClientRect();
+        setRailTop(dotRect.top + dotRect.height / 2 - listTop);
+      } else {
+        setRailTop(0);
+      }
+
+      setRowStarts(
+        rowRefs.current.map((row) => {
+          if (!row) return 0;
+          const card = row.querySelector(".experience-card--timeline");
+          const target = card ?? row;
+          const rect = target.getBoundingClientRect();
+          return rect.top - listTop + rect.height / 2;
+        }),
+      );
     };
 
     measure();
     const observer = new ResizeObserver(measure);
     observer.observe(node);
-    return () => observer.disconnect();
+    window.addEventListener("resize", measure);
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("resize", measure);
+    };
   }, [items]);
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
-    offset: ["start 10%", "end 50%"],
+    offset: ["start 80%", "end 45%"],
   });
 
-  const heightTransform = useTransform(scrollYProgress, [0, 1], [0, height]);
-  const opacityTransform = useTransform(scrollYProgress, [0, 0.1], [0, 1]);
+  const railHeight = Math.max(height - railTop, 0);
+  const heightTransform = useTransform(
+    scrollYProgress,
+    [0, 1],
+    [0, railHeight],
+  );
+  const tipTransform = useTransform(heightTransform, (h) => h + railTop);
+  const opacityTransform = useTransform(scrollYProgress, [0, 0.05], [0, 1]);
+  const tipOpacity = useTransform(heightTransform, (h) => (h > 10 ? 1 : 0));
+
+  useMotionValueEvent(tipTransform, "change", (latest) => {
+    if (!rowStarts.length) {
+      setActiveIndex(-1);
+      return;
+    }
+    let next = -1;
+    for (let i = 0; i < rowStarts.length; i += 1) {
+      if (latest >= rowStarts[i]) next = i;
+    }
+    setActiveIndex(next);
+  });
 
   return (
     <div ref={containerRef} className="experience-timeline">
       <div ref={contentRef} className="experience-timeline__list">
-        {items.map((item) => (
-          <div key={item.id} className="experience-timeline__row">
+        {items.map((item, index) => (
+          <div
+            key={item.id}
+            ref={(node) => {
+              rowRefs.current[index] = node;
+            }}
+            className={cn(
+              "experience-timeline__row",
+              activeIndex === index && "is-active",
+              activeIndex > index && "is-passed",
+            )}
+          >
             <div className="experience-timeline__sticky">
               <div className="experience-timeline__dot" aria-hidden="true">
                 <span className="experience-timeline__dot-inner" />
@@ -76,21 +176,30 @@ export function ExperienceTimeline({
                   <p className="experience-timeline__period">{item.period}</p>
                 ) : null}
               </div>
-              <ExperienceCard
-                item={item}
-                highlightLimit={highlightLimit}
-                headingLevel={headingLevel}
-                previewLinks={previewLinks}
-                className="experience-card--timeline"
-                hidePeriod
-              />
+              <div className="experience-timeline__card-wrap">
+                <TimelineBranch
+                  fillHeight={tipTransform}
+                  start={rowStarts[index] ?? 0}
+                />
+                <ExperienceCard
+                  item={item}
+                  highlightLimit={highlightLimit}
+                  headingLevel={headingLevel}
+                  previewLinks={previewLinks}
+                  className="experience-card--timeline"
+                  hidePeriod
+                />
+              </div>
             </div>
           </div>
         ))}
 
         <div
           className="experience-timeline__rail"
-          style={{ height: `${height}px` }}
+          style={{
+            top: `${railTop}px`,
+            height: `${railHeight}px`,
+          }}
           aria-hidden="true"
         >
           <motion.div
@@ -99,7 +208,11 @@ export function ExperienceTimeline({
               height: heightTransform,
               opacity: opacityTransform,
             }}
-          />
+          >
+            <motion.span style={{ opacity: tipOpacity }}>
+              <TealLineArrow direction="down" />
+            </motion.span>
+          </motion.div>
         </div>
       </div>
     </div>
