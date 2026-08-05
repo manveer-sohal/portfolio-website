@@ -161,19 +161,6 @@ export default function Aurora({
     gl.canvas.style.width = "100%";
     gl.canvas.style.height = "100%";
 
-    let program: Program | undefined;
-
-    function resize() {
-      if (!ctn) return;
-      const width = ctn.offsetWidth;
-      const height = ctn.offsetHeight;
-      renderer.setSize(width, height);
-      if (program) {
-        program.uniforms.uResolution.value = [width, height];
-      }
-    }
-    window.addEventListener("resize", resize);
-
     const geometry = new Triangle(gl);
     if (geometry.attributes.uv) {
       delete geometry.attributes.uv;
@@ -184,7 +171,7 @@ export default function Aurora({
       return [c.r, c.g, c.b];
     });
 
-    program = new Program(gl, {
+    const program = new Program(gl, {
       vertex: VERT,
       fragment: FRAG,
       uniforms: {
@@ -195,6 +182,15 @@ export default function Aurora({
         uBlend: { value: blend },
       },
     });
+
+    function resize() {
+      if (!ctn) return;
+      const width = ctn.offsetWidth;
+      const height = ctn.offsetHeight;
+      renderer.setSize(width, height);
+      program.uniforms.uResolution.value = [width, height];
+    }
+    window.addEventListener("resize", resize);
 
     const mesh = new Mesh(gl, { geometry, program });
     ctn.appendChild(gl.canvas);
