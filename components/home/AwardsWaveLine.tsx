@@ -102,9 +102,10 @@ export function AwardsWaveLine() {
 
     const tick = (now: number) => {
       const section = document.getElementById("awards");
+      const waveEl = wrapRef.current;
       const w = size.w;
 
-      if (!section || w < 8) {
+      if (!section || !waveEl || w < 8) {
         rafRef.current = requestAnimationFrame(tick);
         return;
       }
@@ -118,32 +119,39 @@ export function AwardsWaveLine() {
         return;
       }
 
-      const rect = section.getBoundingClientRect();
+      const waveRect = waveEl.getBoundingClientRect();
       const vh = window.innerHeight;
-      const inView = rect.top < vh * 0.78 && rect.bottom > vh * 0.15;
-      const above = rect.top > vh * 0.92;
-      // Only treat as leaving once most of the section has scrolled past
-      const leavingDown = rect.bottom < vh * 0.22;
+      // Only run while the squiggly line itself is on screen
+      const waveInView =
+        waveRect.bottom > vh * 0.08 && waveRect.top < vh * 0.92;
+
+      if (!waveInView) {
+        progress.current = 0;
+        target.current = 0;
+        setVisible(false);
+        setArrowActive(false);
+        setPath("");
+        lastScroll.current = { y: window.scrollY, t: now };
+        rafRef.current = requestAnimationFrame(tick);
+        return;
+      }
+
+      const leavingDown = waveRect.bottom < vh * 0.28;
 
       const scrollY = window.scrollY;
       const dt = Math.max(now - lastScroll.current.t, 1);
       const vel = (scrollY - lastScroll.current.y) / dt;
       lastScroll.current = { y: scrollY, t: now };
 
-      if (above) {
-        target.current = 0;
-      } else if (
-        // Shoot later — once awards is mostly past, or a strong flick while leaving
+      if (
         (leavingDown && vel > 0.12) ||
-        (vel > FAST_DOWN && rect.bottom < vh * 0.4)
+        (vel > FAST_DOWN && waveRect.bottom < vh * 0.45)
       ) {
         target.current = EXIT;
       } else if (vel < FAST_UP) {
-        target.current = inView ? MID : 0;
-      } else if (inView && target.current < 0.95) {
         target.current = MID;
-      } else if (!inView && vel < 0) {
-        target.current = 0;
+      } else if (target.current < 0.95) {
+        target.current = MID;
       }
 
       // After a full exit, snap back so the next entrance grows from the left
@@ -154,14 +162,17 @@ export function AwardsWaveLine() {
         progress.current = 0;
       }
 
-      // Exit shoots faster than the mid-wave settle
+      // Entrance: crawl from the left, then surge toward mid; exit stays snappy
       const accelerating = target.current > progress.current;
-      const lerp =
-        target.current >= EXIT
-          ? 0.14
-          : accelerating
-            ? 0.11
-            : 0.18;
+      let lerp = 0.18;
+      if (target.current >= EXIT) {
+        lerp = 0.14;
+      } else if (accelerating && target.current <= MID) {
+        const t = Math.min(1, progress.current / MID);
+        lerp = 0.028 + t * t * 0.2;
+      } else if (accelerating) {
+        lerp = 0.11;
+      }
       progress.current += (target.current - progress.current) * lerp;
       if (Math.abs(target.current - progress.current) < 0.002) {
         progress.current = target.current;
@@ -190,11 +201,12 @@ export function AwardsWaveLine() {
       let nextTip = { x: 0, y: baseY, angle: 0 };
 
       if (p <= MID) {
-        // Grow from left → mid, waving
+        // Grow from left → mid: slow start, then quickly fill to center
         wavePhase.current += 0.05;
-        const grow = p / MID;
+        const linear = p / MID;
+        const grow = linear * linear * linear; // ease-in
         const wobble = Math.sin(wavePhase.current * 0.85) * (w * 0.05);
-        drawEndX = Math.max(8, (midX + wobble) * grow);
+        drawEndX = Math.max(8, (midX + wobble) * Math.max(grow, 0.02));
         const built = buildWavePath(
           0,
           drawEndX,

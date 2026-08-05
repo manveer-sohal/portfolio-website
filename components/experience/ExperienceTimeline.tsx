@@ -33,27 +33,24 @@ function TimelineBranch({
     return Math.min(1, Math.max(0, (height - start) / drawWindow));
   });
 
-  const arrowScaleX = useTransform(progress, (p) => (p > 0.05 ? 1 / p : 0));
+  // Stop the stroke short of the card so the arrow has a little breathing room
+  const lineProgress = useTransform(progress, (p) => Math.max(0, p * 0.9));
   const arrowOpacity = useTransform(progress, (p) => (p > 0.08 ? 1 : 0));
+  const tipLeft = useTransform(lineProgress, (p) => `${p * 100}%`);
 
   return (
-    <motion.span
-      className="experience-timeline__branch"
-      style={{ scaleX: progress, y: "-50%" }}
-      aria-hidden="true"
-    >
+    <span className="experience-timeline__branch-wrap" aria-hidden="true">
       <motion.span
-        style={{
-          scaleX: arrowScaleX,
-          opacity: arrowOpacity,
-          display: "block",
-          position: "absolute",
-          inset: 0,
-        }}
+        className="experience-timeline__branch"
+        style={{ scaleX: lineProgress }}
+      />
+      <motion.span
+        className="experience-timeline__branch-tip"
+        style={{ left: tipLeft, opacity: arrowOpacity }}
       >
-        <TealLineArrow direction="right" />
+        <TealLineArrow direction="right" className="teal-line-arrow--on-tip" />
       </motion.span>
-    </motion.span>
+    </span>
   );
 }
 

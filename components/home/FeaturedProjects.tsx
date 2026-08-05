@@ -34,33 +34,42 @@ function FeaturedBranch({
     return Math.min(1, Math.max(0, (height - start) / drawWindow));
   });
 
-  // Counter-scale so the tip arrow isn't flattened by scaleX
-  const arrowScaleX = useTransform(progress, (p) => (p > 0.05 ? 1 / p : 0));
+  // Stop short of the media so the arrow doesn't kiss the frame
+  const lineProgress = useTransform(progress, (p) => Math.max(0, p * 0.88));
   const arrowOpacity = useTransform(progress, (p) => (p > 0.08 ? 1 : 0));
+  const tipLeft = useTransform(lineProgress, (p) =>
+    side === "left" ? `${(1 - p) * 100}%` : `${p * 100}%`,
+  );
 
   return (
-    <motion.span
+    <span
       className={cn(
-        "featured-rail__branch",
+        "featured-rail__branch-wrap",
         side === "left"
-          ? "featured-rail__branch--left"
-          : "featured-rail__branch--right",
+          ? "featured-rail__branch-wrap--left"
+          : "featured-rail__branch-wrap--right",
       )}
-      style={{ scaleX: progress, y: "-50%" }}
       aria-hidden="true"
     >
       <motion.span
-        style={{
-          scaleX: arrowScaleX,
-          opacity: arrowOpacity,
-          display: "block",
-          position: "absolute",
-          inset: 0,
-        }}
+        className={cn(
+          "featured-rail__branch",
+          side === "left"
+            ? "featured-rail__branch--left"
+            : "featured-rail__branch--right",
+        )}
+        style={{ scaleX: lineProgress }}
+      />
+      <motion.span
+        className="featured-rail__branch-tip"
+        style={{ left: tipLeft, opacity: arrowOpacity }}
       >
-        <TealLineArrow direction={side === "left" ? "left" : "right"} />
+        <TealLineArrow
+          direction={side === "left" ? "left" : "right"}
+          className="teal-line-arrow--on-tip"
+        />
       </motion.span>
-    </motion.span>
+    </span>
   );
 }
 

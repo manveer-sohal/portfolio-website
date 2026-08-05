@@ -12,8 +12,6 @@ type ProjectsExperienceBridgeProps = {
   children: ReactNode;
 };
 
-const CONNECTOR_SCROLL_PX = 300;
-
 /**
  * Continues the featured teal rail into Experience with a scroll-drawn
  * path and a tip arrow that tracks along the stroke.
@@ -23,7 +21,6 @@ export function ProjectsExperienceBridge({
 }: ProjectsExperienceBridgeProps) {
   const wrapRef = useRef<HTMLDivElement>(null);
   const pathRef = useRef<SVGPathElement>(null);
-  const armedScrollY = useRef<number | null>(null);
   const [path, setPath] = useState("");
   const [size, setSize] = useState({ w: 0, h: 0 });
   const [ready, setReady] = useState(false);
@@ -59,7 +56,6 @@ export function ProjectsExperienceBridge({
         setReady(false);
         setPath("");
         drawProgress.set(0);
-        armedScrollY.current = null;
         return;
       }
 
@@ -145,28 +141,50 @@ export function ProjectsExperienceBridge({
       const track = wrap.querySelector(
         ".featured-rail__track",
       ) as HTMLElement | null;
+      const endEl = wrap.querySelector(
+        ".experience-timeline__row .experience-timeline__dot",
+      ) as HTMLElement | null;
 
-      if (!fill || !track || window.matchMedia("(max-width: 899px)").matches) {
-        armedScrollY.current = null;
+      if (
+        !fill ||
+        !track ||
+        !endEl ||
+        window.matchMedia("(max-width: 899px)").matches
+      ) {
         drawProgress.set(0);
         raf = window.requestAnimationFrame(sync);
         return;
       }
 
+      const vh = window.innerHeight;
       const fillH = fill.getBoundingClientRect().height;
-      const trackH = track.getBoundingClientRect().height;
-      const complete = trackH > 0 && fillH >= trackH - 4;
+      const trackRect = track.getBoundingClientRect();
+      const endRect = endEl.getBoundingClientRect();
+      const trackBottom = trackRect.bottom;
+      const endMid = endRect.top + endRect.height / 2;
 
-      if (!complete) {
-        armedScrollY.current = null;
-        drawProgress.set(0);
-      } else {
-        if (armedScrollY.current === null) {
-          armedScrollY.current = window.scrollY;
-        }
-        const delta = Math.max(0, window.scrollY - armedScrollY.current);
-        drawProgress.set(Math.min(1, delta / CONNECTOR_SCROLL_PX));
+      // Already past this connector (reload mid-page, or scrolled back up from below)
+      if (endMid < vh * 0.48 || trackBottom < vh * 0.12) {
+        drawProgress.set(1);
+        raf = window.requestAnimationFrame(sync);
+        return;
       }
+
+      const fillComplete = trackRect.height > 0 && fillH >= trackRect.height - 4;
+      if (!fillComplete) {
+        drawProgress.set(0);
+        raf = window.requestAnimationFrame(sync);
+        return;
+      }
+
+      // Draw as the track tip moves up through the viewport
+      const startLine = vh * 0.58;
+      const endLine = vh * 0.36;
+      const p = Math.min(
+        1,
+        Math.max(0, (startLine - trackBottom) / (startLine - endLine)),
+      );
+      drawProgress.set(p);
 
       raf = window.requestAnimationFrame(sync);
     };
