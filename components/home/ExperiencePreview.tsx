@@ -14,7 +14,7 @@ export function ExperiencePreview({ items }: ExperiencePreviewProps) {
       className="section-space"
       aria-labelledby="experience-heading"
     >
-      <div className="container-full">
+      <div className="container-page experience-section-inner">
         <Reveal>
           <SectionHeading
             id="experience-heading"

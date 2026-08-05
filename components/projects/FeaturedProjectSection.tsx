@@ -1,264 +1,164 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { Project } from "@/data/types";
-import {
-  getProjectTheme,
-  resolveProjectCover,
-  type ProjectVisualTheme,
-} from "@/lib/project-themes";
+import { getProjectTheme, resolveProjectCover } from "@/lib/project-themes";
 import { cn } from "@/lib/utils";
-import { ExpandableDetails } from "./ExpandableDetails";
-import { FeaturedProjectTitle } from "./FeaturedProjectTitle";
+import { FeaturedProjectCardGlow } from "./FeaturedProjectCardGlow";
 import { FeaturedProjectVideo } from "./FeaturedProjectVideo";
 
 type FeaturedProjectSectionProps = {
   project: Project;
-  /** Override theme media position when needed. */
-  mediaPosition?: "left" | "right";
   priority?: boolean;
+  /** Desktop media column side; alternates per project. */
+  mediaSide?: "left" | "right";
 };
 
-function ProjectLogoMark({
-  project,
-  theme,
-}: {
-  project: Project;
-  theme: ProjectVisualTheme;
-}) {
+function ExternalIcon({ className }: { className?: string }) {
   return (
-    <div className="flex flex-wrap items-center gap-2.5">
-      {theme.media.logoSrc ? (
-        <Image
-          src={theme.media.logoSrc}
-          alt={theme.media.logoAlt ?? `${project.name} logo`}
-          width={theme.id === "joblinx" ? 56 : 36}
-          height={theme.id === "joblinx" ? 56 : 36}
-          className={cn(
-            "rounded-[6px] object-contain",
-            theme.id === "joblinx" ? "h-16 w-16" : "h-12 w-12",
-          )}
-        />
-      ) : null}
-      {theme.media.wordmark ? (
-        <span className={theme.typography.wordmarkClassName}>
-          {theme.media.wordmark}
-        </span>
-      ) : null}
-    </div>
+    <svg
+      className={className}
+      viewBox="0 0 24 24"
+      fill="none"
+      aria-hidden="true"
+    >
+      <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="1.6" />
+      <path
+        d="M3 12h18M12 3c2.5 2.8 3.8 5.8 3.8 9s-1.3 6.2-3.8 9c-2.5-2.8-3.8-5.8-3.8-9S9.5 5.8 12 3Z"
+        stroke="currentColor"
+        strokeWidth="1.6"
+      />
+    </svg>
+  );
+}
+
+function GithubIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      aria-hidden="true"
+    >
+      <path d="M12 2C6.48 2 2 6.58 2 12.26c0 4.52 2.87 8.35 6.84 9.7.5.1.68-.22.68-.48 0-.24-.01-.87-.01-1.7-2.78.62-3.37-1.37-3.37-1.37-.46-1.2-1.12-1.52-1.12-1.52-.92-.64.07-.63.07-.63 1.02.07 1.56 1.07 1.56 1.07.9 1.58 2.36 1.12 2.94.86.09-.67.35-1.12.63-1.38-2.22-.26-4.55-1.14-4.55-5.07 0-1.12.39-2.03 1.03-2.75-.1-.26-.45-1.3.1-2.7 0 0 .84-.27 2.75 1.05A9.3 9.3 0 0 1 12 6.84c.85 0 1.7.12 2.5.34 1.9-1.32 2.74-1.05 2.74-1.05.55 1.4.2 2.44.1 2.7.64.72 1.03 1.63 1.03 2.75 0 3.94-2.34 4.8-4.57 5.06.36.32.68.94.68 1.9 0 1.38-.01 2.48-.01 2.82 0 .26.18.59.69.48A10.33 10.33 0 0 0 22 12.26C22 6.58 17.52 2 12 2Z" />
+    </svg>
   );
 }
 
 /**
- * Full-width branded homepage feature.
- * Logo + title sit above the card on the portfolio shell; card content
- * keeps brand surfaces. DOM order stays content → media → actions on mobile.
+ * Editorial featured project: large media on top, concise meta below.
  */
 export function FeaturedProjectSection({
   project,
-  mediaPosition,
   priority = false,
+  mediaSide = "left",
 }: FeaturedProjectSectionProps) {
   const theme = getProjectTheme(project.slug);
   const cover = resolveProjectCover(project);
   const caseStudy = `/projects/${project.slug}`;
   const live = project.links.find((link) => link.type === "live");
   const github = project.links.find((link) => link.type === "github");
-  const mediaSide = mediaPosition ?? theme?.media.mediaPosition ?? "right";
-  const mediaLeft = mediaSide === "left";
+  const video = theme?.media.featuredVideo;
+  const description = project.featuredSupport ?? project.shortDescription;
+  const stack = project.technologies.slice(0, 6);
+  const metaLabel = project.status;
+  const glowColor =
+    theme?.id === "almaari" ? theme.colors.primary : theme?.colors.name;
 
-  if (!theme || !cover) {
+  if (!theme || (!cover && !video) || !glowColor) {
     return null;
   }
-
-  // Above the card on charcoal: Almaari ink is too dark — use brand accent.
-  const titleAboveCard =
-    theme.id === "almaari" ? theme.colors.primary : theme.colors.name;
 
   return (
     <article
       className={cn(
-        "project-theme space-y-4",
+        "project-theme featured-editorial",
         `project-theme--${theme.id}`,
+        mediaSide === "left"
+          ? "featured-editorial--media-left"
+          : "featured-editorial--media-right",
         theme.typography.bodyClassName,
       )}
+      data-featured-glow={project.slug}
       aria-labelledby={`${project.slug}-featured-heading`}
     >
-      <div
-        className="flex flex-wrap items-center gap-3 px-0.5"
-        data-reveal-trigger=""
-      >
-        <ProjectLogoMark project={project} theme={theme} />
-        <FeaturedProjectTitle
-          id={`${project.slug}-featured-heading`}
-          name={project.name}
-          href={caseStudy}
-          color={titleAboveCard}
-          headingClassName={theme.typography.headingClassName}
-        />
+      <div className="featured-editorial__media-shell">
+        <FeaturedProjectCardGlow color={glowColor} />
+        <div className="featured-editorial__media" data-reveal-trigger="">
+          {video ? (
+            <FeaturedProjectVideo
+              webm={video.webm}
+              mp4={video.mp4}
+              poster={video.poster}
+              label={video.ariaLabel ?? `Animated preview of ${project.name}`}
+              framed={theme.id === "almaari"}
+              priority={priority}
+            />
+          ) : (
+            <div className="relative h-full min-h-0 w-full">
+              <Image
+                src={cover}
+                alt={`${project.name} product screenshot`}
+                fill
+                className="object-cover object-top"
+                sizes="(max-width: 900px) 100vw, 60vw"
+                priority={priority}
+              />
+            </div>
+          )}
+        </div>
       </div>
 
-      <div className="project-theme__card">
-        <div
-          className={cn(
-            "grid gap-6 p-5 sm:p-6 md:gap-8 md:p-8",
-            "lg:grid-cols-2 lg:items-start",
-            mediaLeft
-              ? "lg:grid-cols-[minmax(0,1.12fr)_minmax(0,0.88fr)]"
-              : "lg:grid-cols-[minmax(0,0.88fr)_minmax(0,1.12fr)]",
-          )}
-        >
-          <header
+      <div className="featured-editorial__body">
+        <div className="featured-editorial__header">
+          <h3
+            id={`${project.slug}-featured-heading`}
             className={cn(
-              "space-y-4",
-              mediaLeft
-                ? "lg:col-start-2 lg:row-start-1"
-                : "lg:col-start-1 lg:row-start-1",
+              "featured-editorial__title",
+              theme.typography.headingClassName,
             )}
           >
-            {project.status ? (
-              <span
-                className="inline-flex rounded-[6px] border px-2.5 py-1 text-sm font-medium"
-                style={{
-                  borderColor: "var(--project-border)",
-                  color: "var(--project-text-secondary)",
-                  background: "var(--project-surface)",
-                }}
+            <Link href={caseStudy} className="featured-editorial__name">
+              {project.name}
+            </Link>
+            {metaLabel ? (
+              <span className="featured-editorial__meta"> — {metaLabel}</span>
+            ) : null}
+          </h3>
+
+          <div className="featured-editorial__links">
+            {live ? (
+              <a
+                href={live.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="featured-editorial__icon-link"
+                aria-label={`${project.name} live product`}
               >
-                {project.status}
-              </span>
+                <ExternalIcon className="h-5 w-5" />
+              </a>
             ) : null}
-            <p
-              className="max-w-prose text-lg leading-relaxed md:text-xl md:leading-relaxed"
-              style={{ color: "var(--project-text-secondary)" }}
-            >
-              {project.shortDescription}
-            </p>
-            <p
-              className="text-base font-medium md:text-lg"
-              style={{ color: "var(--project-text)" }}
-            >
-              {project.role}
-            </p>
-            {project.metrics.length > 0 ? (
-              <div className="grid gap-2 sm:grid-cols-3">
-                {project.metrics.slice(0, 3).map((metric) => (
-                  <div key={metric.label} className="project-theme__metric p-3 md:p-3.5">
-                    <p
-                      className={cn(
-                        "text-xl font-semibold tracking-tight md:text-2xl",
-                        theme.id === "supportpilot" && "tabular-nums",
-                        theme.id === "joblinx" &&
-                          theme.typography.headingClassName,
-                      )}
-                      style={{ color: "var(--project-text)" }}
-                    >
-                      {metric.value}
-                    </p>
-                    <p
-                      className={cn(
-                        "mt-0.5 text-sm font-medium",
-                        theme.id === "supportpilot" &&
-                          "uppercase tracking-[0.12em]",
-                      )}
-                      style={{ color: "var(--project-text-secondary)" }}
-                    >
-                      {metric.label}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            ) : null}
-          </header>
-
-          <div
-            className={cn(
-              "min-w-0",
-              mediaLeft
-                ? "lg:col-start-1 lg:row-start-1 lg:row-span-2"
-                : "lg:col-start-2 lg:row-start-1 lg:row-span-2",
-            )}
-          >
-            <div
-              className={cn(
-                "project-theme__media",
-                "motion-safe:transition-transform motion-safe:duration-300 motion-safe:ease-out",
-                "motion-safe:hover:-translate-y-0.5",
-              )}
-            >
-              {theme.media.featuredVideo ? (
-                <FeaturedProjectVideo
-                  webm={theme.media.featuredVideo.webm}
-                  mp4={theme.media.featuredVideo.mp4}
-                  poster={theme.media.featuredVideo.poster}
-                  label={`${project.name} product demo`}
-                />
-              ) : (
-                <Image
-                  src={cover}
-                  alt={`${project.name} product screenshot`}
-                  width={1400}
-                  height={900}
-                  className="aspect-[16/10] w-full object-cover object-top"
-                  sizes="(max-width: 1024px) 100vw, 55vw"
-                  priority={priority}
-                />
-              )}
-            </div>
-          </div>
-
-          <div
-            className={cn(
-              "space-y-5",
-              mediaLeft
-                ? "lg:col-start-2 lg:row-start-2"
-                : "lg:col-start-1 lg:row-start-2",
-            )}
-          >
-            <div className="flex flex-wrap gap-2">
-              {project.technologies.slice(0, 6).map((tech) => (
-                <span
-                  key={tech}
-                  className="project-theme__tag px-3 py-1.5 text-sm"
-                >
-                  {tech}
-                </span>
-              ))}
-            </div>
-
-            {project.expandable ? (
-              <ExpandableDetails preview={project.expandable} />
-            ) : null}
-
-            <div className="flex flex-wrap gap-3">
-              <Link
-                href={caseStudy}
-                className="project-theme__cta min-h-11 px-5 py-2.5 text-base"
+            {github ? (
+              <a
+                href={github.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="featured-editorial__icon-link"
+                aria-label={`${project.name} source on GitHub`}
               >
-                View Case Study
-              </Link>
-              {live ? (
-                <a
-                  href={live.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="project-theme__cta-secondary min-h-11 px-5 py-2.5 text-base"
-                >
-                  Visit Live Product
-                </a>
-              ) : null}
-              {github ? (
-                <a
-                  href={github.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="project-theme__cta-ghost min-h-11 px-4 py-2.5 text-base"
-                >
-                  View Source
-                </a>
-              ) : null}
-            </div>
+                <GithubIcon className="h-5 w-5" />
+              </a>
+            ) : null}
           </div>
         </div>
+
+        <p className="featured-editorial__stack">{stack.join("  ·  ")}</p>
+
+        <p className="featured-editorial__description">{description}</p>
+
+        <Link href={caseStudy} className="featured-editorial__cta">
+          View Case Study
+          <span aria-hidden="true"> →</span>
+        </Link>
       </div>
     </article>
   );

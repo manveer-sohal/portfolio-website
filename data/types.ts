@@ -39,6 +39,19 @@ export interface ExpandablePreview {
   outcomes: string[];
 }
 
+export interface ProjectFeaturePreview {
+  src: string;
+  alt: string;
+  label: string;
+}
+
+export type ProjectCoverVideo = {
+  webm: string;
+  mp4: string;
+  poster: string;
+  ariaLabel: string;
+};
+
 export type ProjectStatus =
   | "Live product"
   | "In active development"
@@ -52,6 +65,10 @@ export interface Project {
   slug: string;
   name: string;
   shortDescription: string;
+  /** Optional featured-section product headline (editorial). */
+  featuredHeadline?: string;
+  /** Optional featured-section supporting sentence. */
+  featuredSupport?: string;
   fullDescription: string;
   problemSummary: string;
   status?: ProjectStatus;
@@ -62,6 +79,8 @@ export interface Project {
   links: ProjectLink[];
   coverImage?: string;
   gallery?: ProjectGalleryItem[];
+  /** Compact secondary feature crops for featured showcase. */
+  featurePreviews?: ProjectFeaturePreview[];
   features?: string[];
   problem?: string[];
   solution?: string[];

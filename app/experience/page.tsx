@@ -15,7 +15,7 @@ export const metadata: Metadata = {
 export default function ExperiencePage() {
   return (
     <div className="section-space">
-      <div className="container-full">
+      <div className="container-page experience-section-inner">
         <SectionHeading
           eyebrow="Experience"
           title="Where I’ve built and shipped"

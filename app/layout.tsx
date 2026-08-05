@@ -6,7 +6,7 @@ import {
   Plus_Jakarta_Sans,
   Source_Sans_3,
 } from "next/font/google";
-import { Footer } from "@/components/layout/Footer";
+import { ConditionalFooter } from "@/components/layout/ConditionalFooter";
 import { Navbar } from "@/components/layout/Navbar";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { siteConfig } from "@/data/site";
@@ -122,7 +122,7 @@ export default function RootLayout({
         </a>
         <Navbar />
         <main id="main-content">{children}</main>
-        <Footer />
+        <ConditionalFooter />
       </body>
     </html>
   );

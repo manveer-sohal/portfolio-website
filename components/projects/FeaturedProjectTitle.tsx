@@ -10,6 +10,7 @@ type FeaturedProjectTitleProps = {
   href: string;
   color: string;
   headingClassName?: string;
+  sizeClassName?: string;
 };
 
 /**
@@ -21,6 +22,7 @@ export function FeaturedProjectTitle({
   href,
   color,
   headingClassName,
+  sizeClassName = "text-3xl md:text-4xl lg:text-5xl",
 }: FeaturedProjectTitleProps) {
   const ref = useRef<HTMLDivElement>(null);
 
@@ -55,7 +57,8 @@ export function FeaturedProjectTitle({
       <h3
         id={id}
         className={cn(
-          "project-theme__name text-3xl font-semibold tracking-tight md:text-4xl lg:text-5xl",
+          "project-theme__name font-semibold tracking-tight",
+          sizeClassName,
           headingClassName,
         )}
         style={{ color }}

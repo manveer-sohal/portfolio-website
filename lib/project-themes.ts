@@ -44,6 +44,7 @@ export type ProjectVisualTheme = {
       webm: string;
       mp4: string;
       poster: string;
+      ariaLabel?: string;
     };
     /** Desktop media column: content stays first in the DOM for accessibility. */
     mediaPosition: "left" | "right";
@@ -89,6 +90,8 @@ export const projectThemes: Record<FeaturedThemeId, ProjectVisualTheme> = {
         webm: "/projects/almaari/featured/cover.webm",
         mp4: "/projects/almaari/featured/cover.mp4",
         poster: "/projects/almaari/featured/cover-poster.webp",
+        ariaLabel:
+          "Animated preview of the Almaari landing page and wardrobe interface.",
       },
       mediaPosition: "right",
     },

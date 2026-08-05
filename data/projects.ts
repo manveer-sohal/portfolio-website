@@ -6,6 +6,10 @@ export const projects: Project[] = [
     name: "Almaari",
     shortDescription:
       "An AI-assisted digital wardrobe that helps users organize clothing, build outfits, and make better use of what they already own.",
+    featuredHeadline:
+      "Organize your wardrobe, build outfits, and rediscover what you already own.",
+    featuredSupport:
+      "Almaari is an AI-assisted digital wardrobe that combines clothing organization, outfit creation, and intelligent styling in one product.",
     fullDescription:
       "Almaari is a full-stack wardrobe product. Users upload clothing photos, get AI-assisted metadata, browse and filter their wardrobe, compose outfits, and ask an in-product assistant for styling tips. The system spans authentication, object storage, background image processing, caching, and a polished dashboard experience.",
     problemSummary:
@@ -30,19 +34,19 @@ export const projects: Project[] = [
     ],
     metrics: [
       {
-        label: "API performance",
+        label: "API performance improvement",
         value: "~25%",
         description:
           "Approximately 25% improvement in MongoDB and Redis-backed API performance measured during development",
       },
       {
-        label: "Manual metadata",
+        label: "Less manual metadata entry",
         value: "~40%",
         description:
           "Roughly 40% less manual clothing metadata entry through AI-assisted analysis",
       },
       {
-        label: "Ownership",
+        label: "Product ownership",
         value: "End-to-end",
         description:
           "Built across frontend, backend, auth, data modelling, storage, image processing, AI, and deployment",
@@ -66,6 +70,23 @@ export const projects: Project[] = [
       },
     ],
     coverImage: "/projects/almaari/dashboard.png",
+    featurePreviews: [
+      {
+        src: "/projects/almaari/dashboard.png",
+        alt: "Almaari wardrobe grid with clothing cards and filters",
+        label: "Wardrobe",
+      },
+      {
+        src: "/projects/almaari/add-clothes.png",
+        alt: "Almaari clothing upload and AI metadata flow",
+        label: "AI Stylist",
+      },
+      {
+        src: "/projects/almaari/clothes-picked.png",
+        alt: "Almaari outfit builder with selected garments",
+        label: "Outfit Builder",
+      },
+    ],
     gallery: [
       {
         src: "/projects/almaari/dashboard.png",
@@ -168,13 +189,11 @@ export const projects: Project[] = [
     ],
     expandable: {
       challenge:
-        "Users abandoned digital wardrobes when uploads felt slow and labelling clothing took too much effort.",
+        "Uploads felt slow and manual clothing labels made digital wardrobes hard to maintain.",
       decision:
-        "Split metadata persistence from image processing and use AI to draft clothing attributes instead of forcing fully manual entry.",
+        "Split metadata persistence from async image processing, cache hot wardrobe reads in Redis, and draft attributes with AI instead of forcing fully manual entry.",
       outcomes: [
-        "Approximately 25% better MongoDB and Redis-backed API performance during development",
-        "Roughly 40% less manual metadata work via AI-assisted analysis",
-        "A live product spanning auth, storage, image processing, AI, and deployment",
+        "A live product spanning auth, S3 and CloudFront media delivery, async processing, AI analysis, and deployment — with roughly 40% less manual metadata work.",
       ],
     },
     relatedSlugs: ["joblinx", "supportpilot"],

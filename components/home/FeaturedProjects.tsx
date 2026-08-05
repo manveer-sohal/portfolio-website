@@ -18,18 +18,20 @@ export function FeaturedProjects({ projects }: FeaturedProjectsProps) {
         <Reveal>
           <SectionHeading
             id="featured-heading"
-            title="Featured Projects"
+            eyebrow="Featured Projects"
+            title="Projects I'm proud of"
             description="My projects I built to solve problems. Each built end to end with real engineering ownership."
             className="mb-0"
           />
         </Reveal>
 
-        <div className="mt-10 space-y-10 md:mt-12 md:space-y-12">
+        <div className="  space-y-2   md:space-y-3 ">
           {projects.map((project, index) => (
             <Reveal key={project.slug} variant="feature">
               <FeaturedProjectSection
                 project={project}
                 priority={index === 0}
+                mediaSide={index % 2 === 0 ? "left" : "right"}
               />
             </Reveal>
           ))}
