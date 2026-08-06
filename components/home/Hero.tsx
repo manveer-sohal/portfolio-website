@@ -21,7 +21,7 @@ export function Hero() {
               Almaari and JobLinx and have worked across generative AI, data
               systems, and computer vision.
             </p>
-            <div className="mt-7 flex flex-wrap items-center justify-center gap-3 md:justify-start">
+            <div className="mt-7 flex flex-col items-stretch justify-center gap-3 min-[400px]:flex-row min-[400px]:flex-wrap min-[400px]:items-center md:justify-start">
               <Button href="/projects">View Projects</Button>
               <Button href="/contact" variant="secondary">
                 Contact Me
@@ -29,7 +29,7 @@ export function Hero() {
               <ExternalLink
                 href={siteConfig.links.linkedin}
                 aria-label={`${siteConfig.name} on LinkedIn`}
-                className="text-base"
+                className="justify-center text-base min-[400px]:justify-start"
               >
                 LinkedIn
               </ExternalLink>

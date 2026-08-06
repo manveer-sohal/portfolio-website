@@ -38,7 +38,7 @@ export const metadata: Metadata = {
         url: "/images/meta-image.png",
         width: 1200,
         height: 630,
-        alt: `${siteConfig.name} portfolio preview`,
+        alt: `${siteConfig.name} — Full-Stack Developer`,
       },
     ],
   },
