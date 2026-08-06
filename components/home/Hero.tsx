@@ -1,6 +1,4 @@
 import Image from "next/image";
-import { Button } from "@/components/ui/Button";
-import { ExternalLink } from "@/components/ui/ExternalLink";
 import { siteConfig } from "@/data/site";
 
 export function Hero() {
@@ -13,27 +11,17 @@ export function Hero() {
               Full-Stack Developer · AI-Powered Products
             </p>
             <h1 className="text-4xl font-semibold tracking-tight text-foreground sm:text-5xl md:text-5xl md:leading-[1.12]">
-              I build useful software from idea to production.
+              I build useful software from{" "}
+              <span className="text-accent">idea to production</span>.
             </h1>
             <p className="mt-5 max-w-xl text-lg leading-relaxed text-muted-strong md:mx-0 md:text-xl md:max-w-none">
-              I’m {siteConfig.name}, a full-stack developer focused on AI-assisted
-              products, backend systems, and polished web experiences. I created
-              Almaari and JobLinx and have worked across generative AI, data
-              systems, and computer vision.
+              I’m {siteConfig.name}, a full-stack developer focused on{" "}
+              <span className="text-accent">AI-assisted products</span>, backend
+              systems, and polished web experiences. I created{" "}
+              <span className="text-accent">Almaari</span> and{" "}
+              <span className="text-accent">JobLinx</span> and have worked across
+              generative AI, data systems, and computer vision.
             </p>
-            <div className="mt-7 flex flex-col items-stretch justify-center gap-3 min-[400px]:flex-row min-[400px]:flex-wrap min-[400px]:items-center md:justify-start">
-              <Button href="/projects">View Projects</Button>
-              <Button href="/contact" variant="secondary">
-                Contact Me
-              </Button>
-              <ExternalLink
-                href={siteConfig.links.linkedin}
-                aria-label={`${siteConfig.name} on LinkedIn`}
-                className="justify-center text-base min-[400px]:justify-start"
-              >
-                LinkedIn
-              </ExternalLink>
-            </div>
             <p className="mt-5 text-base text-muted">
               Based in {siteConfig.location} · {siteConfig.openTo}
             </p>
