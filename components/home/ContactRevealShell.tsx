@@ -10,6 +10,9 @@ type ContactRevealShellProps = {
 /**
  * Sticky/fixed footer-reveal: upper homepage content covers Contact + Footer,
  * then scrolls away to uncover them at the bottom of the page.
+ *
+ * Disabled on small screens and reduced-motion — the fixed layer is taller
+ * than a phone viewport, so the form intro/fields become unreachable.
  */
 export function ContactRevealShell({
   children,
@@ -18,19 +21,28 @@ export function ContactRevealShell({
   const contentRef = useRef<HTMLDivElement>(null);
   const revealRef = useRef<HTMLDivElement>(null);
   const [revealHeight, setRevealHeight] = useState(0);
-  const [reduceMotion, setReduceMotion] = useState(false);
+  const [staticReveal, setStaticReveal] = useState(true);
   const [uncovered, setUncovered] = useState(false);
 
   useEffect(() => {
-    const media = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const sync = () => setReduceMotion(media.matches);
+    const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    // Treat tablet / narrow desktop like mobile — fixed reveal is taller than
+    // the viewport and bleeds through the sticky nav.
+    const desktop = window.matchMedia("(min-width: 1024px)");
+    const sync = () => {
+      setStaticReveal(motion.matches || !desktop.matches);
+    };
     sync();
-    media.addEventListener("change", sync);
-    return () => media.removeEventListener("change", sync);
+    motion.addEventListener("change", sync);
+    desktop.addEventListener("change", sync);
+    return () => {
+      motion.removeEventListener("change", sync);
+      desktop.removeEventListener("change", sync);
+    };
   }, []);
 
   useEffect(() => {
-    if (reduceMotion) {
+    if (staticReveal) {
       setRevealHeight(0);
       setUncovered(true);
       return;
@@ -51,10 +63,10 @@ export function ContactRevealShell({
       observer.disconnect();
       window.removeEventListener("resize", measure);
     };
-  }, [reduceMotion, reveal]);
+  }, [staticReveal, reveal]);
 
   useEffect(() => {
-    if (reduceMotion) return;
+    if (staticReveal) return;
 
     const update = () => {
       const content = contentRef.current;
@@ -71,9 +83,9 @@ export function ContactRevealShell({
       window.removeEventListener("scroll", update);
       window.removeEventListener("resize", update);
     };
-  }, [reduceMotion, revealHeight]);
+  }, [staticReveal, revealHeight]);
 
-  if (reduceMotion) {
+  if (staticReveal) {
     return (
       <>
         {children}

@@ -87,14 +87,14 @@ export function ContactFormPointer() {
       const w = Math.max(Math.round(sectionRect.width), 1);
       const h = Math.max(Math.round(sectionRect.height), 1);
 
-      const startX = introRect.left - sectionRect.left + 10;
+      const startX = Math.max(12, introRect.left - sectionRect.left - 48);
       const startY = 8;
       const turnY = formRect.top - sectionRect.top + formRect.height * 0.72;
       const formLeft = formRect.left - sectionRect.left;
       const gap = formLeft - startX;
-      const endX = startX + gap * 0.52;
+      const endX = startX + gap * 0.18;
       const endY = turnY;
-      const r = Math.min(64, Math.max(40, gap * 0.22));
+      const r = Math.min(48, Math.max(28, gap * 0.14));
 
       const d = [
         `M ${startX} ${startY}`,

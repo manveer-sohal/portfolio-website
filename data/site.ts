@@ -4,15 +4,15 @@ export const siteConfig = {
   description:
     "Portfolio of Manveer Sohal, a full-stack developer building AI-assisted products, backend systems, and polished web applications including Almaari, JobLinx, and SupportPilot.",
   /**
-   * Update this to the final production domain before deployment.
-   * All metadataBase, canonical, sitemap, robots, and Open Graph URLs derive from this value.
+   * Canonical site origin. Used for metadataBase, OG/Twitter images, sitemap, robots, JSON-LD.
+   * Keep this on the Vercel production domain (or a custom domain) — not GitHub Pages.
    */
-  url: "https://manveer-sohal.github.io/portfolio-website",
+  url: "https://manveersohal.com",
   locale: "en_CA",
   location: "Ontario, Canada",
   openTo:
     "Open to full-stack, backend, and AI-focused software development opportunities",
-  /** Primary professional contact email — used for mailto links and the contact page. */
+  /** Primary professional contact email — destination for contact form delivery. */
   email: "manveersohalwork@gmail.com",
   links: {
     github: "https://github.com/manveer-sohal",
@@ -25,9 +25,3 @@ export const siteConfig = {
     { label: "Contact", href: "/contact" },
   ],
 } as const;
-
-export function mailtoHref(subject?: string): string {
-  const address = siteConfig.email;
-  if (!subject) return `mailto:${address}`;
-  return `mailto:${address}?subject=${encodeURIComponent(subject)}`;
-}

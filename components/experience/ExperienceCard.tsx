@@ -37,7 +37,7 @@ export function ExperienceCard({
   return (
     <article className={cn("experience-card", className)}>
       <header className="experience-card__header">
-        <div className="min-w-0 flex-1">
+        <div className="experience-card__heading">
           <Heading className="experience-card__role">{item.title}</Heading>
           <ExperienceTitleLine
             organization={item.organization}

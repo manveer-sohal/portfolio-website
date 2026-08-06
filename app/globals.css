@@ -487,7 +487,7 @@ a {
   background:
     linear-gradient(135deg, rgba(255, 255, 255, 0.025) 0%, transparent 42%),
     var(--surface);
-  padding: 1.5rem 1.5rem 1.5rem 1.65rem;
+  padding: 1.25rem 1.15rem 1.25rem 1.25rem;
 }
 
 .experience-card::before {
@@ -510,10 +510,32 @@ a {
 
 .experience-card__header {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   align-items: flex-start;
-  justify-content: space-between;
-  gap: 0.75rem 1.25rem;
+  gap: 0.75rem;
+}
+
+@media (min-width: 640px) {
+  .experience-card__header {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 0.75rem 1.25rem;
+  }
+}
+
+.experience-card__heading {
+  min-width: 0;
+  width: 100%;
+}
+
+@media (min-width: 640px) {
+  .experience-card__heading {
+    /* Prefer wrapping the badge below instead of collapsing this to 0 */
+    flex: 1 1 14rem;
+    width: auto;
+    min-width: min(100%, 14rem);
+  }
 }
 
 .experience-card__role {
@@ -559,7 +581,7 @@ a {
   font-style: italic;
   font-weight: 400;
   color: var(--muted);
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
 }
 
 .experience-card__meta {
@@ -570,7 +592,8 @@ a {
 }
 
 .experience-card__badge {
-  flex-shrink: 0;
+  flex: 0 1 auto;
+  max-width: 100%;
   border: 1px solid var(--border-strong);
   border-radius: var(--radius-sm);
   background: var(--surface-elevated);
@@ -772,7 +795,7 @@ a {
   font-size: 0.95rem;
   font-weight: 500;
   color: var(--accent);
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
 }
 
 .experience-timeline__dates-mobile {
@@ -799,6 +822,7 @@ a {
   top: 50%;
   right: calc(100% + 0.4rem);
   z-index: 1;
+  display: none;
   width: calc(2.5rem + 1rem - 1.15rem - 0.4rem);
   height: 2px;
   transform: translateY(-50%);
@@ -899,6 +923,7 @@ a {
   }
 
   .experience-timeline__branch-wrap {
+    display: block;
     width: calc(10.5rem + 1.75rem - 1.15rem - 0.4rem);
   }
 }
@@ -1247,7 +1272,26 @@ a {
   min-height: 0;
   min-width: 0;
   overflow: visible;
-  perspective: 960px;
+  transform: translate3d(0, 0, 0) scale(1);
+  transition: transform 360ms cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .featured-editorial__media-shell:hover {
+    z-index: 6;
+    transform: translate3d(0, -8px, 0) scale(1.025);
+  }
+
+  .featured-editorial__media-shell:hover .featured-editorial__media {
+    box-shadow:
+      0 18px 40px rgba(0, 0, 0, 0.32),
+      0 1px 0 rgba(255, 255, 255, 0.05);
+  }
+
+  .featured-rail__item:has(.featured-editorial__media-shell:hover) > .reveal {
+    z-index: 6;
+  }
 }
 
 .featured-card-glow {
@@ -1461,6 +1505,13 @@ a {
   margin-bottom: 0.5rem;
 }
 
+/* Reveal creates its own stacking context (transform) — raise it above
+   the center rail (z:2) and branch arrows (z:3) so media covers the tip */
+.featured-rail__item > .reveal {
+  position: relative;
+  z-index: 5;
+}
+
 @media (min-width: 768px) {
   .featured-rail__item {
     margin-bottom: 0.75rem;
@@ -1589,6 +1640,9 @@ a {
 /* Featured project — stacked on mobile, alternating side-by-side on desktop */
 .featured-editorial {
   --featured-frame-inset: 0.15rem;
+  position: relative;
+  /* Above center rail + branch arrows so media/card occludes the tip */
+  z-index: 5;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -1654,19 +1708,7 @@ a {
   border-radius: var(--featured-media-radius, 18px);
   background: var(--surface-elevated);
   box-shadow: 0 1px 0 rgba(255, 255, 255, 0.04);
-  transform: rotateX(0deg) rotateY(0deg) translate3d(0, 0, 0);
-  transform-style: preserve-3d;
-  transition:
-    transform 360ms cubic-bezier(0.22, 1, 0.36, 1),
-    box-shadow 360ms ease;
-  will-change: transform;
-}
-
-.featured-editorial__media:hover {
-  transform: rotateX(2.4deg) rotateY(-3.2deg) translate3d(0, -3px, 0);
-  box-shadow:
-    0 12px 28px rgba(0, 0, 0, 0.28),
-    0 1px 0 rgba(255, 255, 255, 0.04);
+  transition: box-shadow 360ms ease;
 }
 
 .featured-editorial__media-hit {
@@ -1683,13 +1725,20 @@ a {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .featured-editorial__media {
+  .featured-editorial__media-shell {
     transition: none;
     will-change: auto;
   }
 
-  .featured-editorial__media:hover {
+  .featured-editorial__media-shell:hover {
     transform: none;
+  }
+
+  .featured-editorial__media {
+    transition: none;
+  }
+
+  .featured-editorial__media-shell:hover .featured-editorial__media {
     box-shadow: 0 1px 0 rgba(255, 255, 255, 0.04);
   }
 }
@@ -2082,6 +2131,11 @@ a {
   background: var(--background);
 }
 
+/* While covered, keep it fully invisible so it can't show through the nav */
+.contact-reveal-layer[inert] {
+  visibility: hidden;
+}
+
 .contact-reveal-layer footer {
   border-top: 1px solid var(--border-subtle);
   background: var(--background);
@@ -2241,9 +2295,21 @@ a {
   display: grid;
   gap: 2rem;
   width: 100%;
-  max-width: 100%;
+  max-width: 72rem;
+  margin-inline: auto;
   padding-inline: 1.25rem;
   box-sizing: border-box;
+}
+
+@media (max-width: 899px) {
+  .contact-form-section__inner {
+    max-width: none;
+    gap: 1.5rem;
+  }
+
+  .contact-form-section__support {
+    max-width: none;
+  }
 }
 
 @media (min-width: 768px) {
@@ -2302,6 +2368,7 @@ a {
 }
 
 .contact-form {
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: 1rem;
@@ -2396,9 +2463,23 @@ a {
   background: var(--accent-hover);
 }
 
+.contact-form__submit:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
 .contact-form__submit:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 3px;
+}
+
+.contact-form__honeypot {
+  position: absolute;
+  left: -10000px;
+  top: auto;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
 }
 
 .contact-form__links {
@@ -2419,8 +2500,27 @@ a {
 
 .contact-form__hint {
   margin: 0.15rem 0 0;
+  min-height: 1.4em;
   font-size: 0.9rem;
+  line-height: 1.4;
   color: var(--muted);
+}
+
+.contact-form__hint--error {
+  color: var(--danger);
+}
+
+.contact-form__hint--success {
+  color: var(--accent);
+}
+
+.contact-form__hint a {
+  color: var(--accent);
+  font-weight: 500;
+}
+
+.contact-form__hint a:hover {
+  color: var(--accent-hover);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -2435,6 +2535,14 @@ a {
   .contact-banner {
     border-bottom-left-radius: 1.5rem;
     border-bottom-right-radius: 1.5rem;
+    box-shadow: none;
+  }
+}
+
+@media (max-width: 899px) {
+  .contact-banner {
+    border-bottom-left-radius: 1.75rem;
+    border-bottom-right-radius: 1.75rem;
     box-shadow: none;
   }
 }

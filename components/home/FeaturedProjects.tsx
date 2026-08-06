@@ -162,7 +162,7 @@ export function FeaturedProjects({ projects }: FeaturedProjectsProps) {
             id="featured-heading"
             eyebrow="Featured Projects"
             title="Projects I'm proud of"
-            description="My projects I built to solve problems. Each built end to end with real engineering ownership."
+            description="Projects I built to solve real problems I faced. Each built end-to-end with real engineering ownership."
             className="mb-0"
           />
         </Reveal>
@@ -196,7 +196,6 @@ export function FeaturedProjects({ projects }: FeaturedProjectsProps) {
                   <Reveal variant="feature">
                     <FeaturedProjectSection
                       project={project}
-                      priority={index === 0}
                       mediaSide={mediaSide}
                     />
                   </Reveal>

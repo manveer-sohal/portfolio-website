@@ -1,6 +1,12 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  type ReactNode,
+} from "react";
 import { motion, useMotionValue, useTransform } from "motion/react";
 import { useActiveAnimationFrame } from "@/lib/animation/useActiveAnimationFrame";
 import {
@@ -84,10 +90,7 @@ export function HeroFeaturedArrow({ children }: HeroFeaturedArrowProps) {
       "points",
       `${point.x},${point.y - 5} ${point.x + 7},${point.y} ${point.x},${point.y + 5}`,
     );
-    tipEl.setAttribute(
-      "transform",
-      `rotate(${angle} ${point.x} ${point.y})`,
-    );
+    tipEl.setAttribute("transform", `rotate(${angle} ${point.x} ${point.y})`);
 
     const travelFade = Math.min(1, Math.max(0, (combined - 0.03) / 0.06));
     const junction = trackTopYRef.current;
@@ -142,20 +145,27 @@ export function HeroFeaturedArrow({ children }: HeroFeaturedArrowProps) {
       setIdleTip({ x: startX, y: tipY, angle: -90 });
 
       const towardCenter = midX >= startX ? 1 : -1;
-      const riseY = tipY - 48;
-      const turnWidth = Math.max(131, Math.abs(midX - startX) * 0.45);
-      const apexX = startX + towardCenter * turnWidth;
-      const apexY = riseY - 28;
+      const gapX = Math.abs(midX - startX);
+      // Scale with viewport + cue→rail gap; keep a flat-top turn (same Y).
+      const viewScale = Math.min(1.2, Math.max(0.55, wrapRect.width / 1280));
+      const turnY = tipY - (36 * viewScale + gapX * 0.06);
+      const r = Math.min(
+        gapX * 0.42,
+        Math.max(16, 28 * viewScale + gapX * 0.06),
+      );
       const dropY = Math.min(
         trackTopY - 24,
-        Math.max(startY + 80, startY + (trackTopY - startY) * 0.22),
+        Math.max(startY + 64 * viewScale, startY + (trackTopY - startY) * 0.22),
       );
 
+      // Up → rounded corner → horizontal at turnY → rounded corner → down
       const nextTravel = [
         `M ${startX} ${tipY}`,
-        `L ${startX} ${riseY}`,
-        `C ${startX} ${riseY - 36}, ${apexX} ${apexY}, ${apexX} ${apexY + 40}`,
-        `C ${apexX} ${apexY + 88}, ${midX} ${startY + 40}, ${midX} ${dropY}`,
+        `L ${startX} ${turnY + r}`,
+        `C ${startX} ${turnY + r * 0.35}, ${startX + towardCenter * r * 0.35} ${turnY}, ${startX + towardCenter * r} ${turnY}`,
+        `L ${midX - towardCenter * r} ${turnY}`,
+        `C ${midX - towardCenter * r * 0.35} ${turnY}, ${midX} ${turnY + r * 0.35}, ${midX} ${turnY + r}`,
+        `L ${midX} ${dropY}`,
         `L ${midX} ${endY}`,
       ].join(" ");
 
