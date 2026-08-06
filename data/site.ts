@@ -4,10 +4,10 @@ export const siteConfig = {
   description:
     "Portfolio of Manveer Sohal, a full-stack developer building AI-assisted products, backend systems, and polished web applications including Almaari, JobLinx, and SupportPilot.",
   /**
-   * Update this to the final production domain before deployment.
-   * All metadataBase, canonical, sitemap, robots, and Open Graph URLs derive from this value.
+   * Canonical site origin. Used for metadataBase, OG/Twitter images, sitemap, robots, JSON-LD.
+   * Keep this on the Vercel production domain (or a custom domain) — not GitHub Pages.
    */
-  url: "https://manveer-sohal.github.io/portfolio-website",
+  url: "https://manveersohal.com",
   locale: "en_CA",
   location: "Ontario, Canada",
   openTo:
