@@ -12,7 +12,7 @@ export const siteConfig = {
   location: "Ontario, Canada",
   openTo:
     "Open to full-stack, backend, and AI-focused software development opportunities",
-  /** Primary professional contact email — used for mailto links and the contact page. */
+  /** Primary professional contact email — destination for contact form delivery. */
   email: "manveersohalwork@gmail.com",
   links: {
     github: "https://github.com/manveer-sohal",
@@ -25,9 +25,3 @@ export const siteConfig = {
     { label: "Contact", href: "/contact" },
   ],
 } as const;
-
-export function mailtoHref(subject?: string): string {
-  const address = siteConfig.email;
-  if (!subject) return `mailto:${address}`;
-  return `mailto:${address}?subject=${encodeURIComponent(subject)}`;
-}

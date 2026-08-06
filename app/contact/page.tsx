@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
-import { Button } from "@/components/ui/Button";
+import { ContactFormFields } from "@/components/contact/ContactFormFields";
 import { SectionHeading } from "@/components/ui/SectionHeading";
-import { mailtoHref, siteConfig } from "@/data/site";
+import { siteConfig } from "@/data/site";
 
 export const metadata: Metadata = {
   title: "Contact",
@@ -21,27 +21,13 @@ export default function ContactPage() {
           title="Let’s build something useful."
           description="I’m currently interested in full-stack, backend, and AI-focused software development opportunities. I’m also open to conversations about Almaari, JobLinx, and product collaboration."
         />
-        <div className="rounded-[14px] border border-border bg-surface-elevated p-6 md:p-8">
-          <p className="text-lg leading-relaxed text-muted-strong">
-            Prefer email? Reach me at{" "}
-            <a
-              href={mailtoHref()}
-              className="font-medium text-accent hover:text-accent-hover"
-            >
-              {siteConfig.email}
-            </a>
-            .
-          </p>
-          <div className="mt-6 flex flex-wrap gap-3">
-            <Button href={mailtoHref("Portfolio inquiry")}>Contact Me</Button>
-            <Button href={siteConfig.links.linkedin} variant="secondary" external>
-              LinkedIn
-            </Button>
-            <Button href={siteConfig.links.github} variant="ghost" external>
-              GitHub
-            </Button>
-          </div>
-        </div>
+
+        <p className="mb-6 text-lg leading-relaxed text-muted-strong">
+          Prefer email? Reach me at{" "}
+          <span className="font-medium text-accent">{siteConfig.email}</span>.
+        </p>
+
+        <ContactFormFields idPrefix="page-contact" />
       </div>
     </div>
   );

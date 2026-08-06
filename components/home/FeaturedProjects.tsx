@@ -196,7 +196,6 @@ export function FeaturedProjects({ projects }: FeaturedProjectsProps) {
                   <Reveal variant="feature">
                     <FeaturedProjectSection
                       project={project}
-                      priority={index === 0}
                       mediaSide={mediaSide}
                     />
                   </Reveal>

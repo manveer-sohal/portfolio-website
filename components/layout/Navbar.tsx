@@ -21,9 +21,12 @@ export function Navbar() {
   return (
     <header
       className={cn(
-        "sticky top-0 z-40 border-b border-transparent transition-colors",
-        scrolled &&
-          "border-[color:var(--border-subtle)] bg-[color:var(--nav-surface)] backdrop-blur-md",
+        // Always opaque — homepage contact reveal sits fixed underneath and
+        // would otherwise show through a transparent sticky nav.
+        "sticky top-0 z-40 border-b bg-[color:var(--nav-surface)] backdrop-blur-md transition-colors",
+        scrolled
+          ? "border-[color:var(--border-subtle)]"
+          : "border-transparent",
       )}
     >
       <div className="container-page flex h-16 items-center justify-between gap-4">

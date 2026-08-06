@@ -26,7 +26,9 @@ export function ContactRevealShell({
 
   useEffect(() => {
     const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const desktop = window.matchMedia("(min-width: 900px)");
+    // Treat tablet / narrow desktop like mobile — fixed reveal is taller than
+    // the viewport and bleeds through the sticky nav.
+    const desktop = window.matchMedia("(min-width: 1024px)");
     const sync = () => {
       setStaticReveal(motion.matches || !desktop.matches);
     };
