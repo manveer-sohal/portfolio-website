@@ -82,12 +82,8 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
 
   return (
     <ProjectBrandFonts>
-      <div className="section-space">
-        <div className="container-page">
-          <JsonLd data={projectJsonLd} />
-          <ProjectDetails project={project} />
-        </div>
-      </div>
+      <JsonLd data={projectJsonLd} />
+      <ProjectDetails project={project} />
     </ProjectBrandFonts>
   );
 }

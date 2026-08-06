@@ -49,8 +49,10 @@ next-env.d.ts
 # Keep legacy reference in repo but ignore DS_Store
 .DS_Store
 
-#docs
-/docs
+#docs — ignore by default; keep portfolio redesign docs trackable
+/docs/*
+/docs/portfolio-redesign/
+/docs/portfolio-redesign/**
 
 #optimized image
 optimize-images.mjs

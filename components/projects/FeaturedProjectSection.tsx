@@ -4,7 +4,6 @@ import type { Project } from "@/data/types";
 import { getProjectTheme, resolveProjectCover } from "@/lib/project-themes";
 import { cn } from "@/lib/utils";
 import { FeaturedMediaWindow } from "./FeaturedMediaWindow";
-import { FeaturedProjectCardGlow } from "./FeaturedProjectCardGlow";
 import { FeaturedProjectVideo } from "./FeaturedProjectVideo";
 
 type FeaturedProjectSectionProps = {
@@ -65,10 +64,8 @@ export function FeaturedProjectSection({
   const description = project.featuredSupport ?? project.shortDescription;
   const stack = project.technologies.slice(0, 6);
   const metaLabel = project.status;
-  const glowColor =
-    theme?.id === "almaari" ? theme.colors.primary : theme?.colors.name;
 
-  if (!theme || (!cover && !video) || !glowColor) {
+  if (!theme || (!cover && !video)) {
     return null;
   }
 
@@ -104,11 +101,9 @@ export function FeaturedProjectSection({
           : "featured-editorial--media-right",
         theme.typography.bodyClassName,
       )}
-      data-featured-glow={project.slug}
       aria-labelledby={`${project.slug}-featured-heading`}
     >
       <div className="featured-editorial__media-shell">
-        <FeaturedProjectCardGlow color={glowColor} />
         <div className="featured-editorial__media" data-reveal-trigger="">
           <FeaturedMediaWindow url={theme.media.windowUrl}>
             {media}

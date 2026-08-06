@@ -19,6 +19,21 @@ type FeaturedProjectsProps = {
   projects: Project[];
 };
 
+/** Mid-Y of `el` relative to `ancestor`, using layout offsets (ignores CSS transforms). */
+function offsetMidYWithin(el: HTMLElement, ancestor: HTMLElement): number {
+  let top = 0;
+  let node: HTMLElement | null = el;
+  while (node && node !== ancestor) {
+    top += node.offsetTop;
+    const parent = node.offsetParent as HTMLElement | null;
+    if (!parent || (parent !== ancestor && !ancestor.contains(parent))) {
+      break;
+    }
+    node = parent;
+  }
+  return top + el.offsetHeight / 2;
+}
+
 function FeaturedBranch({
   fillHeight,
   start,
@@ -34,8 +49,8 @@ function FeaturedBranch({
     return Math.min(1, Math.max(0, (height - start) / drawWindow));
   });
 
-  // Stop short of the media so the arrow doesn't kiss the frame
-  const lineProgress = useTransform(progress, (p) => Math.max(0, p * 0.88));
+  // Full length — wrap width already ends ~5px before the media (plus tip overhang)
+  const lineProgress = progress;
   const arrowOpacity = useTransform(progress, (p) => (p > 0.08 ? 1 : 0));
   const tipLeft = useTransform(lineProgress, (p) =>
     side === "left" ? `${(1 - p) * 100}%` : `${p * 100}%`,
@@ -80,44 +95,98 @@ export function FeaturedProjects({ projects }: FeaturedProjectsProps) {
   const [height, setHeight] = useState(0);
   const [itemBottoms, setItemBottoms] = useState<number[]>([]);
   const [branchTops, setBranchTops] = useState<number[]>([]);
+  const [branchWidths, setBranchWidths] = useState<number[]>([]);
   const [activeIndex, setActiveIndex] = useState(-1);
 
   useEffect(() => {
     const list = listRef.current;
     if (!list) return;
 
+    /** Arrow triangle extends ~7px past the branch end toward the media. */
+    const TIP_OVERHANG_PX = 7;
+    /** Keep the arrow tip this far from the media frame. */
+    const MEDIA_GAP_PX = 5;
+
     const measure = () => {
-      const listTop = list.getBoundingClientRect().top;
-      setHeight(list.getBoundingClientRect().height);
+      const listRect = list.getBoundingClientRect();
+      const listTop = listRect.top;
+      const centerX = listRect.left + listRect.width / 2;
+      setHeight(listRect.height);
       const bottoms: number[] = [];
       const tops: number[] = [];
-      itemRefs.current.forEach((item) => {
+      const widths: number[] = [];
+
+      itemRefs.current.forEach((item, index) => {
         if (!item) {
           bottoms.push(0);
           tops.push(0);
+          widths.push(0);
           return;
         }
-        const media = item.querySelector(
-          ".featured-editorial__media-shell",
-        ) as HTMLElement | null;
+
+        // Prefer the framed image; fall back to the media shell.
+        // Use offset geometry (ignores Reveal translateY) so the branch
+        // always targets the vertical middle of the card.
+        const media =
+          (item.querySelector(
+            ".featured-editorial__media",
+          ) as HTMLElement | null) ??
+          (item.querySelector(
+            ".featured-editorial__media-shell",
+          ) as HTMLElement | null);
         const target = media ?? item;
+
+        const midFromItem = offsetMidYWithin(target, item);
+        const itemTop = item.getBoundingClientRect().top;
+        bottoms.push(itemTop - listTop + midFromItem);
+        tops.push(midFromItem);
+
+        const mediaSide = index % 2 === 0 ? "left" : "right";
+        // Horizontal edge still from live rect (X is unaffected by translateY)
         const rect = target.getBoundingClientRect();
-        const mid = rect.height / 2;
-        const listOffset = rect.top - listTop;
-        const itemOffset = rect.top - item.getBoundingClientRect().top;
-        bottoms.push(listOffset + mid);
-        tops.push(itemOffset + mid);
+        const spanToMedia =
+          mediaSide === "left"
+            ? centerX - rect.right
+            : rect.left - centerX;
+        widths.push(
+          Math.max(0, spanToMedia - MEDIA_GAP_PX - TIP_OVERHANG_PX),
+        );
       });
+
       setItemBottoms(bottoms);
       setBranchTops(tops);
+      setBranchWidths(widths);
     };
 
     measure();
+    requestAnimationFrame(measure);
+
     const observer = new ResizeObserver(measure);
     observer.observe(list);
+    itemRefs.current.forEach((item) => {
+      if (!item) return;
+      observer.observe(item);
+      const media = item.querySelector(".featured-editorial__media-shell");
+      if (media) observer.observe(media);
+    });
+
+    // Reveal uses transform (not size), so remeasure when cards become visible
+    const reveals = list.querySelectorAll(".reveal");
+    const mutationObservers: MutationObserver[] = [];
+    reveals.forEach((reveal) => {
+      const mo = new MutationObserver(measure);
+      mo.observe(reveal, { attributes: true, attributeFilter: ["class"] });
+      mutationObservers.push(mo);
+      reveal.addEventListener("transitionend", measure);
+    });
+
     window.addEventListener("resize", measure);
     return () => {
       observer.disconnect();
+      mutationObservers.forEach((mo) => mo.disconnect());
+      reveals.forEach((reveal) => {
+        reveal.removeEventListener("transitionend", measure);
+      });
       window.removeEventListener("resize", measure);
     };
   }, [projects]);
@@ -162,7 +231,12 @@ export function FeaturedProjects({ projects }: FeaturedProjectsProps) {
             id="featured-heading"
             eyebrow="Featured Projects"
             title="Projects I'm proud of"
-            description="Projects I built to solve real problems I faced. Each built end-to-end with real engineering ownership."
+            description={
+              <>
+                Projects I built to solve real problems I faced. Each with a{" "}
+                <span className="text-accent font-bold">case study</span>.
+              </>
+            }
             className="mb-0"
           />
         </Reveal>
@@ -185,6 +259,7 @@ export function FeaturedProjects({ projects }: FeaturedProjectsProps) {
                   style={
                     {
                       "--featured-branch-top": `${branchTops[index] ?? 0}px`,
+                      "--featured-branch-width": `${branchWidths[index] ?? 0}px`,
                     } as CSSProperties
                   }
                 >
