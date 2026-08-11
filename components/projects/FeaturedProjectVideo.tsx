@@ -14,13 +14,14 @@ type FeaturedProjectVideoProps = {
   priority?: boolean;
   /** CSS object-position for poster + video. */
   objectPosition?: string;
+  /** When true, keep attempting playback (e.g. active featured rail item). */
+  active?: boolean;
 };
 
 /**
- * Next.js-friendly featured demo:
- * - Optimized poster via next/image (lazy by default)
- * - Video sources attach only when near the viewport
- * - preload="none"; plays while visible, pauses when not
+ * Looping featured demo (webm/mp4) — GIF-like preview for featured projects.
+ * - Optimized poster via next/image
+ * - Sources attach near the viewport; plays while visible
  * - Reduced-motion / Save-Data: poster + optional Play Preview
  */
 export function FeaturedProjectVideo({
@@ -31,6 +32,7 @@ export function FeaturedProjectVideo({
   className,
   priority = false,
   objectPosition = "top center",
+  active = false,
 }: FeaturedProjectVideoProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -38,6 +40,7 @@ export function FeaturedProjectVideo({
   const [isInView, setIsInView] = useState(false);
   const [posterOnly, setPosterOnly] = useState(false);
   const [manualPlay, setManualPlay] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -66,7 +69,7 @@ export function FeaturedProjectVideo({
           loadObserver.disconnect();
         }
       },
-      { rootMargin: "320px 0px", threshold: 0 },
+      { rootMargin: "480px 0px", threshold: 0 },
     );
 
     const playObserver = new IntersectionObserver(
@@ -75,7 +78,7 @@ export function FeaturedProjectVideo({
           setIsInView(entry.isIntersecting);
         });
       },
-      { threshold: 0.35 },
+      { threshold: 0.2, rootMargin: "0px 0px -10% 0px" },
     );
 
     loadObserver.observe(container);
@@ -88,22 +91,31 @@ export function FeaturedProjectVideo({
   }, []);
 
   useEffect(() => {
+    if (active && !posterOnly) {
+      setShouldLoadVideo(true);
+    }
+  }, [active, posterOnly]);
+
+  useEffect(() => {
     const video = videoRef.current;
     if (!video || !shouldLoadVideo) return;
 
-    // Sources mount with the element; force the browser to resolve them
-    // before attempting autoplay (preload="none" otherwise stays empty).
     video.load();
 
-    if (!(isInView || manualPlay)) {
+    const shouldPlay = isInView || manualPlay || active;
+    if (!shouldPlay) {
       video.pause();
+      setIsPlaying(false);
       return;
     }
 
     const tryPlay = () => {
-      void video.play().catch(() => {
-        /* autoplay blocked — poster remains visible underneath */
-      });
+      void video
+        .play()
+        .then(() => setIsPlaying(true))
+        .catch(() => {
+          setIsPlaying(false);
+        });
     };
 
     if (video.readyState >= 2) {
@@ -112,7 +124,7 @@ export function FeaturedProjectVideo({
       video.addEventListener("canplay", tryPlay, { once: true });
       return () => video.removeEventListener("canplay", tryPlay);
     }
-  }, [isInView, shouldLoadVideo, manualPlay]);
+  }, [isInView, shouldLoadVideo, manualPlay, active]);
 
   const startManualPreview = () => {
     setPosterOnly(false);
@@ -133,7 +145,10 @@ export function FeaturedProjectVideo({
         alt={posterOnly && !manualPlay ? label : ""}
         fill
         sizes="(max-width: 1024px) 100vw, 55vw"
-        className="object-cover"
+        className={cn(
+          "object-cover transition-opacity duration-300",
+          isPlaying ? "opacity-0" : "opacity-100",
+        )}
         style={{ objectPosition }}
         priority={priority}
         loading={priority ? "eager" : "lazy"}
@@ -143,16 +158,16 @@ export function FeaturedProjectVideo({
       {shouldLoadVideo && (!posterOnly || manualPlay) ? (
         <video
           ref={videoRef}
-          className="absolute inset-0 h-full w-full object-cover"
+          className="absolute inset-0 z-[1] h-full w-full object-cover"
           style={{ objectPosition }}
           muted
           loop
           playsInline
-          preload="none"
+          autoPlay
+          preload="metadata"
           poster={poster}
           aria-label={label}
         >
-          {/* Safari/iOS may pick MP4 when listed first; prefer WebM when smaller/supported */}
           <source src={webm} type="video/webm" />
           <source src={mp4} type="video/mp4" />
         </video>

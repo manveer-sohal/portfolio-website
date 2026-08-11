@@ -4,12 +4,12 @@ import { siteConfig } from "@/data/site";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const base = siteConfig.url;
-  const staticRoutes = ["", "/projects", "/experience", "/contact"].map(
+  const staticRoutes = ["", "/projects", "/experience", "/contact", "/overview"].map(
     (path) => ({
       url: `${base}${path}`,
       lastModified: new Date(),
       changeFrequency: "monthly" as const,
-      priority: path === "" ? 1 : 0.8,
+      priority: path === "" ? 1 : path === "/overview" ? 0.85 : 0.8,
     }),
   );
 

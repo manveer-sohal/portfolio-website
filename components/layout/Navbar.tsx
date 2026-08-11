@@ -62,6 +62,12 @@ export function Navbar() {
         </nav>
 
         <div className="hidden items-center gap-3 md:flex">
+          <Link
+            href="/overview"
+            className="text-base font-medium text-muted transition-colors hover:text-accent"
+          >
+            Simple View
+          </Link>
           <a
             href={siteConfig.links.github}
             target="_blank"

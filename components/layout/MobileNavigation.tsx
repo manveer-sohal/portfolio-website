@@ -90,6 +90,12 @@ export function MobileNavigation() {
                 </Link>
               );
             })}
+            <Link
+              href="/overview"
+              className="rounded-[10px] border border-border-subtle px-4 py-3 text-base font-medium text-muted-strong hover:border-border hover:text-foreground"
+            >
+              Simple View
+            </Link>
             <a
               href={siteConfig.links.github}
               target="_blank"

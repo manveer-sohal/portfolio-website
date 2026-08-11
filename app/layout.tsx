@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { ConditionalFooter } from "@/components/layout/ConditionalFooter";
-import { Navbar } from "@/components/layout/Navbar";
+import { ConditionalNavbar } from "@/components/layout/ConditionalNavbar";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { siteConfig } from "@/data/site";
 import "./globals.css";
@@ -96,7 +96,7 @@ export default function RootLayout({
         <a href="#main-content" className="skip-link">
           Skip to content
         </a>
-        <Navbar />
+        <ConditionalNavbar />
         <main id="main-content">{children}</main>
         <ConditionalFooter />
       </body>

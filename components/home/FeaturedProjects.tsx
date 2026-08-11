@@ -272,6 +272,8 @@ export function FeaturedProjects({ projects }: FeaturedProjectsProps) {
                     <FeaturedProjectSection
                       project={project}
                       mediaSide={mediaSide}
+                      priority={index === 0}
+                      active={activeIndex === index}
                     />
                   </Reveal>
                 </div>

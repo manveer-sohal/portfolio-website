@@ -11,6 +11,8 @@ type FeaturedProjectSectionProps = {
   priority?: boolean;
   /** Desktop media column side; alternates per project. */
   mediaSide?: "left" | "right";
+  /** True when this featured item is the active rail target. */
+  active?: boolean;
 };
 
 function ExternalIcon({ className }: { className?: string }) {
@@ -51,6 +53,7 @@ export function FeaturedProjectSection({
   project,
   priority = false,
   mediaSide = "left",
+  active = false,
 }: FeaturedProjectSectionProps) {
   const theme = getProjectTheme(project.slug);
   const cover = resolveProjectCover(project);
@@ -77,6 +80,7 @@ export function FeaturedProjectSection({
       label={video.ariaLabel ?? `Animated preview of ${project.name}`}
       objectPosition={video.objectPosition}
       priority={priority}
+      active={active}
     />
   ) : (
     <div className="relative h-full min-h-0 w-full">

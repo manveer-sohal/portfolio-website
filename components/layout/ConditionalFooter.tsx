@@ -5,10 +5,11 @@ import { Footer } from "@/components/layout/Footer";
 
 /**
  * Homepage owns Contact + Footer inside the reveal layer.
+ * Overview uses its own minimal contact block.
  * Other routes keep the standard layout footer.
  */
 export function ConditionalFooter() {
   const pathname = usePathname();
-  if (pathname === "/") return null;
+  if (pathname === "/" || pathname.startsWith("/overview")) return null;
   return <Footer />;
 }
