@@ -39,7 +39,7 @@ export function OverviewIntro() {
         <a className="overview-link" href={`mailto:${siteConfig.email}`}>
           Email
         </a>
-        <Link className="overview-link" href="/">
+        <Link className="overview-link" href="/" prefetch={false}>
           Main Portfolio
         </Link>
       </div>

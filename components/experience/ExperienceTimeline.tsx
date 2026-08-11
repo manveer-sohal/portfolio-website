@@ -144,17 +144,21 @@ export function ExperienceTimeline({
     [0, 1],
     [0, railHeight],
   );
-  const tipTransform = useTransform(heightTransform, (h) => h + railTop);
-  const tipOpacity = useTransform(
+  // Hold teal fill until Featured→Experience bridge arrives so the join stays continuous
+  const gatedHeight = useTransform(
     [heightTransform, bridgeProgress],
     ([h, bp]) => {
       const heightValue = h as number;
       const bridgeValue = bp as number;
       if (enableHomepageBridge && bridgeValue < 0.92) return 0;
-      if (heightValue <= 8 || railHeight <= 0) return 0;
-      return heightValue >= railHeight - 2 ? 0 : 1;
+      return heightValue;
     },
   );
+  const tipTransform = useTransform(gatedHeight, (h) => h + railTop);
+  const tipOpacity = useTransform(gatedHeight, (h) => {
+    if (h <= 8 || railHeight <= 0) return 0;
+    return h >= railHeight - 2 ? 0 : 1;
+  });
 
   useMotionValueEvent(tipTransform, "change", (latest) => {
     if (!rowStarts.length) {
@@ -237,7 +241,7 @@ export function ExperienceTimeline({
           <motion.div
             className="experience-timeline__rail-fill"
             style={{
-              height: heightTransform,
+              height: gatedHeight,
             }}
           >
             <motion.span

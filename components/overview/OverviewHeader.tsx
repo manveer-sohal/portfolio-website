@@ -76,7 +76,7 @@ export function OverviewHeader() {
           >
             Email
           </a>
-          <Link href="/" className="overview-header__return">
+          <Link href="/" prefetch={false} className="overview-header__return">
             Visual Portfolio
           </Link>
           <button
@@ -106,7 +106,7 @@ export function OverviewHeader() {
               GitHub
             </a>
             <a href={`mailto:${siteConfig.email}`}>Email</a>
-            <Link href="/" onClick={() => setOpen(false)}>
+            <Link href="/" prefetch={false} onClick={() => setOpen(false)}>
               Visual Portfolio
             </Link>
           </nav>

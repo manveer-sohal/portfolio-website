@@ -18,11 +18,27 @@ type FeaturedProjectVideoProps = {
   active?: boolean;
 };
 
+const LOAD_ROOT_MARGIN = "300px 0px";
+const PLAY_THRESHOLD = 0.4;
+const UNLOAD_DELAY_MS = 2000;
+
+function isBenignPlayError(error: unknown): boolean {
+  if (!(error instanceof Error)) return false;
+  const name = "name" in error ? String((error as { name?: string }).name) : "";
+  return (
+    name === "AbortError" ||
+    name === "NotAllowedError" ||
+    /interrupted|aborted|play\(\)/i.test(error.message)
+  );
+}
+
 /**
  * Looping featured demo (webm/mp4) — GIF-like preview for featured projects.
- * - Optimized poster via next/image
- * - Sources attach near the viewport; plays while visible
- * - Reduced-motion / Save-Data: poster + optional Play Preview
+ *
+ * Media lifecycle:
+ * - unloaded: poster only; `<video>` unmounted (decoder released)
+ * - loaded: sources attached, paused
+ * - playing: meaningfully visible + document active
  */
 export function FeaturedProjectVideo({
   webm,
@@ -36,16 +52,25 @@ export function FeaturedProjectVideo({
 }: FeaturedProjectVideoProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [shouldLoadVideo, setShouldLoadVideo] = useState(false);
-  const [isInView, setIsInView] = useState(false);
+  const unloadTimerRef = useRef<number | null>(null);
+
+  const [near, setNear] = useState(false);
+  const [visible, setVisible] = useState(false);
+  const [docHidden, setDocHidden] = useState(false);
   const [posterOnly, setPosterOnly] = useState(false);
   const [manualPlay, setManualPlay] = useState(false);
+  const [mediaMounted, setMediaMounted] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
 
-  useEffect(() => {
-    const container = containerRef.current;
-    if (!container) return;
+  const clearUnloadTimer = () => {
+    if (unloadTimerRef.current !== null) {
+      window.clearTimeout(unloadTimerRef.current);
+      unloadTimerRef.current = null;
+    }
+  };
 
+  // Reduced motion / Save-Data → poster only
+  useEffect(() => {
     const reduceMotion = window.matchMedia(
       "(prefers-reduced-motion: reduce)",
     ).matches;
@@ -56,53 +81,90 @@ export function FeaturedProjectVideo({
         }
       ).connection?.saveData,
     );
-
     if (reduceMotion || saveData) {
       setPosterOnly(true);
-      return;
     }
+  }, []);
+
+  // Intersection + visibility observers
+  useEffect(() => {
+    if (posterOnly) return;
+    const container = containerRef.current;
+    if (!container) return;
 
     const loadObserver = new IntersectionObserver(
       (entries) => {
-        if (entries.some((entry) => entry.isIntersecting)) {
-          setShouldLoadVideo(true);
-          loadObserver.disconnect();
-        }
+        setNear(entries.some((entry) => entry.isIntersecting));
       },
-      { rootMargin: "480px 0px", threshold: 0 },
+      { rootMargin: LOAD_ROOT_MARGIN, threshold: 0 },
     );
 
     const playObserver = new IntersectionObserver(
       (entries) => {
-        entries.forEach((entry) => {
-          setIsInView(entry.isIntersecting);
-        });
+        const entry = entries[0];
+        setVisible(
+          Boolean(
+            entry?.isIntersecting &&
+              (entry.intersectionRatio ?? 0) >= PLAY_THRESHOLD,
+          ),
+        );
       },
-      { threshold: 0.2, rootMargin: "0px 0px -10% 0px" },
+      { threshold: [0, PLAY_THRESHOLD, 0.6, 1] },
     );
 
+    const onVisibility = () => setDocHidden(document.hidden);
+
+    setDocHidden(document.hidden);
     loadObserver.observe(container);
     playObserver.observe(container);
+    document.addEventListener("visibilitychange", onVisibility);
 
     return () => {
+      clearUnloadTimer();
       loadObserver.disconnect();
       playObserver.disconnect();
+      document.removeEventListener("visibilitychange", onVisibility);
     };
-  }, []);
+  }, [posterOnly]);
 
+  const shouldMount =
+    !posterOnly || manualPlay ? near || visible || manualPlay : false;
+  const shouldPlay =
+    mediaMounted &&
+    !docHidden &&
+    (manualPlay || visible || (active && near));
+
+
+  // Mount / delayed unmount media element
   useEffect(() => {
-    if (active && !posterOnly) {
-      setShouldLoadVideo(true);
+    if (posterOnly && !manualPlay) {
+      clearUnloadTimer();
+      setMediaMounted(false);
+      setIsPlaying(false);
+      return;
     }
-  }, [active, posterOnly]);
 
+    if (shouldMount) {
+      clearUnloadTimer();
+      setMediaMounted(true);
+      return;
+    }
+
+    clearUnloadTimer();
+    unloadTimerRef.current = window.setTimeout(() => {
+      unloadTimerRef.current = null;
+      setMediaMounted(false);
+      setIsPlaying(false);
+    }, UNLOAD_DELAY_MS);
+
+    return () => clearUnloadTimer();
+  }, [shouldMount, posterOnly, manualPlay]);
+
+  // Play / pause when mounted
   useEffect(() => {
     const video = videoRef.current;
-    if (!video || !shouldLoadVideo) return;
+    if (!video || !mediaMounted) return;
 
-    video.load();
-
-    const shouldPlay = isInView || manualPlay || active;
     if (!shouldPlay) {
       video.pause();
       setIsPlaying(false);
@@ -113,8 +175,14 @@ export function FeaturedProjectVideo({
       void video
         .play()
         .then(() => setIsPlaying(true))
-        .catch(() => {
+        .catch((error) => {
           setIsPlaying(false);
+          if (
+            !isBenignPlayError(error) &&
+            process.env.NODE_ENV !== "production"
+          ) {
+            console.warn("[FeaturedProjectVideo] play failed", error);
+          }
         });
     };
 
@@ -124,12 +192,21 @@ export function FeaturedProjectVideo({
       video.addEventListener("canplay", tryPlay, { once: true });
       return () => video.removeEventListener("canplay", tryPlay);
     }
-  }, [isInView, shouldLoadVideo, manualPlay, active]);
+  }, [mediaMounted, shouldPlay, webm, mp4]);
+
+  // Unmount cleanup
+  useEffect(() => {
+    const video = videoRef.current;
+    return () => {
+      clearUnloadTimer();
+      video?.pause();
+    };
+  }, []);
 
   const startManualPreview = () => {
     setPosterOnly(false);
-    setShouldLoadVideo(true);
     setManualPlay(true);
+    setMediaMounted(true);
   };
 
   return (
@@ -155,7 +232,7 @@ export function FeaturedProjectVideo({
         quality={75}
       />
 
-      {shouldLoadVideo && (!posterOnly || manualPlay) ? (
+      {mediaMounted ? (
         <video
           ref={videoRef}
           className="absolute inset-0 z-[1] h-full w-full object-cover"
@@ -163,7 +240,6 @@ export function FeaturedProjectVideo({
           muted
           loop
           playsInline
-          autoPlay
           preload="metadata"
           poster={poster}
           aria-label={label}

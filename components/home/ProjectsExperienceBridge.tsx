@@ -8,6 +8,11 @@ import {
   usePrefersReducedMotion,
 } from "@/lib/animation/useMatchMedia";
 import { useNearViewport } from "@/lib/animation/useNearViewport";
+import {
+  FLOW_JOIN_PX,
+  applyStrokeDash,
+  readGeometricLength,
+} from "@/lib/animation/svgStroke";
 
 type ProjectsExperienceBridgeProps = {
   children: ReactNode;
@@ -22,6 +27,9 @@ type CachedEls = {
 /**
  * Continues the featured teal rail into Experience with a scroll-drawn
  * path and a tip arrow that tracks along the stroke.
+ *
+ * Geometry matches HeroFeaturedArrow: shared measured anchors, integer
+ * viewBox, preserveAspectRatio="none", manual stroke-dasharray.
  */
 export function ProjectsExperienceBridge({
   children,
@@ -50,18 +58,11 @@ export function ProjectsExperienceBridge({
     const tipEl = tipRef.current;
     if (!pathEl || !tipEl) return;
 
-    let len = pathLengthRef.current;
-    if (len <= 0) {
-      len = pathEl.getTotalLength();
-      pathLengthRef.current = len;
-    }
+    const len = applyStrokeDash(pathEl, progress, pathLengthRef);
     if (len <= 0) {
       tipEl.style.opacity = "0";
       return;
     }
-
-    pathEl.style.strokeDasharray = `${len}`;
-    pathEl.style.strokeDashoffset = `${len * (1 - progress)}`;
 
     if (progress <= 0.001 || progress >= 0.985) {
       tipEl.style.opacity = "0";
@@ -98,11 +99,8 @@ export function ProjectsExperienceBridge({
         pathLengthRef.current = 0;
         elsRef.current = null;
         setBridgeProgress(0);
+        wrap.style.removeProperty("--flow-experience-rail-x");
         return;
-      }
-
-      if (reduceMotion) {
-        // Stable full connector for reduced motion once geometry exists
       }
 
       const trackEl = wrap.querySelector(
@@ -119,7 +117,7 @@ export function ProjectsExperienceBridge({
       ) as HTMLElement | null;
       const experience = wrap.querySelector("#experience");
 
-      if (!trackEl || !endEl || !fillEl) {
+      if (!trackEl || !endEl || !fillEl || !railEl) {
         setReady(false);
         elsRef.current = null;
         return;
@@ -127,22 +125,32 @@ export function ProjectsExperienceBridge({
 
       elsRef.current = { fill: fillEl, track: trackEl, endEl };
 
+      const w = Math.max(Math.round(wrap.clientWidth), 1);
+      const h = Math.max(Math.round(wrap.scrollHeight), 1);
+
       const wrapRect = wrap.getBoundingClientRect();
       const trackRect = trackEl.getBoundingClientRect();
       const endRect = endEl.getBoundingClientRect();
       const railRect = railEl?.getBoundingClientRect();
 
+      // Start = featured rail center (same element HeroFeaturedArrow targets)
       const startX = Math.round(
         trackRect.left + trackRect.width / 2 - wrapRect.left,
       );
       const startY = trackRect.bottom - wrapRect.top;
-
+      // End X/Y from experience timeline rail (stable; not sticky copy)
       const endX = Math.round(
         railRect
           ? railRect.left + railRect.width / 2 - wrapRect.left
           : endRect.left + endRect.width / 2 - wrapRect.left,
       );
-      const endY = endRect.top + endRect.height / 2 - wrapRect.top;
+      const endY = railRect
+        ? railRect.top - wrapRect.top + FLOW_JOIN_PX
+        : endRect.top + endRect.height / 2 - wrapRect.top + FLOW_JOIN_PX;
+
+      wrap.style.setProperty("--flow-experience-rail-x", `${endX}px`);
+      wrap.style.setProperty("--flow-line-color", "var(--accent)");
+      wrap.style.setProperty("--flow-line-width", "2px");
 
       const headingBlock = experience?.querySelector(
         "[data-featured-title]",
@@ -155,7 +163,8 @@ export function ProjectsExperienceBridge({
         Math.min(headingBottom + 12, endY - 28),
       );
       const r = Math.min(40, Math.max(24, Math.abs(startX - endX) * 0.08));
-      const joinY = startY - 2;
+      // Overlap featured rail tip so the join never opens a hairline gap
+      const joinY = startY - FLOW_JOIN_PX;
 
       const d = [
         `M ${startX} ${joinY}`,
@@ -168,15 +177,12 @@ export function ProjectsExperienceBridge({
 
       pathLengthRef.current = 0;
       setPath(d);
-      setSize({
-        w: Math.max(Math.round(wrapRect.width), 1),
-        h: Math.max(Math.round(wrapRect.height), 1),
-      });
+      setSize({ w, h });
       setReady(true);
 
       requestAnimationFrame(() => {
         const pathEl = pathRef.current;
-        if (pathEl) pathLengthRef.current = pathEl.getTotalLength();
+        if (pathEl) pathLengthRef.current = readGeometricLength(pathEl);
         if (reduceMotion) {
           paint(1);
         } else {
@@ -188,6 +194,10 @@ export function ProjectsExperienceBridge({
     measure();
     const observer = new ResizeObserver(measure);
     observer.observe(wrap);
+    const track = wrap.querySelector(".featured-rail__track");
+    const rail = wrap.querySelector(".experience-timeline__rail");
+    if (track) observer.observe(track);
+    if (rail) observer.observe(rail);
     window.addEventListener("resize", measure);
     const t = window.setTimeout(measure, 150);
     return () => {
@@ -219,8 +229,10 @@ export function ProjectsExperienceBridge({
         return;
       }
 
+      // Reachable threshold — waiting for ~80% of a tall rail left a missing join
       const fillReady =
-        trackRect.height > 0 && fillH >= trackRect.height * 0.8;
+        trackRect.height > 0 &&
+        fillH >= Math.min(48, trackRect.height * 0.08);
       if (!fillReady) {
         paint(0);
         return;
@@ -236,7 +248,6 @@ export function ProjectsExperienceBridge({
     },
   });
 
-  // When the loop stops (offscreen / mobile), leave last progress but stop frames
   useEffect(() => {
     if (!loopActive && !desktop) {
       setBridgeProgress(0);
@@ -252,24 +263,23 @@ export function ProjectsExperienceBridge({
           width={size.w}
           height={size.h}
           viewBox={`0 0 ${size.w} ${size.h}`}
-          preserveAspectRatio="xMinYMin meet"
+          preserveAspectRatio="none"
           aria-hidden="true"
         >
           <path
             ref={pathRef}
             d={path}
             fill="none"
-            stroke="var(--accent)"
+            stroke="var(--flow-line-color, var(--accent))"
             strokeWidth="2"
             strokeLinecap="butt"
             strokeLinejoin="round"
-            vectorEffect="non-scaling-stroke"
             className="projects-experience-bridge__path"
           />
           <polygon
             ref={tipRef}
             points="0,0 0,0 0,0"
-            fill="var(--accent)"
+            fill="var(--flow-line-color, var(--accent))"
             style={{ opacity: 0 }}
             className="projects-experience-bridge__arrow"
           />

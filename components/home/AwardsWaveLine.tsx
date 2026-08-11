@@ -333,12 +333,13 @@ export function AwardsWaveLine() {
           width={svgW}
           height={size.h}
           viewBox={`0 0 ${svgW} ${size.h}`}
+          preserveAspectRatio="xMinYMid meet"
         >
           <path
             ref={pathRef}
             d=""
             fill="none"
-            stroke="var(--accent)"
+            stroke="var(--flow-line-color, var(--accent))"
             strokeWidth="2"
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -352,7 +353,7 @@ export function AwardsWaveLine() {
             <polygon
               ref={tipRef}
               points="0,0 0,0 0,0"
-              fill="var(--accent)"
+              fill="var(--flow-line-color, var(--accent))"
               className="awards-wave__arrow"
             />
           </g>
