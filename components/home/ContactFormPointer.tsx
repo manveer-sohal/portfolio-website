@@ -13,6 +13,9 @@ import {
 
 const LINE_DELAY_MS = 900;
 const LINE_DRAW_MS = 850;
+/** Reveal on / hide only after clear reverse margin — prevents sticky flap. */
+const REVEAL_ON = 0.52;
+const REVEAL_OFF = 0.62;
 
 /**
  * Teal path that appears after a short delay as Contact reveals,
@@ -26,9 +29,12 @@ export function ContactFormPointer() {
   const contentLayerRef = useRef<HTMLElement | null>(null);
   const pathRef = useRef<SVGPathElement>(null);
   const pathLengthRef = useRef(0);
+  const drawProgressRef = useRef(0);
   const lineDelayTimer = useRef<number | null>(null);
   const drawRaf = useRef<number | null>(null);
   const wasRevealed = useRef(false);
+  const pathKeyRef = useRef("");
+  const lineActiveRef = useRef(false);
 
   const [path, setPath] = useState("");
   const [size, setSize] = useState({ w: 0, h: 0 });
@@ -40,6 +46,8 @@ export function ContactFormPointer() {
 
   const desktop = useDesktopTealRails();
   const reduceMotion = usePrefersReducedMotion();
+
+  lineActiveRef.current = lineActive;
 
   const clearDelay = useCallback(() => {
     if (lineDelayTimer.current !== null) {
@@ -55,16 +63,23 @@ export function ContactFormPointer() {
     }
   }, []);
 
+  const paintProgress = useCallback((progress: number) => {
+    drawProgressRef.current = progress;
+    const pathEl = pathRef.current;
+    if (pathEl) applyStrokeDash(pathEl, progress, pathLengthRef);
+  }, []);
+
   const reset = useCallback(() => {
     clearDelay();
     clearDraw();
     wasRevealed.current = false;
+    lineActiveRef.current = false;
     setLineActive(false);
     setArrowActive(false);
-    const pathEl = pathRef.current;
-    if (pathEl) applyStrokeDash(pathEl, 0, pathLengthRef);
-  }, [clearDelay, clearDraw]);
+    paintProgress(0);
+  }, [clearDelay, clearDraw, paintProgress]);
 
+  // Geometry only — must not restart when lineActive flips (that caused the flash).
   useEffect(() => {
     const section = document.querySelector(
       ".contact-form-section",
@@ -82,6 +97,7 @@ export function ContactFormPointer() {
       if (!desktop) {
         setReady(false);
         setPath("");
+        pathKeyRef.current = "";
         return;
       }
 
@@ -107,27 +123,24 @@ export function ContactFormPointer() {
       const introRect = intro.getBoundingClientRect();
       const formRect = form.getBoundingClientRect();
 
-      // Far-left page rail (matches the red annotation). Stay clear of intro copy.
       const EDGE_X = 20;
       const TEXT_CLEAR = 22;
       const introLeft = introRect.left - sectionRect.left;
       const introBottom = introRect.bottom - sectionRect.top;
       const startX = Math.round(Math.min(EDGE_X, introLeft - TEXT_CLEAR));
 
-      // Not enough left gutter → hide rather than overlap text
       if (startX < 10 || introLeft - startX < TEXT_CLEAR) {
         setReady(false);
         setPath("");
+        pathKeyRef.current = "";
         return;
       }
 
-      // Drop from under the Contact Me banner, then turn below intro copy into the form
       const startY = 8;
       const formMidY =
         formRect.top - sectionRect.top + formRect.height * 0.55;
       const turnY = Math.max(formMidY, introBottom + TEXT_CLEAR);
       const formLeft = formRect.left - sectionRect.left;
-      // Tip stops short of the form (20–60px gap, scales with available span)
       const formGap = Math.round(
         Math.min(60, Math.max(20, (formLeft - startX) * 0.12)),
       );
@@ -139,6 +152,7 @@ export function ContactFormPointer() {
       if (endX - startX < 48) {
         setReady(false);
         setPath("");
+        pathKeyRef.current = "";
         return;
       }
       const span = Math.max(endX - startX, 1);
@@ -151,26 +165,34 @@ export function ContactFormPointer() {
         `L ${endX} ${endY}`,
       ].join(" ");
 
+      const key = `${w}x${h}|${d}`;
+      const geometryChanged = key !== pathKeyRef.current;
+      pathKeyRef.current = key;
+
       section.style.setProperty("--flow-line-color", "var(--accent)");
       section.style.setProperty("--flow-line-width", "2px");
       section.style.setProperty("--flow-contact-start-x", `${startX}px`);
       section.style.setProperty("--flow-contact-end-x", `${endX}px`);
 
-      pathLengthRef.current = 0;
-      setPath(d);
-      setTip({ x: endX, y: endY });
-      setSize({ w, h });
+      if (geometryChanged) {
+        pathLengthRef.current = 0;
+        setPath(d);
+        setTip({ x: endX, y: endY });
+        setSize({ w, h });
+      }
       setReady(true);
 
       requestAnimationFrame(() => {
         const pathEl = pathRef.current;
         if (!pathEl) return;
         pathLengthRef.current = readGeometricLength(pathEl);
-        applyStrokeDash(
-          pathEl,
-          reduceMotion || lineActive ? 1 : 0,
-          pathLengthRef,
-        );
+        if (reduceMotion) {
+          paintProgress(1);
+        } else if (lineActiveRef.current) {
+          paintProgress(drawProgressRef.current);
+        } else {
+          paintProgress(0);
+        }
       });
     };
 
@@ -189,7 +211,7 @@ export function ContactFormPointer() {
       window.removeEventListener("resize", measure);
       window.clearTimeout(t);
     };
-  }, [desktop, reduceMotion, lineActive]);
+  }, [desktop, reduceMotion, paintProgress]);
 
   useEffect(() => {
     if (!ready || !desktop || reduceMotion || !near) {
@@ -197,34 +219,41 @@ export function ContactFormPointer() {
       if (reduceMotion && ready && desktop) {
         setLineActive(true);
         setArrowActive(true);
-        const pathEl = pathRef.current;
-        if (pathEl) applyStrokeDash(pathEl, 1, pathLengthRef);
+        paintProgress(1);
       }
       return;
     }
 
     const evaluate = () => {
       const vh = window.innerHeight;
-      let revealed = false;
       const content = contentLayerRef.current;
       const section = sectionRef.current;
 
       if (!content) {
-        if (section) {
-          revealed = section.getBoundingClientRect().top < vh * 0.52;
+        if (!section) return;
+        const top = section.getBoundingClientRect().top;
+        if (top < vh * REVEAL_ON && !wasRevealed.current) {
+          wasRevealed.current = true;
+          clearDelay();
+          lineDelayTimer.current = window.setTimeout(() => {
+            setLineActive(true);
+            lineDelayTimer.current = null;
+          }, LINE_DELAY_MS);
+        } else if (top > vh * REVEAL_OFF && wasRevealed.current) {
+          reset();
         }
-      } else {
-        revealed = content.getBoundingClientRect().bottom < vh * 0.5;
+        return;
       }
 
-      if (revealed && !wasRevealed.current) {
+      const ratio = content.getBoundingClientRect().bottom / vh;
+      if (ratio < REVEAL_ON && !wasRevealed.current) {
         wasRevealed.current = true;
         clearDelay();
         lineDelayTimer.current = window.setTimeout(() => {
           setLineActive(true);
           lineDelayTimer.current = null;
         }, LINE_DELAY_MS);
-      } else if (!revealed && wasRevealed.current) {
+      } else if (ratio > REVEAL_OFF && wasRevealed.current) {
         reset();
       }
     };
@@ -235,37 +264,62 @@ export function ContactFormPointer() {
       window.removeEventListener("scroll", evaluate);
       clearDelay();
     };
-  }, [ready, desktop, reduceMotion, near, reset, clearDelay]);
+  }, [ready, desktop, reduceMotion, near, reset, clearDelay, paintProgress]);
 
-  // Manual draw animation (no Framer pathLength attribute)
+  // Start draw once when lineActive becomes true — do not restart on remasure
   useEffect(() => {
     const pathEl = pathRef.current;
     if (!pathEl || !lineActive) return;
 
     if (reduceMotion) {
-      applyStrokeDash(pathEl, 1, pathLengthRef);
+      paintProgress(1);
+      setArrowActive(true);
+      return;
+    }
+
+    // Already finished (e.g. remount after geometry tweak) — keep complete
+    if (drawProgressRef.current >= 0.999) {
+      paintProgress(1);
       setArrowActive(true);
       return;
     }
 
     clearDraw();
     setArrowActive(false);
+    const startProgress = drawProgressRef.current;
     const start = performance.now();
     const easeOut = (t: number) => 1 - Math.pow(1 - t, 3);
 
     const tick = (now: number) => {
       const t = Math.min(1, (now - start) / LINE_DRAW_MS);
-      applyStrokeDash(pathEl, easeOut(t), pathLengthRef);
+      const progress = startProgress + (1 - startProgress) * easeOut(t);
+      paintProgress(progress);
       if (t < 1) {
         drawRaf.current = window.requestAnimationFrame(tick);
       } else {
         drawRaf.current = null;
+        paintProgress(1);
         setArrowActive(true);
       }
     };
     drawRaf.current = window.requestAnimationFrame(tick);
     return () => clearDraw();
-  }, [lineActive, reduceMotion, clearDraw, path]);
+  }, [lineActive, reduceMotion, clearDraw, paintProgress]);
+
+  // After path string mounts/updates, re-bind length and current progress
+  useEffect(() => {
+    if (!path) return;
+    const pathEl = pathRef.current;
+    if (!pathEl) return;
+    pathLengthRef.current = readGeometricLength(pathEl);
+    if (reduceMotion) {
+      paintProgress(1);
+    } else if (lineActiveRef.current) {
+      paintProgress(drawProgressRef.current);
+    } else {
+      paintProgress(0);
+    }
+  }, [path, reduceMotion, paintProgress]);
 
   if (!ready || !path || !desktop) return null;
 

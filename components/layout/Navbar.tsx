@@ -23,21 +23,18 @@ export function Navbar() {
       className={cn(
         // Always opaque — homepage contact reveal sits fixed underneath and
         // would otherwise show through a transparent sticky nav.
-        "sticky top-0 z-40 border-b bg-[color:var(--nav-surface)] backdrop-blur-md transition-colors",
+        "site-nav sticky top-0 z-40 border-b bg-[color:var(--nav-surface)] backdrop-blur-md transition-[border-color,box-shadow] duration-200",
         scrolled
-          ? "border-[color:var(--border-subtle)]"
-          : "border-transparent",
+          ? "border-[color:var(--border-subtle)] shadow-[0_8px_24px_rgba(0,0,0,0.18)]"
+          : "border-transparent shadow-none",
       )}
     >
       <div className="container-page flex h-16 items-center justify-between gap-4">
-        <Link
-          href="/"
-          className="text-base font-semibold tracking-tight text-foreground md:text-lg"
-        >
+        <Link href="/" className="site-nav__brand">
           {siteConfig.name}
         </Link>
 
-        <nav aria-label="Primary" className="hidden items-center gap-1 md:flex">
+        <nav aria-label="Primary" className="site-nav__links hidden md:flex">
           {siteConfig.nav.map((item) => {
             const active =
               item.href === "/"
@@ -47,12 +44,7 @@ export function Navbar() {
               <Link
                 key={item.href}
                 href={item.href}
-                className={cn(
-                  "rounded-[8px] px-3 py-2 text-base font-medium transition-colors",
-                  active
-                    ? "bg-surface-elevated text-foreground ring-1 ring-border"
-                    : "text-muted-strong hover:bg-surface hover:text-foreground",
-                )}
+                className={cn("site-nav__link", active && "is-active")}
                 aria-current={active ? "page" : undefined}
               >
                 {item.label}
@@ -61,18 +53,15 @@ export function Navbar() {
           })}
         </nav>
 
-        <div className="hidden items-center gap-3 md:flex">
-          <Link
-            href="/overview"
-            className="text-base font-medium text-muted transition-colors hover:text-accent"
-          >
+        <div className="site-nav__actions hidden md:flex">
+          <Link href="/overview" className="site-nav__action site-nav__action--accent">
             Simple View
           </Link>
           <a
             href={siteConfig.links.github}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-base font-medium text-muted-strong transition-colors hover:text-foreground"
+            className="site-nav__action"
             aria-label={`${siteConfig.name} on GitHub`}
           >
             GitHub
@@ -81,7 +70,7 @@ export function Navbar() {
             href={siteConfig.links.linkedin}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-base font-medium text-muted-strong transition-colors hover:text-foreground"
+            className="site-nav__action"
             aria-label={`${siteConfig.name} on LinkedIn`}
           >
             LinkedIn
