@@ -135,7 +135,7 @@ export const projectThemes: Record<FeaturedThemeId, ProjectVisualTheme> = {
       logoSrc: "/projects/joblinx/brand/logo-256.webp",
       logoAlt: "JobLinx lynx logo",
       preferredCover: "/projects/joblinx/detail.webp",
-      windowUrl: "joblinx.app",
+      windowUrl: "job-linx.vercel.app",
       featuredVideo: {
         webm: "/projects/joblinx/featured/cover-jl.webm",
         mp4: "/projects/joblinx/featured/coverjl.mp4",

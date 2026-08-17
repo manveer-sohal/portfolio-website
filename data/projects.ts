@@ -246,7 +246,7 @@ export const projects: Project[] = [
     links: [
       {
         label: "Visit Live Product",
-        href: "https://joblinx.app/",
+        href: "https://job-linx.vercel.app/",
         type: "live",
       },
       {
