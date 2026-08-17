@@ -245,6 +245,11 @@ export const projects: Project[] = [
     ],
     links: [
       {
+        label: "Visit Live Product",
+        href: "https://joblinx.app/",
+        type: "live",
+      },
+      {
         label: "View Case Study",
         href: "/projects/joblinx",
         type: "case-study",
