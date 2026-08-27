@@ -54,6 +54,7 @@ export type ProjectCoverVideo = {
 
 export type ProjectStatus =
   | "Live product"
+  | "In progress"
   | "In active development"
   | "Private beta"
   | "Product in development"

@@ -2,6 +2,10 @@ import Image from "next/image";
 import Link from "next/link";
 import type { Project } from "@/data/types";
 import { getProjectTheme, resolveProjectCover } from "@/lib/project-themes";
+import {
+  getProjectCaseStudyHref,
+  getProjectCaseStudyLabel,
+} from "@/lib/project-links";
 import { cn } from "@/lib/utils";
 import { FeaturedMediaWindow } from "./FeaturedMediaWindow";
 import { FeaturedProjectVideo } from "./FeaturedProjectVideo";
@@ -57,7 +61,8 @@ export function FeaturedProjectSection({
 }: FeaturedProjectSectionProps) {
   const theme = getProjectTheme(project.slug);
   const cover = resolveProjectCover(project);
-  const caseStudy = `/projects/${project.slug}`;
+  const caseStudy = getProjectCaseStudyHref(project.slug);
+  const caseStudyLabel = getProjectCaseStudyLabel(project.slug);
   const live = project.links.find((link) => link.type === "live");
   const github = project.links.find((link) => link.type === "github");
   const mediaTarget = live ?? github;
@@ -184,7 +189,7 @@ export function FeaturedProjectSection({
         <p className="featured-editorial__description">{description}</p>
 
         <Link href={caseStudy} className="featured-editorial__cta">
-          View Case Study
+          {caseStudyLabel}
           <span aria-hidden="true"> →</span>
         </Link>
       </div>

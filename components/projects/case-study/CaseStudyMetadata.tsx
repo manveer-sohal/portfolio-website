@@ -1,20 +1,22 @@
 type CaseStudyMetadataProps = {
-  role: string;
+  role?: string;
   status?: string;
-  focus: string[];
+  focus?: string[];
 };
 
 export function CaseStudyMetadata({
   role,
   status,
-  focus,
-}: CaseStudyMetadataProps) {
+  focus = [],
+}: CaseStudyMetadataProps = {}) {
   return (
     <dl className="case-study__metadata">
-      <div>
-        <dt>Role</dt>
-        <dd>{role}</dd>
-      </div>
+      {role ? (
+        <div>
+          <dt>Role</dt>
+          <dd>{role}</dd>
+        </div>
+      ) : null}
       {status ? (
         <div>
           <dt>Status</dt>

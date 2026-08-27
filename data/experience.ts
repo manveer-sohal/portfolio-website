@@ -33,8 +33,8 @@ export const experience: ExperienceItem[] = [
         type: "live",
       },
       {
-        label: "View Case Study",
-        href: "/projects/almaari",
+        label: "View Case Studies",
+        href: "/projects/almaari/case-studies",
         type: "case-study",
       },
     ],

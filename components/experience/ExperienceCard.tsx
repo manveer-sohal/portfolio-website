@@ -3,6 +3,10 @@ import { ExperienceTitleLine } from "@/components/experience/ExperienceTitleLine
 import { InlineEmphasis } from "@/components/ui/InlineEmphasis";
 import { cn } from "@/lib/utils";
 import type { ExperienceItem } from "@/data/types";
+import {
+  getProjectCaseStudyHref,
+  getProjectCaseStudyLabel,
+} from "@/lib/project-links";
 
 type ExperienceCardProps = {
   item: ExperienceItem;
@@ -67,10 +71,10 @@ export function ExperienceCard({
         item.projectSlug ? (
           <div className="experience-card__links">
             <Link
-              href={`/projects/${item.projectSlug}`}
+              href={getProjectCaseStudyHref(item.projectSlug)}
               className="experience-card__link experience-card__link--primary"
             >
-              View Case Study
+              {getProjectCaseStudyLabel(item.projectSlug)}
             </Link>
           </div>
         ) : null

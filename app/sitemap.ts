@@ -20,5 +20,15 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.7,
   }));
 
-  return [...staticRoutes, ...projectRoutes];
+  const almaariCaseStudyRoutes = [
+    "/projects/almaari/case-studies",
+    "/projects/almaari/case-studies/garment-ingestion",
+  ].map((path) => ({
+    url: `${base}${path}`,
+    lastModified: new Date(),
+    changeFrequency: "monthly" as const,
+    priority: 0.72,
+  }));
+
+  return [...staticRoutes, ...projectRoutes, ...almaariCaseStudyRoutes];
 }

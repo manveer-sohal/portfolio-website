@@ -33,8 +33,6 @@ export function CaseStudyLayout({ project }: CaseStudyLayoutProps) {
     .map((slug) => getProjectBySlug(slug))
     .filter((item): item is Project => Boolean(item));
 
-  const focus = project.technologies.slice(0, 6);
-
   return (
     <article className="case-study">
       <div className="case-study__shell">
@@ -48,11 +46,7 @@ export function CaseStudyLayout({ project }: CaseStudyLayoutProps) {
           links={{ live, github, website, devpost }}
         />
 
-        <CaseStudyMetadata
-          role={project.role}
-          status={project.status}
-          focus={focus}
-        />
+        <CaseStudyMetadata />
 
         {hasCover ? (
           <div className="case-study__cover">

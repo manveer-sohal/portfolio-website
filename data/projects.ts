@@ -64,8 +64,8 @@ export const projects: Project[] = [
         type: "github",
       },
       {
-        label: "View Case Study",
-        href: "/projects/almaari",
+        label: "View Case Studies",
+        href: "/projects/almaari/case-studies",
         type: "case-study",
       },
     ],

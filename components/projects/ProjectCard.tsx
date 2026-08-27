@@ -3,6 +3,10 @@ import Link from "next/link";
 import { Tag } from "@/components/ui/Tag";
 import type { Project } from "@/data/types";
 import { getProjectTheme, resolveProjectCover } from "@/lib/project-themes";
+import {
+  getProjectCaseStudyHref,
+  getProjectCaseStudyLabel,
+} from "@/lib/project-links";
 import { cn } from "@/lib/utils";
 
 type ProjectCardProps = {
@@ -19,6 +23,8 @@ export function ProjectCard({ project }: ProjectCardProps) {
     github;
   const theme = getProjectTheme(project.slug);
   const cover = resolveProjectCover(project);
+  const caseStudyHref = getProjectCaseStudyHref(project.slug);
+  const caseStudyLabel = getProjectCaseStudyLabel(project.slug);
 
   if (theme) {
     return (
@@ -98,11 +104,11 @@ export function ProjectCard({ project }: ProjectCardProps) {
           </div>
           <div className="mt-auto flex flex-wrap gap-4 pt-5 text-base">
             <Link
-              href={`/projects/${project.slug}`}
+              href={caseStudyHref}
               className="other-project-card__cta font-medium"
               style={{ color: "var(--project-primary)" }}
             >
-              View Case Study
+              {caseStudyLabel}
               <span className="other-project-card__cta-arrow" aria-hidden="true">
                 →
               </span>
@@ -168,10 +174,10 @@ export function ProjectCard({ project }: ProjectCardProps) {
         </div>
         <div className="mt-auto flex flex-wrap gap-4 pt-5 text-base">
           <Link
-            href={`/projects/${project.slug}`}
+            href={caseStudyHref}
             className="other-project-card__cta font-medium text-accent"
           >
-            View Case Study
+            {caseStudyLabel}
             <span className="other-project-card__cta-arrow" aria-hidden="true">
               →
             </span>
