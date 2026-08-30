@@ -7,12 +7,14 @@ import { CaseStudyHeader } from "@/components/projects/case-study/CaseStudyHeade
 import { CaseStudyMetadata } from "@/components/projects/case-study/CaseStudyMetadata";
 import { CaseStudySection } from "@/components/projects/case-study/CaseStudySection";
 import { CaseStudyTableOfContents } from "@/components/projects/case-study/CaseStudyTableOfContents";
+import { CurrentFlowCarousel } from "@/components/projects/case-study/CurrentFlowCarousel";
 import { ProcessingStateMachine } from "@/components/projects/case-study/ProcessingStateMachine";
 import { JsonLd } from "@/components/seo/JsonLd";
 import {
   architectureDecisions,
   productionizationSteps,
 } from "@/data/almaari-case-studies";
+import { currentGarmentFlowSlides } from "@/data/almaari-garment-ingestion";
 import { getProjectBySlug } from "@/data/projects";
 import { siteConfig } from "@/data/site";
 import type { Project } from "@/data/types";
@@ -41,6 +43,7 @@ export function generateStaticParams() {
 
 const tocItems = [
   { id: "changed", label: "What I Changed" },
+  { id: "current-system", label: "Current Flow" },
   { id: "problem", label: "The Problem" },
   { id: "goals", label: "Goals & Non-Goals" },
   { id: "architecture", label: "Architecture" },
@@ -242,8 +245,9 @@ export default async function GarmentIngestionPage({ params }: PageProps) {
         <div className="engineering-study__intro engineering-prose">
           <p>
             Almaari&apos;s Add Clothes flow had gradually accumulated several
-            separate responsibilities: background removal, manual AI analysis,
-            credit accounting, garment persistence, and background enrichment.
+            separate responsibilities: image background removal, manual AI
+            analysis for meta data extraction, credit accounting, garment
+            persistence, and a background job for meta data enrichment.
           </p>
           <p>
             The system worked, but the workflow increasingly depended on the
@@ -301,16 +305,9 @@ export default async function GarmentIngestionPage({ params }: PageProps) {
               id="current-system"
               eyebrow="The flow"
               title="The Current Flow"
-              intro="To better understand the problem, here is how the image upload works. "
+              intro="The current upload experience asks the user to prepare the image, request analysis, and review the result as separate steps."
             >
-              <div className="engineering-subsections">
-                {problemSections.map((problem) => (
-                  <section key={problem.title}>
-                    <h3>{problem.title}</h3>
-                    <p>{problem.body}</p>
-                  </section>
-                ))}
-              </div>
+              <CurrentFlowCarousel slides={currentGarmentFlowSlides} />
             </CaseStudySection>
 
             <CaseStudySection

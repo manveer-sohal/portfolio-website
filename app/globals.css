@@ -2734,6 +2734,188 @@ a {
   padding-block: 1.15rem;
 }
 
+.engineering-carousel {
+  margin-top: 1.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--case-border);
+}
+
+.engineering-carousel:focus-visible {
+  outline: 2px solid var(--case-accent);
+  outline-offset: 5px;
+  border-radius: 4px;
+}
+
+.engineering-carousel__slide {
+  min-width: 0;
+  animation: engineering-carousel-enter 180ms ease-out;
+}
+
+@keyframes engineering-carousel-enter {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.engineering-carousel__copy {
+  min-height: 8.5rem;
+  max-width: 42rem;
+}
+
+.engineering-carousel__step {
+  margin: 0;
+  color: var(--case-accent);
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.engineering-carousel__copy h3 {
+  margin: 0.5rem 0 0;
+  color: var(--case-heading);
+  font-size: clamp(1.25rem, 3vw, 1.65rem);
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  line-height: 1.25;
+}
+
+.engineering-carousel__body {
+  margin: 0.65rem 0 0;
+  color: var(--case-body);
+  font-size: 1rem;
+  line-height: 1.7;
+}
+
+.engineering-carousel__callouts {
+  display: grid;
+  gap: 0.6rem;
+  margin: 0.8rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.engineering-carousel__callouts li {
+  display: grid;
+  grid-template-columns: 1.35rem minmax(0, 1fr);
+  gap: 0.55rem;
+  align-items: start;
+  color: var(--case-body);
+  font-size: 0.95rem;
+  line-height: 1.55;
+}
+
+.engineering-carousel__callout-number {
+  display: inline-grid;
+  width: 1.35rem;
+  height: 1.35rem;
+  margin-top: 0.08rem;
+  border: 1px solid var(--case-accent);
+  border-radius: 50%;
+  color: var(--case-accent);
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 0.68rem;
+  font-weight: 600;
+  line-height: 1;
+  place-items: center;
+}
+
+.engineering-carousel__media {
+  margin: 1.25rem 0 0;
+  overflow: hidden;
+  border: 1px solid var(--case-border);
+  border-radius: 12px;
+  background: var(--case-surface);
+}
+
+.engineering-carousel__media img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.engineering-carousel__navigation {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 0.8rem;
+}
+
+.engineering-carousel__dots,
+.engineering-carousel__buttons {
+  display: flex;
+  align-items: center;
+}
+
+.engineering-carousel__dots {
+  gap: 0.1rem;
+}
+
+.engineering-carousel__dots button {
+  display: grid;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  place-items: center;
+}
+
+.engineering-carousel__dots button::before {
+  width: 0.45rem;
+  height: 0.45rem;
+  border-radius: 999px;
+  background: var(--case-subtle);
+  content: "";
+  transition: width 160ms ease, background-color 160ms ease;
+}
+
+.engineering-carousel__dots button.is-active::before {
+  width: 1.3rem;
+  background: var(--case-accent);
+}
+
+.engineering-carousel__buttons {
+  gap: 0.5rem;
+}
+
+.engineering-carousel__buttons button {
+  display: grid;
+  width: 2.75rem;
+  height: 2.75rem;
+  padding: 0;
+  border: 1px solid var(--case-border);
+  border-radius: 999px;
+  color: var(--case-body);
+  background: var(--case-surface);
+  cursor: pointer;
+  font-size: 1rem;
+  transition: border-color 150ms ease, color 150ms ease,
+    background-color 150ms ease;
+  place-items: center;
+}
+
+.engineering-carousel__buttons button:hover {
+  border-color: var(--case-accent-border);
+  color: var(--case-accent);
+  background: var(--case-accent-muted);
+}
+
+.engineering-carousel__dots button:focus-visible,
+.engineering-carousel__buttons button:focus-visible {
+  outline: 2px solid var(--case-accent);
+  outline-offset: 2px;
+}
+
 .engineering-kicker {
   margin: 0 0 0.35rem !important;
   color: var(--case-accent) !important;
@@ -3860,6 +4042,15 @@ button.architecture-flow__item {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .engineering-carousel__slide {
+    animation: none;
+  }
+
+  .engineering-carousel__dots button::before,
+  .engineering-carousel__buttons button {
+    transition: none;
+  }
+
   .case-study-hub__card {
     transition: none;
   }
