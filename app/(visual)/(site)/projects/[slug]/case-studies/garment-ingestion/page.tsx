@@ -231,40 +231,37 @@ export default async function GarmentIngestionPage({ params }: PageProps) {
           theme={getProjectTheme("almaari")}
           links={{ live, github }}
         />
-        <CaseStudyMetadata
-          role={studyProject.role}
-          status={studyProject.status}
-          focus={[
-            "System Design",
-            "Reliability",
-            "AI Workflows",
-            "Cloud Infrastructure",
-          ]}
-        />
-
-        <div className="engineering-study__intro engineering-prose">
-          <p>
-            Almaari&apos;s Add Clothes flow had gradually accumulated several
-            separate responsibilities: image background removal, manual AI
-            analysis for meta data extraction, credit accounting, garment
-            persistence, and a background job for meta data enrichment.
-          </p>
-          <p>
-            The system worked, but the workflow increasingly depended on the
-            user advancing each step manually, while failures across processing
-            services were difficult to recover from cleanly.
-          </p>
-          <p>
-            I began redesigning the ingestion pipeline around one durable
-            workflow with explicit processing state, safe retries, and automatic
-            garment analysis. The redesign is still being productionized;
-            proposed components and design targets are identified in the writing
-            below.
-          </p>
-        </div>
+        <CaseStudyMetadata />
 
         <CaseStudyTableOfContents items={tocItems}>
           <div className="case-study__article engineering-article">
+            <CaseStudySection
+              id="introduction"
+              eyebrow="start"
+              title="Introduction"
+            >
+              <div className="engineering-study__intro engineering-prose">
+                <p>
+                  Almaari&apos;s Add Clothes flow had gradually accumulated
+                  several separate responsibilities: image background removal,
+                  manual AI analysis for meta data extraction, credit
+                  accounting, garment persistence, and a background job for meta
+                  data enrichment.
+                </p>
+                <p>
+                  The system worked, but the workflow increasingly depended on
+                  the user advancing each step manually, while failures across
+                  processing services were difficult to recover from cleanly.
+                </p>
+                <p>
+                  I began redesigning the ingestion pipeline around one durable
+                  workflow with explicit processing state, safe retries, and
+                  automatic garment analysis. The redesign is still being
+                  productionized; proposed components and design targets are
+                  identified in the writing below.
+                </p>
+              </div>
+            </CaseStudySection>
             <CaseStudySection
               id="changed"
               eyebrow="Overview"
