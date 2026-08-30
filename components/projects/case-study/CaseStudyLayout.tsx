@@ -20,6 +20,13 @@ export function CaseStudyLayout({ project }: CaseStudyLayoutProps) {
   const theme = getProjectTheme(project.slug);
   const cover = resolveProjectCover(project);
   const hasCover = Boolean(cover);
+  const backLink =
+    project.slug === "almaari"
+      ? {
+          href: "/projects/almaari/case-studies",
+          label: "← Almaari case studies",
+        }
+      : { href: "/#projects", label: "← Back to projects" };
 
   const live = project.links.find((link) => link.type === "live");
   const github = project.links.find((link) => link.type === "github");
@@ -36,8 +43,8 @@ export function CaseStudyLayout({ project }: CaseStudyLayoutProps) {
   return (
     <article className="case-study">
       <div className="case-study__shell">
-        <Link href="/#projects" className="case-study__back">
-          ← Back to projects
+        <Link href={backLink.href} className="case-study__back">
+          {backLink.label}
         </Link>
 
         <CaseStudyHeader
