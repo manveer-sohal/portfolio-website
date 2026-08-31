@@ -10,12 +10,21 @@ import { buildOverviewCaseStudySections } from "./buildOverviewCaseStudySections
 
 type OverviewCaseStudyLayoutProps = {
   project: Project;
+  coverOverride?: string;
 };
 
 export function OverviewCaseStudyLayout({
   project,
+  coverOverride,
 }: OverviewCaseStudyLayoutProps) {
-  const cover = resolveProjectCover(project);
+  const cover = coverOverride ?? resolveProjectCover(project);
+  const backLink =
+    project.slug === "almaari"
+      ? {
+          href: "/overview/projects/almaari/case-studies",
+          label: "← Almaari case studies",
+        }
+      : { href: "/overview", label: "← Back to Overview" };
   const sections = buildOverviewCaseStudySections(project);
   const tocItems = sections.map(({ id, label }) => ({ id, label }));
   const related = (project.relatedSlugs ?? [])
@@ -25,8 +34,8 @@ export function OverviewCaseStudyLayout({
   return (
     <article className="overview-case">
       <div className="overview-case__shell">
-        <Link href="/overview" className="overview-case__back">
-          ← Back to Overview
+        <Link href={backLink.href} className="overview-case__back">
+          {backLink.label}
         </Link>
 
         <OverviewCaseStudyHeader project={project} />

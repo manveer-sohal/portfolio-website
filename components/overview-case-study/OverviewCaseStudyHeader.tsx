@@ -1,3 +1,4 @@
+import Link from "next/link";
 import type { Project } from "@/data/types";
 
 type OverviewCaseStudyHeaderProps = {
@@ -11,6 +12,7 @@ export function OverviewCaseStudyHeader({
   const github = project.links.find((l) => l.type === "github");
   const website = project.links.find((l) => l.type === "website");
   const devpost = project.links.find((l) => l.type === "devpost");
+  const caseStudies = project.links.find((l) => l.type === "case-study");
 
   return (
     <header>
@@ -31,6 +33,14 @@ export function OverviewCaseStudyHeader({
         ) : null}
       </div>
       <div className="overview-case__actions">
+        {caseStudies ? (
+          <Link
+            className="overview-link"
+            href={`/overview/projects/${project.slug}/case-studies`}
+          >
+            Engineering case studies
+          </Link>
+        ) : null}
         {live ? (
           <a
             className="overview-link"
