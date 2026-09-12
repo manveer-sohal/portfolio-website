@@ -2,6 +2,7 @@ import { AwardsBanner } from "@/components/home/AwardsBanner";
 import { ContactCTA } from "@/components/home/ContactCTA";
 import { ContactForm } from "@/components/home/ContactForm";
 import { ContactRevealShell } from "@/components/home/ContactRevealShell";
+import { CurrentProjects } from "@/components/home/CurrentProjects";
 import { ExperiencePreview } from "@/components/home/ExperiencePreview";
 import { FeaturedProjects } from "@/components/home/FeaturedProjects";
 import { Hero } from "@/components/home/Hero";
@@ -36,6 +37,7 @@ export default function HomePage() {
         </ProjectsExperienceBridge>
       </HeroFeaturedArrow>
       <SkillsSection categories={skillCategories} />
+      <CurrentProjects />
       <OtherProjects projects={other} />
       <AwardsBanner />
       {/* Teal Contact Me banner forms the rounded bottom of the sliding cover */}
