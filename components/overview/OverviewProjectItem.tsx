@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { Project } from "@/data/types";
+import { OverviewProjectMedia } from "./OverviewProjectMedia";
 import { OverviewReveal } from "./OverviewReveal";
 
 type OverviewProjectItemProps = {
@@ -15,7 +16,11 @@ export function OverviewProjectItem({
   project,
   year,
 }: OverviewProjectItemProps) {
-  const caseHref = `/overview/projects/${project.slug}`;
+  const projectHref = `/overview/projects/${project.slug}`;
+  const caseHref =
+    project.slug === "almaari"
+      ? "/overview/projects/almaari/case-studies"
+      : projectHref;
   const live = linkByType(project, "live");
   const github = linkByType(project, "github");
   const tech = project.technologies.slice(0, 5);
@@ -27,7 +32,7 @@ export function OverviewProjectItem({
     <OverviewReveal className="overview-item--project">
       <p className="overview-item__meta">{meta || project.role}</p>
       <div className="overview-item__title-row">
-        <Link href={caseHref} className="overview-item__title">
+        <Link href={projectHref} className="overview-item__title">
           {project.name}
         </Link>
         <span className="overview-item__arrow" aria-hidden="true">
@@ -35,6 +40,13 @@ export function OverviewProjectItem({
         </span>
       </div>
       <p className="overview-item__role">{project.role}</p>
+      <Link
+        href={caseHref}
+        className="overview-project-media__link"
+        aria-label={`Read the ${project.name} case study`}
+      >
+        <OverviewProjectMedia project={project} />
+      </Link>
       <p className="overview-item__body">{project.shortDescription}</p>
       {tech.length > 0 ? (
         <p className="overview-item__tech">{tech.join(" · ")}</p>

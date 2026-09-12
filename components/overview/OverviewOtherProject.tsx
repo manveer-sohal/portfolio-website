@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { Project } from "@/data/types";
+import { OverviewProjectMedia } from "./OverviewProjectMedia";
 
 type OverviewOtherProjectProps = {
   project: Project;
@@ -15,6 +16,13 @@ export function OverviewOtherProject({ project }: OverviewOtherProjectProps) {
 
   return (
     <div className="overview-other__row">
+      <Link
+        href={`/overview/projects/${project.slug}`}
+        className="overview-project-media__link overview-other__media-link"
+        aria-label={`View the ${project.name} case study`}
+      >
+        <OverviewProjectMedia project={project} compact />
+      </Link>
       <div>
         <p className="overview-other__name">{project.name}</p>
         {project.status ? (

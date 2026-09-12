@@ -13,7 +13,9 @@ function stripMd(text: string) {
 export function OverviewExperienceItem({ item }: OverviewExperienceItemProps) {
   const bullets = item.highlights.slice(0, 3).map(stripMd);
   const caseLink = item.projectSlug
-    ? `/overview/projects/${item.projectSlug}`
+    ? item.projectSlug === "almaari"
+      ? "/overview/projects/almaari/case-studies"
+      : `/overview/projects/${item.projectSlug}`
     : item.links?.find((l) => l.type === "case-study")?.href;
   const external =
     item.links?.find((l) => l.type === "live" || l.type === "devpost" || l.type === "website") ??
