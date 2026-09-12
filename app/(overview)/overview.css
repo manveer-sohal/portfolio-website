@@ -1214,3 +1214,83 @@ body:has(.overview-root) {
   display: inline-block;
   margin-top: 0.85rem;
 }
+
+/* Garment-ingestion engineering study: shared diagrams, overview presentation. */
+.overview-engineering-study {
+  --case-bg: var(--ov-bg);
+  --case-surface: var(--ov-surface);
+  --case-surface-2: #fff;
+  --case-border: var(--ov-border);
+  --case-heading: var(--ov-heading);
+  --case-body: var(--ov-body);
+  --case-secondary: var(--ov-secondary);
+  --case-subtle: var(--ov-subtle);
+  --case-accent: var(--ov-accent);
+  --case-accent-hover: var(--ov-accent-hover);
+  --case-accent-muted: color-mix(in srgb, var(--ov-accent) 8%, transparent);
+  --case-accent-border: color-mix(in srgb, var(--ov-accent) 32%, var(--ov-border));
+}
+
+.overview-engineering__article {
+  max-width: var(--ov-read);
+}
+
+.overview-engineering__intro {
+  margin: 0 0 1.35rem;
+  color: var(--ov-body);
+  font-size: 1rem;
+  line-height: 1.65;
+}
+
+.overview-engineering-study .engineering-prose,
+.overview-engineering-study .engineering-prose p,
+.overview-engineering-study .engineering-subsections p,
+.overview-engineering-study .engineering-decisions p {
+  color: var(--ov-body);
+}
+
+.overview-engineering-study .engineering-prose h3,
+.overview-engineering-study .engineering-subsections h3,
+.overview-engineering-study .engineering-decisions h3,
+.overview-engineering-study .engineering-status-lists h3 {
+  color: var(--ov-heading);
+}
+
+.overview-engineering-study .engineering-code {
+  background: var(--ov-surface);
+  border: 1px solid var(--ov-border);
+  color: var(--ov-body);
+}
+
+.overview-engineering-study .engineering-next-link {
+  border-color: var(--ov-border);
+}
+
+.overview-engineering-study .architecture-diagram-scroll {
+  background: var(--ov-surface);
+}
+
+.overview-engineering-study .architecture-connector > text {
+  stroke: var(--ov-surface);
+}
+
+.overview-engineering-study .architecture-svg-node__surface,
+.overview-engineering-study .architecture-state-strip rect {
+  fill: #fff;
+}
+
+.overview-engineering-study .architecture-svg-node:hover .architecture-svg-node__surface {
+  fill: var(--ov-surface);
+}
+
+.overview-engineering-study .architecture-svg-node.is-selected .architecture-svg-node__surface {
+  fill: color-mix(in srgb, var(--ov-accent) 9%, #fff);
+}
+
+.overview-engineering-study .architecture-svg-node[aria-label*="Next.js"] {
+  --node-accent: #3f3f46 !important;
+}
+
+.overview-engineering-study .architecture-details {
+  top: calc(var(--ov-header-h) + 1rem);
+}
