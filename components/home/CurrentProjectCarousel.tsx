@@ -64,8 +64,15 @@ export function CurrentProjectCarousel({
     };
   }, [isHovered, isVisible, media.length, reduceMotion]);
 
-  const activeSlide = media[activeIndex];
-  if (!activeSlide) return null;
+  useEffect(() => {
+    if (!isVisible || media.length < 2) return;
+    for (const slide of media) {
+      const preload = new window.Image();
+      preload.src = slide.src;
+    }
+  }, [isVisible, media]);
+
+  if (!media.length) return null;
 
   return (
     <div
@@ -81,15 +88,25 @@ export function CurrentProjectCarousel({
         if (!event.currentTarget.contains(event.relatedTarget)) setIsHovered(false);
       }}
     >
-      <figure className="current-project-carousel__slide" key={activeSlide.src}>
-        <Image
-          src={activeSlide.src}
-          alt={activeSlide.alt}
-          fill
-          sizes="(max-width: 767px) calc(100vw - 2.5rem), (max-width: 1200px) 48vw, 40rem"
-          priority={activeIndex === 0}
-        />
-      </figure>
+      {media.map((slide, index) => (
+        <figure
+          key={slide.src}
+          className={cn(
+            "current-project-carousel__slide",
+            index === activeIndex && "is-active",
+          )}
+          aria-hidden={index !== activeIndex}
+        >
+          <Image
+            src={slide.src}
+            alt={slide.alt}
+            fill
+            unoptimized
+            sizes="(max-width: 767px) calc(100vw - 2.5rem), (max-width: 1200px) 48vw, 40rem"
+            priority={index === 0}
+          />
+        </figure>
+      ))}
       {media.length > 1 ? (
         <div className="current-project-carousel__dots" aria-label="Choose a preview">
           {media.map((slide, index) => (

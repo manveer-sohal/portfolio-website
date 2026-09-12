@@ -18,7 +18,7 @@
 
 .current-project-card__media {
   position: relative;
-  min-height: clamp(18rem, 40vw, 30rem);
+  height: clamp(18rem, 40vw, 30rem);
   overflow: hidden;
 
   background: #090b08;
@@ -42,22 +42,17 @@
 }
 
 .current-project-carousel__slide {
-  position: relative;
-  height: 100%;
+  position: absolute;
+  inset: 0;
   margin: 0;
-  animation: current-project-carousel-enter 220ms ease-out;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 220ms ease-out;
 }
 
-@keyframes current-project-carousel-enter {
-  from {
-    opacity: 0;
-    transform: translateX(0.5rem);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
+.current-project-carousel__slide.is-active {
+  opacity: 1;
+  pointer-events: auto;
 }
 
 .current-project-carousel__slide img {

@@ -1,6 +1,8 @@
 export type CurrentProjectMedia = {
   src: string;
   alt: string;
+  width: number;
+  height: number;
 };
 
 export type CurrentProject = {
@@ -35,16 +37,22 @@ export const currentProjects: CurrentProject[] = [
     accent: "#a3e635",
     media: [
       {
-        src: "/projects/setlookup/featured/collection.png",
+        src: "/projects/setlookup/featured/collection.webp",
         alt: "SetLookup collection screen showing Hot Wheels cars organized in a personal collection",
+        width: 748,
+        height: 1558,
       },
       {
-        src: "/projects/setlookup/featured/scan.png",
+        src: "/projects/setlookup/featured/scan.webp",
         alt: "SetLookup scan screen framing a wall of Hot Wheels cars for camera-based lookup",
+        width: 742,
+        height: 1536,
       },
       {
-        src: "/projects/setlookup/featured/profile.png",
+        src: "/projects/setlookup/featured/profile.webp",
         alt: "SetLookup profile screen showing a collector's Hot Wheels collection grid",
+        width: 754,
+        height: 1542,
       },
     ],
   },
